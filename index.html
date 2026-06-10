@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Imagerie Dentaire · QCM interactif</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(145deg, #edf2f7 0%, #e9eef4 100%);
+            font-family: system-ui, 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, sans-serif;
+            padding: 20px;
+            color: #1a2c3e;
+            min-height: 100vh;
+        }
+
+        #app {
+            max-width: 880px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(0px);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            padding: 1.5rem 1.8rem 2rem;
+            transition: box-shadow 0.3s ease, transform 0.2s;
+        }
+
+        @media (max-width: 620px) {
+            body {
+                padding: 12px;
+            }
+            #app {
+                padding: 1.2rem;
+                border-radius: 1.75rem;
+            }
+        }
+
+        /* animations */
+        @keyframes fadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gentlePulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+            50% {
+                transform: scale(1.01);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+        }
+
+        @keyframes checkPop {
+            0% {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+            80% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        .question-card {
+            animation: fadeSlideUp 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            background: white;
+            border-radius: 1.75rem;
+            margin-bottom: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .option {
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+            transform-origin: left;
+            cursor: pointer;
+            border: 1px solid #e2edf2;
+            background: #ffffff;
+            border-radius: 1.25rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(44, 126, 214, 0.15);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+            pointer-events: none;
+        }
+
+        .option:active::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .option:hover {
+            background: #f5faff;
+            border-color: #b9d6ef;
+            transform: translateX(6px) scale(1.01);
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.12);
+        }
+
+        .option.selected {
+            background: #eef4fe;
+            border-left: 5px solid #2c7ed6;
+            border-color: #2c7ed6;
+            transform: scale(1);
+            box-shadow: 0 6px 12px -8px rgba(44,126,214,0.2);
+        }
+
+        .option.correct {
+            background: #e2f3e9;
+            border-color: #2c9a6e;
+            border-left: 5px solid #1d9e75;
+            animation: gentlePulse 0.4s ease;
+        }
+
+        .option.wrong {
+            background: #feeceb;
+            border-color: #e28e8d;
+            border-left: 5px solid #e24b4a;
+        }
+
+        .option.missed {
+            background: #fff1e0;
+            border-color: #e7b87b;
+            border-left: 5px solid #ef9f27;
+        }
+
+        .option input[type="checkbox"] {
+            accent-color: #2c7ed6;
+            width: 19px;
+            height: 19px;
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.12s ease, accent-color 0.2s;
+        }
+
+        .option input[type="checkbox"]:active {
+            transform: scale(0.88);
+        }
+
+        .option input[type="checkbox"]:checked {
+            animation: checkPop 0.2s ease-out;
+        }
+
+        .btn {
+            padding: 9px 24px;
+            border-radius: 50px;
+            font-weight: 550;
+            font-size: 0.85rem;
+            border: none;
+            background: #f0f3f8;
+            color: #1e3a4d;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.15, 0.85, 0.35, 1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.05);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .btn:active::after {
+            width: 280px;
+            height: 280px;
+        }
+
+        .btn:hover {
+            background: #e4e9f0;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: #2c7ed6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(44, 126, 214, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #1f68b5;
+            transform: translateY(-3px);
+            box-shadow: 0 14px 22px -10px rgba(44, 126, 214, 0.45);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            transition: 0.05s;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: not-allowed;
+            filter: grayscale(0.05);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2eaf0;
+            border-radius: 20px;
+            margin-bottom: 1.8rem;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(95deg, #2c9a6e, #1d9e75, #2ec98a);
+            border-radius: 20px;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+            box-shadow: 0 0 5px rgba(29,158,117,0.5);
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 0.9rem 1.2rem;
+            border-radius: 1.25rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            backdrop-filter: blur(4px);
+            animation: fadeSlideUp 0.3s ease;
+            font-weight: 450;
+        }
+
+        .feedback.ok {
+            background: #e0f2e9;
+            border-left: 5px solid #1d9e75;
+            color: #0b4635;
+            box-shadow: 0 4px 12px rgba(29,158,117,0.1);
+        }
+
+        .feedback.ko {
+            background: #fce9e8;
+            border-left: 5px solid #e24b4a;
+            color: #751a1a;
+            box-shadow: 0 4px 12px rgba(226,75,74,0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 0.8rem;
+        }
+
+        .badge-cat {
+            background: #eef2f7;
+            padding: 0.25rem 1rem;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            color: #2c5a74;
+            display: inline-block;
+            transition: 0.1s;
+        }
+
+        .q-text {
+            font-size: 1.15rem;
+            font-weight: 550;
+            color: #0f2b38;
+            line-height: 1.4;
+            margin: 0.6rem 0 1rem;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #f9fbfe 0%, #ffffff 100%);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            text-align: center;
+            box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.1);
+            animation: fadeSlideUp 0.5s ease;
+        }
+
+        .score-big {
+            font-size: 3.8rem;
+            font-weight: 750;
+            margin: 0.5rem 0;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #1e3a4d, #2c7ed6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 14px;
+            margin: 1.4rem 0;
+        }
+
+        .metric {
+            background: #f8fafd;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            transition: 0.2s ease;
+            border: 1px solid #eef2f7;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .metric:hover {
+            transform: translateY(-3px);
+            background: white;
+            border-color: #d4e2ec;
+        }
+
+        .metric-val {
+            font-size: 1.9rem;
+            font-weight: 750;
+            color: #1e3a4d;
+        }
+
+        .nav {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 1.8rem;
+            align-items: center;
+        }
+
+        button[disabled] {
+            opacity: 0.55;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* micro-interactions */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .option.selected .option-label {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const ALL_QUESTIONS = [
+{"cat":"CBCT","q":"Quel algorithme de reconstruction est le plus largement utilisé en CBCT ?","opts":["Feldkamp, Davis et Kress (FDK)","Rétroprojection simple non filtrée","Transformée de Fourier directe","Algorithme de Hounsfield","Reconstruction itérative SART"],"correct":[0],"exp":"L'algorithme FDK (Feldkamp, Davis et Kress) est l'algorithme de rétroprojection filtrée le plus utilisé pour la reconstruction volumique en CBCT."},
+{"cat":"CBCT","q":"Quelle est la principale différence entre les voxels du CBCT et ceux du scanner conventionnel (TDM) ?","opts":["Les voxels CBCT sont isotropes (dimensions identiques dans les 3 plans x,y,z)","Les voxels CBCT sont anisotropes comme ceux du scanner","Les voxels CBCT sont plus grands que ceux du scanner","Le CBCT ne produit pas de voxels mais uniquement des pixels","Les voxels CBCT mesurent obligatoirement 1mm de côté"],"correct":[0],"exp":"Le CBCT produit des voxels isotropes (ex : 0,4×0,4×0,4 mm), contrairement au scanner dont les voxels sont anisotropes (ex : 0,6×0,6×1,25 mm)."},
+{"cat":"CBCT","q":"Quel format standard est utilisé pour sauvegarder les données volumiques CBCT ?","opts":["JPEG","DICOM","TIFF","RAW","BMP"],"correct":[1],"exp":"Les données CBCT sont encodées et sauvegardées au format DICOM (Digital Imaging and Communications in Medicine), standard international de l'imagerie médicale."},
+{"cat":"CBCT","q":"Concernant la relation entre le FOV et la résolution en CBCT, quelle affirmation est correcte ?","opts":["Plus le FOV est petit, plus la résolution spatiale est haute et plus la dose est faible","Plus le FOV est grand, plus la résolution est haute","Le FOV n'influence pas la résolution spatiale","Un grand FOV diminue toujours la dose d'irradiation","La résolution dépend uniquement du kV"],"correct":[0],"exp":"En CBCT, réduire le champ de vue (FOV) permet d'augmenter la résolution spatiale ET de réduire la dose d'irradiation. C'est un principe fondamental de la dosimétrie CBCT."},
+{"cat":"CBCT","q":"Parmi les artefacts suivants, lesquels sont rencontrés en CBCT ? (plusieurs réponses possibles)","opts":["Artefacts cinétiques liés au mouvement du patient","Artefacts métalliques liés aux restaurations","Artefacts de durcissement du faisceau (beam hardening)","Artefacts de rehaussement post-injection","Artefacts de susceptibilité magnétique"],"correct":[0,1,2],"exp":"Les 3 grands types d'artefacts CBCT sont : cinétiques (flou, dédoublement), métalliques (stries, bandes noires/blanches) et de durcissement du faisceau (zones hyper/hypodenses artificielles). Les artefacts de rehaussement et de susceptibilité magnétique sont propres au scanner injecté et à l'IRM."},
+{"cat":"CBCT","q":"Dans quelle indication le CBCT est-il utilisé en orthodontie avec un grand champ (15-30 cm) et basse résolution (voxels > 200 µm) ?","opts":["Ankylose dentaire","Hypercémentose débutante","Analyse globale pour chirurgie orthognatique","Résorption externe en rapport avec une dent incluse","Inclusions dentaires simples"],"correct":[2],"exp":"Le grand champ + basse résolution est réservé à l'analyse globale cranio-faciale, notamment pour la planification de chirurgie orthognatique. Les diagnostics fins (ankylose, hypercémentose, résorption) nécessitent un petit champ et haute résolution."},
+{"cat":"CBCT","q":"Le CBCT est contre-indiqué ou limité dans laquelle de ces situations ?","opts":["Évaluation d'une résorption radiculaire interne","Suspicion de tumeur maligne des tissus mous","Bilan préopératoire de dent de sagesse à la mandibule","Sinusite maxillaire chronique","Détection de l'arthrose condylienne"],"correct":[1],"exp":"Le CBCT fournit très peu d'informations sur les tissus mous. En cas de suspicion de malignité, le scanner injecté ou l'IRM sont les examens de référence absolue."},
+{"cat":"CBCT","q":"Quelle est la durée typique d'une rotation du bras C du CBCT lors de l'acquisition ?","opts":["1 à 3 secondes","6 à 30 secondes","2 à 5 minutes","30 à 60 secondes","5 à 40 secondes"],"correct":[1,4],"exp":"La rotation dure généralement entre 5 et 40 secondes selon les sources, ce qui correspond à la plage 6-30 secondes mentionnée pour l'acquisition clinique. Les deux options sont compatibles avec le cours."},
+{"cat":"CBCT","q":"Quelle différence entre CBCT et scanner TDM est correcte ?","opts":["Le CBCT est 3 à 5 fois moins cher que le scanner","Le scanner offre une meilleure résolution spatiale que le CBCT","Le CBCT nécessite un renforcement de plancher contrairement au scanner","Le CBCT utilise un faisceau en éventail comme le scanner","Le CBCT exprime la densité en Unités Hounsfield absolues"],"correct":[0],"exp":"Le CBCT est environ 3 à 5 fois moins cher, plus petit, et a une meilleure résolution spatiale. Le scanner utilise un faisceau en éventail et exprime la densité en UH absolues, contrairement au CBCT qui utilise des niveaux de gris relatifs."},
+{"cat":"CBCT","q":"Pour l'extraction d'une dent de sagesse mandibulaire incluse, dans quelle situation le CBCT est-il indiqué ?","opts":["Quand les apex se projettent au-dessus du bord supérieur du canal mandibulaire","Quand il y a superposition des apex sur le canal mandibulaire au panoramique","Systématiquement pour toute dent de sagesse incluse","Uniquement au maxillaire","En cas d'inclusion haute au maxillaire uniquement"],"correct":[1],"exp":"À la mandibule, si les apex se projettent clairement au-dessus du canal → pas d'exploration supplémentaire. En cas de superposition apex/canal au panoramique, le CBCT est prescrit pour préciser les rapports anatomiques."},
+{"cat":"OPT","q":"Quel critère valide la qualité d'un OPT concernant la position de la langue ?","opts":["La langue doit être abaissée au plancher","Le palais dur doit se projeter parallèlement et au-dessus des apex maxillaires","Les condyles doivent être centrés","La langue ne doit pas être visible","Les fosses nasales doivent être entièrement visibles"],"correct":[1],"exp":"Si le patient n'applique pas sa langue contre la voûte palatine, une bande radiotransparente (air libre) barre horizontalement les apex du haut, simulant de fausses lésions de lyse apicale. Le palais dur doit se projeter parallèlement et au-dessus des apex."},
+{"cat":"OPT","q":"Une image fantôme sur un panoramique dentaire se caractérise par :","opts":["Une image nette et à la même hauteur que l'objet réel","Une image floue, surélevée et projetée du côté opposé à la position réelle de l'objet","Une image identique à l'objet mais plus petite","Une image uniquement visible en fenêtre osseuse","Une image produite uniquement par les implants dentaires"],"correct":[1],"exp":"L'image fantôme est une image floue, surélevée et projetée du côté opposé à la position réelle de l'objet dense (ex: boucle d'oreille gauche → opacité floue dans le sinus maxillaire droit)."},
+{"cat":"OPT","q":"Dans la méthodologie de lecture de l'OPT, quel est le point de départ recommandé pour l'analyse de la région mandibulaire ?","opts":["Le condyle mandibulaire droit","Le triangle rétromolaire droit","Le foramen mentonnier","La symphyse mentonnière","Le bord basilaire"],"correct":[1],"exp":"On fixe une zone initiale au triangle rétromolaire du côté droit, puis on suit le rebord osseux jusqu'au triangle controlatéral pour évaluer systématiquement toutes les structures mandibulaires."},
+{"cat":"OPT","q":"Lequel de ces éléments est évalué lors de l'analyse de la région périphérique et des ATM sur un OPT ? (plusieurs réponses possibles)","opts":["Longueur des apophyses styloïdes (syndrome d'Eagle)","Intégrité de l'os hyoïde","Forme des condyles mandibulaires","Profondeur de la cavité glénoïde","Épaisseur de la muqueuse sinusienne"],"correct":[0,1,2,3],"exp":"L'analyse ATM/périphérique inclut les condyles, la cavité glénoïde, les échancrures sigmoïdes, les coronoïdes, les styloïdes (Eagle) et l'os hyoïde. L'épaisseur muqueuse sinusienne est évaluée lors du balayage de la région maxillo-sinusienne."},
+{"cat":"Diagnostic","q":"Selon la classification de Lodwick, quelle description correspond à une lésion de type IA ?","opts":["Contours mal visibles → lésion agressive","Contours nets + liseré d'ostéosclérose → lésion lentement évolutive","Ostéolyse mitée → lésion agressive","Contours nets, fins, sans liseré → évolutivité intermédiaire","Ostéolyse perméative → lésion très agressive"],"correct":[1],"exp":"Type IA = contours nets + liseré d'ostéosclérose = lésion lentement évolutive (bénigne). Type IB = nets sans liseré. Type IC = mal visibles. Type II = mitée. Type III = perméative."},
+{"cat":"Diagnostic","q":"Quel signe radiologique est pathognomonique d'une infiltration maligne précoce ?","opts":["Signe de la dent flottante","Signe de Garrington","Liseré d'ostéosclérose périphérique","Soufflure corticale harmonieuse","Rhizalyse nette et régulière"],"correct":[1],"exp":"Le signe de Garrington est un élargissement asymétrique et régulier de l'espace ligamentaire parodontal associé à la destruction de la lamina dura. C'est un indicateur précoce d'infiltration maligne."},
+{"cat":"Diagnostic","q":"Quelle réaction périostée est caractéristique d'un processus hautement agressif / malin ?","opts":["Réaction périostée continue unilamellaire","Absence de réaction périostée","Réaction périostée spiculée en rayons de soleil (sunburst)","Liseré d'ostéosclérose dense","Soufflure corticale modérée"],"correct":[2],"exp":"Les processus hautement agressifs produisent des réactions periostées pluri-lamellaires (bulbe d'oignon), spiculées perpendiculaires (sunburst/feu d'herbe) ou un éperon de Codman. La réaction continue unilamellaire est associée aux processus lents/bénins."},
+{"cat":"Diagnostic","q":"Une lésion bénigne à croissance lente a les caractéristiques suivantes sur les structures dentaires voisines : (plusieurs réponses possibles)","opts":["Déplacement dentaire harmonieux","Rhizalyse nette et régulière","Aspect de dent flottante","Destruction complète de l'os alvéolaire","Divergence des axes radiculaires"],"correct":[0,1,4],"exp":"Un processus bénin refoule les dents (déplacement harmonieux, divergence des axes) et peut provoquer une rhizalyse propre et régulière. La dent flottante et la destruction complète de l'os alvéolaire signent la malignité."},
+{"cat":"Diagnostic","q":"Le kyste radiculaire représente quelle proportion de l'ensemble des kystes des mâchoires ?","opts":["10 à 20%","30 à 40%","60 à 70%","80 à 90%","Moins de 10%"],"correct":[2],"exp":"Le kyste radiculaire est de loin le plus fréquent, représentant environ 60 à 70% de l'ensemble des kystes des mâchoires. Il est d'origine inflammatoire, secondaire à la nécrose pulpaire."},
+{"cat":"Diagnostic","q":"À la TDM, quelle est la densité (en UH) d'un kyste radiculaire typique ?","opts":["−100 à 0 UH (densité graisseuse)","10 à 30 UH (densité liquidienne)","100 à 300 UH (densité osseuse spongieuse)","400 à 600 UH","800 à 1000 UH"],"correct":[1],"exp":"Le kyste radiculaire est une lésion liquidienne pure, homogène, de densité 10 à 30 UH au scanner, délimitée par un liseré d'ostéosclérose (Lodwick IA), sans signe d'agressivité."},
+{"cat":"Diagnostic","q":"Quel est le signe pathognomonique du kyste dentigère (folliculaire) ?","opts":["Lacune centrée sur l'apex de la dent","Siège d'insertion au niveau du collet anatomique de la dent incluse","Bords festonnés caractéristiques","Croissance axiale longitudinale sans soufflure","Nodules muraux prenant le contraste"],"correct":[1],"exp":"Le signe pathognomonique du kyste dentigère est son insertion au niveau du collet anatomique de la dent (jonction émail/cément). Ceci le distingue du kératokyste et d'autres lésions."},
+{"cat":"Diagnostic","q":"Quelle est la caractéristique principale du kératokyste odontogène (KCO) au scanner qui le différencie de l'améloblastome ?","opts":["Soufflure tridimensionnelle bucco-linguale massive","Croissance axiale longitudinale sans soufflure transversale vestibulo-linguale","Présence de nodules muraux prenant le contraste","Localisation préférentielle au maxillaire antérieur","Lacune uniloculaire centrée sur l'apex"],"correct":[1],"exp":"Le KCO se propage en longueur le long du canal médullaire sans provoquer de soufflure transversale, ce qui est son mode de croissance distinctif. À l'inverse, l'améloblastome provoque une soufflure tridimensionnelle massive."},
+{"cat":"Diagnostic","q":"Quel syndrome est associé à la présence de kératokystes odontogènes multiples ?","opts":["Syndrome de Pierre Robin","Syndrome de Treacher Collins","Syndrome de Gorlin-Goltz","Syndrome d'Apert","Syndrome de Crouzon"],"correct":[2],"exp":"Le syndrome de Gorlin-Goltz (syndrome des nævus basocellulaires) associe des KCO multiples, des carcinomes basocellulaires cutanés multiples et des calcifications précoces de la faux du cerveau."},
+{"cat":"Diagnostic","q":"L'améloblastome peut présenter les aspects radiologiques suivants : (plusieurs réponses possibles)","opts":["Aspect multiloculaire en bulles de savon","Aspect multiloculaire en nid d'abeilles","Aspect uniloculaire possible","Croissance axiale longitudinale sans soufflure","Liseré d'ostéosclérose dense entourant la lésion"],"correct":[0,1,2],"exp":"L'améloblastome peut être uniloculaire ou multiloculaire (bulles de savon = grandes loculations, nid d'abeilles = petites loculations). Il se distingue par une soufflure bucco-linguale massive, contrairement au KCO."},
+{"cat":"Diagnostic","q":"La lacune de Stafne (défaut cortical statique) est caractérisée par : (plusieurs réponses possibles)","opts":["Localisation sous le nerf alvéolaire inférieur","Lacune monogéodique bien limitée de 1 à 3 cm","Origine odontogénique","Patient habituellement symptomatique","Confirmation possible par sialographie"],"correct":[0,1,4],"exp":"La lacune de Stafne est un défaut cortical non odontogénique, asymptomatique, de 1-3 cm, situé sous le nerf alvéolaire, correspondant à une invagination de la glande sous-maxillaire. La sialographie permet la confirmation."},
+{"cat":"Diagnostic","q":"Le cémentome (dysplasie cémento-osseuse) présente un signe clé à l'imagerie. Lequel ?","opts":["Nodules muraux prenant le contraste","Bords festonnés caractéristiques","Fine liserée radiotransparente périphérique entourant complètement la masse opaque","Soufflure corticale agressive","Aspect en bulles de savon multiloculaire"],"correct":[2],"exp":"Le signe clé du cémentome est la présence obligatoire d'un fin liseré radiotransparent périphérique continu qui isole complètement la masse opaque de l'os sain. Il n'y a jamais de soufflure agressive ni d'invasion."},
+{"cat":"TDM","q":"Le scanner (TDM) est prescrit en première intention en odontologie. Vrai ou faux ?","opts":["Vrai, c'est l'examen de débrouillage","Faux, il n'est jamais prescrit en première intention","Vrai mais uniquement pour les pathologies tumorales","Faux uniquement pour les enfants","Vrai pour toute pathologie de l'ATM"],"correct":[1],"exp":"Le scanner n'est jamais prescrit en première intention en odontologie. On le demande quand les examens de base (rétro-alvéolaires, panoramique, CBCT) sont insuffisants, notamment pour les tissus mous ou structures profondes."},
+{"cat":"TDM","q":"Quelles sont les valeurs en Unités Hounsfield de l'os compact et des dents au scanner ?","opts":["0 à +30 UH","−100 à 0 UH","+30 à +70 UH","+800 à +2000 UH","+100 à +300 UH"],"correct":[3],"exp":"Selon l'échelle de Hounsfield : air = −1000, eau = 0, tissus mous = +30 à +70, os spongieux = +100 à +300, os compact/dents = +800 à +2000 UH (blanc)."},
+{"cat":"TDM","q":"La fenêtre des tissus mous au scanner est indispensable pour : (plusieurs réponses possibles)","opts":["Analyser la trame osseuse trabéculaire fine","Rechercher une infiltration des espaces graisseux profonds","Étudier les muscles masticateurs","Analyser le rehaussement tumoral après injection de contraste","Évaluer les structures dentaires minéralisées"],"correct":[1,2,3],"exp":"La fenêtre parenchymateuse/tissus mous sert à analyser les espaces graisseux profonds, les muscles masticateurs, les glandes salivaires et le rehaussement tumoral ou vasculaire. L'analyse de l'os trabéculaire et des dents relève de la fenêtre osseuse."},
+{"cat":"TDM","q":"Le DentaScan (reconstructions obliques au scanner) est particulièrement indiqué pour :","opts":["Analyser la mobilité du disque articulaire","Mesurer l'épaisseur osseuse disponible et la distance au canal alvéolaire inférieur","Détecter les caries interproximales","Évaluer les luxations discales","Rechercher une fistule atrio-ventriculaire"],"correct":[1],"exp":"Le DentaScan génère des coupes perpendiculaires à la courbure des mâchoires et est l'examen de référence pour mesurer l'épaisseur osseuse disponible et apprécier la distance exacte entre une lésion et le canal alvéolaire inférieur."},
+{"cat":"TDM","q":"Quelle est la principale indication du scanner en odontologie pour les infections ?","opts":["Caries dentaires débutantes","Parodontite chronique légère","Cellulites cervico-faciales avec abcès profonds","Pericoronite simple","Pulpite irréversible"],"correct":[2],"exp":"Le scanner est l'examen de référence pour les infections graves : cellulites cervico-faciales, recherche de collections purulentes, abcès profonds, extension aux espaces profonds du cou. Pour une pulpite ou une pericoronite simple, les radios conventionnelles suffisent."},
+{"cat":"TDM","q":"Concernant l'utilisation de la Metformine et l'injection de produit de contraste iodé au scanner :","opts":["Aucune précaution particulière n'est nécessaire","Il faut arrêter la Metformine le jour de l'examen + 48h après, avec contrôle de la créatininémie","La Metformine est contre-indiquée de façon permanente après un scanner","Il faut doubler la dose de Metformine le jour de l'examen","La Metformine doit être arrêtée 1 semaine avant l'examen"],"correct":[1],"exp":"Chez le diabétique sous Metformine : arrêt le jour de l'examen + 48h après injection de produit de contraste iodé, avec contrôle de la créatininémie, pour éviter le risque d'acidose lactique."},
+{"cat":"TDM","q":"Quelle valeur Hounsfield correspond à un kyste liquidien (abcès, kyste simple) ?","opts":["−1000 UH","0 UH","+10 à +30 UH","+800 UH","Variable, jamais mesurable"],"correct":[2],"exp":"Un kyste liquidien pur a une densité proche de l'eau, soit environ +10 à +30 UH (légèrement supérieure à l'eau pure = 0 UH). C'est une valeur clé pour caractériser les lésions kystiques bénignes."},
+{"cat":"TDM","q":"La sémiologie d'une lésion hypodense au scanner correspond à :","opts":["Une lésion plus blanche que le tissu environnant","Une lésion plus sombre que le tissu environnant (kyste liquidien, abcès)","Une lésion de même densité que les tissus adjacents","Une lésion toujours maligne","Une calcification osseuse"],"correct":[1],"exp":"Hypodense = plus sombre que le tissu environnant (ex: kyste liquidien, abcès). Hyperdense = plus blanc (ex: corticale, calcification, dent). Isodense = même densité que le tissu adjacent."},
+{"cat":"IRM","q":"Quelle séquence IRM est considérée comme le meilleur compromis pour l'étude de l'ATM ?","opts":["T1","T2","Densité Protonique (DP)","STIR","Diffusion ADC"],"correct":[2],"exp":"La séquence DP (Densité Protonique) est le meilleur compromis pour l'ATM : elle offre une haute résolution pour voir le contour du disque articulaire avec un bon contraste pour les deux composantes."},
+{"cat":"IRM","q":"En IRM, la séquence T1 est caractérisée par : (plusieurs réponses possibles)","opts":["TR court et TE court","Graisse apparaissant en hypersignal (blanc intense)","Eau apparaissant en hypersignal (blanc intense)","Utilisation principale pour l'anatomie, la graisse et la moelle osseuse","TR long et TE long"],"correct":[0,1,3],"exp":"T1 = TR court, TE court. La graisse est blanche (hypersignal), l'eau est noire. Utilisé pour l'anatomie, la graisse et la moelle osseuse. T2 = TR long, TE long, eau blanche."},
+{"cat":"IRM","q":"Quelle est la contre-indication absolue à l'IRM parmi les propositions suivantes ?","opts":["Claustrophobie légère","Insuffisance rénale sévère","Pacemaker non compatible IRM","Grossesse au deuxième trimestre","Allergie au Gadolinium"],"correct":[2],"exp":"Les contre-indications absolues IRM incluent : pacemakers non compatibles, clips anévrismaux ferromagnétiques, corps étrangers métalliques intra-oculaires, implants cochléaires anciens. La claustrophobie et la grossesse (sauf 1er trimestre) sont des contre-indications relatives."},
+{"cat":"IRM","q":"En IRM, la séquence STIR / Fat-Sat est particulièrement utile pour :","opts":["Visualiser la graisse en hypersignal","Étudier l'anatomie de la moelle osseuse","Détecter les phénomènes inflammatoires et l'œdème (suppression du signal de la graisse)","Analyser la densité osseuse","Étudier les structures dentaires minéralisées"],"correct":[2],"exp":"STIR/Fat-Sat supprime le signal de la graisse (qui apparaît noir) et met en évidence l'œdème et l'inflammation (blanc intense). C'est très utile en pathologie de l'ATM et pour détecter l'ostéomyélite."},
+{"cat":"IRM","q":"L'IRM est l'examen de référence pour l'ATM car elle permet d'étudier : (plusieurs réponses possibles)","opts":["La position et morphologie du disque articulaire","Les luxations discales avec ou sans réduction","L'évaluation dynamique bouche fermée/ouverte","La densité minérale osseuse du condyle","L'arthrose condylienne (lésions osseuses)"],"correct":[0,1,2],"exp":"L'IRM étudie idéalement les tissus mous de l'ATM : disque articulaire (position, morphologie, luxation) et peut être faite en dynamique (bouche fermée/ouverte). Pour les lésions osseuses comme l'arthrose, le CBCT est efficace."},
+{"cat":"IRM","q":"En IRM du kératokyste odontogène, quel critère permet de le différencier d'un kyste simple ou d'un améloblastome ?","opts":["Signal T1 uniformément noir","Rehaussement massif après injection de Gadolinium","Restriction marquée du coefficient apparent de diffusion (ADC) en séquence de diffusion","Signal T2 uniformément blanc","Absence de signal en toutes les séquences"],"correct":[2],"exp":"Le contenu riche en kératine du KCO se traduit en IRM par un signal T1 hétérogène élevé, T2 hétérogène et surtout une restriction marquée de l'ADC en diffusion, permettant de le distinguer d'un kyste simple (pas de restriction) et d'un améloblastome."},
+{"cat":"IRM","q":"Quelle est la durée approximative d'un examen IRM en imagerie maxillo-faciale ?","opts":["2 à 5 minutes","20 à 45 minutes","1 à 2 heures","Quelques secondes","10 à 15 minutes"],"correct":[1],"exp":"Un examen IRM dure généralement 20 à 45 minutes selon les séquences utilisées et le protocole adapté à l'indication clinique. C'est plus long que le scanner (quelques secondes d'acquisition)."},
+{"cat":"IRM","q":"L'IRM présente quel avantage majeur par rapport au CBCT et au scanner ?","opts":["Meilleure résolution spatiale pour l'os","Absence totale de rayonnements ionisants","Coût moins élevé","Durée d'examen plus courte","Meilleure disponibilité en cabinet dentaire"],"correct":[1],"exp":"L'avantage majeur de l'IRM est l'absence totale de rayonnements ionisants (pas de rayons X), contrairement au CBCT et au scanner. En contrepartie, elle est plus coûteuse, moins accessible et plus longue."},
+{"cat":"IRM","q":"L'IRM à temps d'écho ultra-court (UTE) permet :","opts":["Une réduction de la dose d'irradiation","Des reconstructions de type orthopantomogramme (IRM-OPG)","Une meilleure visualisation des tissus mous uniquement","L'élimination des artefacts métalliques","Un examen plus rapide que le scanner"],"correct":[1],"exp":"L'IRM-UTE est une avancée récente permettant des reconstructions de type orthopantomogramme (IRM-OPG) et une meilleure visualisation de l'os et des dents, domaines habituellement peu accessibles à l'IRM conventionnelle."},
+{"cat":"Comparatif","q":"Pour quelle indication choisira-t-on le scanner (TDM) plutôt que le CBCT ?","opts":["Bilan préimplantaire simple","Résorption radiculaire externe","Cellulite cervico-faciale avec extension aux espaces profonds","Inclusions dentaires multiples","Kyste nasopalatin"],"correct":[2],"exp":"Pour les infections graves avec atteinte des espaces profonds du cou, tissus mous, ou pathologies tumorales infiltrantes, le scanner injecté est l'examen de référence. Le CBCT a une faible résolution de contraste pour les tissus mous."},
+{"cat":"Comparatif","q":"Selon le tableau comparatif du cours d'IRM, quelle modalité est indiquée pour l'étude des tissus osseux (résolution +++) ?","opts":["IRM","Scanner (TDM)","CBCT","OPT","Radiographie rétroalvéolaire"],"correct":[2],"exp":"Le CBCT obtient la mention Excellent (+++) pour les tissus osseux, suivi du scanner (Très bon ++). L'IRM est faible (+) pour les tissus osseux mais excellente (+++) pour les tissus mous."},
+{"cat":"Comparatif","q":"L'examen de référence pour les pathologies des tissus mous de l'ATM est :","opts":["OPT (panoramique dentaire)","CBCT petit champ","Scanner conventionnel sans injection","IRM","Radiographies rétroalvéolaires"],"correct":[3],"exp":"L'IRM est la méthode de choix pour l'évaluation des tissus mous de l'ATM (disque articulaire, position, morphologie, luxation). Le CBCT est efficace pour les lésions osseuses de l'ATM (arthrose condylienne)."},
+{"cat":"Comparatif","q":"Quelle modalité d'imagerie est recommandée pour le dépistage des caries interproximales ?","opts":["CBCT systématique","OPT de débrouillage","Radiographies interproximales (bite-wing)","Scanner en fenêtre osseuse","IRM séquence T2"],"correct":[2],"exp":"Les radiographies interproximales (bite-wing) sont la méthode la plus appropriée pour évaluer la présence de caries dentaires. Les CBCT ne doivent pas être utilisés systématiquement pour le dépistage des caries."},
+{"cat":"Comparatif","q":"Pour la sinusite maxillaire chronique, quelle modalité constitue une alternative à la TDM selon le cours CBCT ?","opts":["IRM systématique","OPT","CBCT","Échographie","Radiographie standard de Blondeau"],"correct":[2],"exp":"Le CBCT peut constituer une alternative à la TDM pour l'évaluation de la rhinosinusite chronique. Il n'est cependant pas recommandé en cas de suspicion de tumeur maligne ou d'infection fongique (tissus mous insuffisamment étudiés)."},
+{"cat":"CBCT","q":"Quel est le rôle du topogramme (scout view) en début d'examen CBCT ?","opts":["Effectuer l'acquisition volumique définitive","Permettre le centrage précis et définir la zone d'exploration","Mesurer la densité osseuse en UH","Injecter le produit de contraste","Calculer la dose reçue par le patient"],"correct":[1],"exp":"Le topogramme (scout view) consiste en deux clichés numériques (profil et face) qui permettent le centrage précis et la définition de la zone d'exploration avant l'acquisition du volume."},
+{"cat":"OPT","q":"Lors de la lecture systématique de la région maxillaire et sinusienne sur un OPT, on évalue : (plusieurs réponses possibles)","opts":["La suture inter-maxillaire","Le canal naso-palatin","La cloison nasale","Le foramen mentonnier","Le nerf alvéolaire inférieur"],"correct":[0,1,2],"exp":"L'analyse de la région maxillaire et sinusienne comprend (dans la région centrale) : la suture inter-maxillaire, le canal naso-palatin et la cloison nasale. Le foramen mentonnier et le nerf alvéolaire inférieur appartiennent à la région mandibulaire."},
+{"cat":"Diagnostic","q":"Une image radio-opaque (hyperdense, blanche) sans rapport direct avec les dents peut correspondre à : (plusieurs réponses possibles)","opts":["Kyste radiculaire","Ostéome","Exostose (torus mandibulaire ou palatin)","Maladie de Paget au stade condensant","Kératokyste odontogène"],"correct":[1,2,3],"exp":"Les images radio-opaques sans rapport avec les dents incluent : ostéome (tumeur bénigne de l'os compact), exostoses superficielles (tori), et maladie de Paget au stade condensant. Le kyste radiculaire est radiotransparent et le KCO également."},
+{"cat":"CBCT","q":"En orthodontie, le CBCT en petit champ (4-6 cm) et haute résolution (voxels ≤ 125 µm) est indiqué pour : (plusieurs réponses possibles)","opts":["Ankylose dentaire","Hypercémentose débutante","Analyse globale cranio-faciale","Inclusions dentaires et kystes","Résorption externe liée à une dent incluse"],"correct":[0,1,4],"exp":"Petit champ + haute résolution est indiqué pour : ankylose dentaire, hypercémentose débutante, résorption externe et dysmorphie dentaire localisée. L'analyse globale nécessite un grand champ. Les inclusions et fentes palatines nécessitent un champ moyen/petit avec résolution basse."},
+{"cat":"TDM","q":"La contre-indication relative majeure au scanner pour les femmes enceintes concerne surtout :","opts":["Le troisième trimestre uniquement","Le premier trimestre (période d'organogenèse)","Toute la grossesse de façon absolue","Uniquement si injection de produit de contraste","Le deuxième trimestre"],"correct":[1],"exp":"La grossesse est une contre-indication relative mais majeure, surtout au premier trimestre (organogenèse). En urgence vitale, l'examen est possible avec protection abdominale. Pour les 2ème et 3ème trimestres, le risque est moindre mais le principe ALARA s'applique."},
+{"cat":"Comparatif","q":"Quel examen est indiqué pour le bilan d'extension d'une tumeur maligne des tissus mous de la cavité buccale ?","opts":["CBCT grand champ","OPT + céphalométrie","Scanner injecté et/ou IRM","Radiographies rétroalvéolaires multiples","CBCT petit champ haute résolution"],"correct":[2],"exp":"Pour les pathologies tumorales infiltrantes des tissus mous, le scanner injecté OU l'IRM sont les examens de référence absolue. Le CBCT est contre-indiqué car il fournit très peu d'informations sur les tissus mous."},
+{"cat":"Diagnostic","q":"Concernant l'améloblastome au scanner injecté ou à l'IRM, quel signe permet le diagnostic différentiel avec un kyste vrai ?","opts":["Densité liquidienne homogène","Liseré d'ostéosclérose périphérique continu","Nodules muraux pariétaux prenant fortement le contraste (contingents charnus solides)","Croissance axiale sans soufflure","Restriction du coefficient de diffusion ADC"],"correct":[2],"exp":"La mise en évidence de contingents charnus solides pariétaux (nodules muraux) avec prise de contraste intense au scanner injecté ou à l'IRM permet de faire le diagnostic différentiel entre l'améloblastome et les kystes vrais (contenu liquidien homogène, pas de nodules muraux)."},
+{"cat":"OPT","q":"La lamina dura vue sur un OPT ou une radio rétroalvéolaire correspond à :","opts":["L'espace desmodontal (ligament parodontal)","La ligne blanche continue entourant la racine (cortex de l'alvéole)","La jonction amélo-cémentaire","L'apex radiculaire","La chambre pulpaire"],"correct":[1],"exp":"La lamina dura est la ligne blanche continue (cortex de l'alvéole osseuse) entourant la racine, visible sur les radiographies dentaires. Elle est séparée de la racine par l'espace desmodontal clair (ligament parodontal). Sa destruction est un signe important en pathologie (Signe de Garrington)."}
+];
+
+let current = 0;
+let answers = new Array(ALL_QUESTIONS.length).fill(null).map(()=>new Set());
+let submitted = new Array(ALL_QUESTIONS.length).fill(false);
+let showResults = false;
+
+function render(){
+  const app = document.getElementById('app');
+  if(showResults){
+    renderResults(app);
+    return;
+  }
+  const q = ALL_QUESTIONS[current];
+  const isSubmitted = submitted[current];
+  const userSel = answers[current];
+  const score = calcScore();
+  const pct = Math.round((current/ALL_QUESTIONS.length)*100);
+
+  let html = `
+  <div class="header">
+    <span style="font-size:0.8rem; background:#eef2f7; padding:0.2rem 0.8rem; border-radius:40px;">Q${current+1}/${ALL_QUESTIONS.length}</span>
+    <span style="font-size:0.8rem; color:#2c5a74;">✔️ ${score.correct}/${score.total} répondues</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+  <div class="question-card">
+    <div><span class="badge-cat">${q.cat}</span></div>
+    <div class="q-text">${q.q}</div>`;
+
+  q.opts.forEach((opt, i)=>{
+    let cls = 'option';
+    if(isSubmitted){
+      if(q.correct.includes(i) && userSel.has(i)) cls += ' correct';
+      else if(!q.correct.includes(i) && userSel.has(i)) cls += ' wrong';
+      else if(q.correct.includes(i) && !userSel.has(i)) cls += ' missed';
+    } else if(userSel.has(i)){
+      cls += ' selected';
+    }
+    const chk = userSel.has(i) ? 'checked' : '';
+    const dis = isSubmitted ? 'disabled' : '';
+    html += `<label class="${cls}" onclick="toggleOpt(${i})">
+      <input type="checkbox" ${chk} ${dis} onclick="event.stopPropagation()">
+      <span class="option-label">${opt}</span>
+    </label>`;
+  });
+
+  if(isSubmitted){
+    const correct = q.correct.every(c=>userSel.has(c)) && [...userSel].every(s=>q.correct.includes(s));
+    html += `<div class="feedback ${correct?'ok':'ko'}">
+      <strong>${correct?'✓ Parfait !':'✗ Attention'}</strong> ${q.exp}
+    </div>`;
+  }
+
+  html += `</div>
+  <div class="nav">
+    <button class="btn" onclick="navigate(-1)" ${current===0?'disabled':''}>← Précédent</button>`;
+
+  if(!isSubmitted){
+    html += `<button class="btn btn-primary" onclick="submitAnswer()" ${userSel.size===0?'disabled':''}>Valider mes réponses</button>`;
+  } else if(current < ALL_QUESTIONS.length-1){
+    html += `<button class="btn btn-primary" onclick="navigate(1)">Suivant →</button>`;
+  } else {
+    html += `<button class="btn btn-primary" onclick="endQuiz()">📊 Voir mon score</button>`;
+  }
+
+  html += `<button class="btn" style="margin-left:auto" onclick="endQuiz()">🏁 Résultats finaux</button>
+  </div>`;
+
+  app.innerHTML = html;
+}
+
+function toggleOpt(i){
+  if(submitted[current]) return;
+  const sel = answers[current];
+  if(sel.has(i)) sel.delete(i);
+  else sel.add(i);
+  render();
+}
+
+function submitAnswer(){
+  submitted[current] = true;
+  render();
+}
+
+function navigate(dir){
+  current += dir;
+  if(current < 0) current = 0;
+  if(current >= ALL_QUESTIONS.length) current = ALL_QUESTIONS.length-1;
+  render();
+}
+
+function endQuiz(){
+  showResults = true;
+  render();
+}
+
+function calcScore(){
+  let correct = 0, total = 0;
+  submitted.forEach((s,i)=>{
+    if(!s) return;
+    total++;
+    const q = ALL_QUESTIONS[i];
+    const sel = answers[i];
+    if(q.correct.every(c=>sel.has(c)) && [...sel].every(v=>q.correct.includes(v))) correct++;
+  });
+  return {correct, total};
+}
+
+function renderResults(app){
+  const score = calcScore();
+  const total = ALL_QUESTIONS.length;
+  const answered = submitted.filter(Boolean).length;
+  const pct = answered > 0 ? Math.round((score.correct/answered)*100) : 0;
+  const overall = Math.round((score.correct/total)*100);
+
+  const cats = {};
+  ALL_QUESTIONS.forEach((q,i)=>{
+    if(!cats[q.cat]) cats[q.cat]={correct:0,total:0,answered:0};
+    cats[q.cat].total++;
+    if(submitted[i]){
+      cats[q.cat].answered++;
+      const sel=answers[i];
+      if(q.correct.every(c=>sel.has(c))&&[...sel].every(v=>q.correct.includes(v))) cats[q.cat].correct++;
+    }
+  });
+
+  let color = '#E24B4A';
+  if(pct>=70) color='#EF9F27';
+  if(pct>=85) color='#1D9E75';
+
+  let html = `<div class="score-card">
+    <p class="score-label">🎯 Score final · questions validées</p>
+    <p class="score-big" style="background: linear-gradient(135deg, ${color}, #1e3a4d); background-clip: text; -webkit-background-clip: text; color: transparent;">${score.correct} / ${answered}</p>
+    <p class="score-label">${pct}% de réussite (${answered} traitées)</p>
+    <p style="font-size:0.75rem; color:#5f7f94;">${score.correct}/${total} global · ${overall}%</p>
+  </div>
+  <div class="grid-2">
+    <div class="metric"><div class="metric-val" style="color:#2c9a6e">${score.correct}</div><div class="metric-lbl">correctes</div></div>
+    <div class="metric"><div class="metric-val" style="color:#db6b6a">${answered - score.correct}</div><div class="metric-lbl">fausses</div></div>
+    <div class="metric"><div class="metric-val">${total - answered}</div><div class="metric-lbl">non traitées</div></div>
+    <div class="metric"><div class="metric-val" style="color:${color}">${pct}%</div><div class="metric-lbl">efficacité</div></div>
+  </div>
+  <p style="font-size:0.9rem; font-weight:500; margin:1rem 0 0.75rem;">📚 Thématiques</p>`;
+
+  Object.entries(cats).forEach(([cat,data])=>{
+    const p = data.answered>0?Math.round((data.correct/data.answered)*100):null;
+    const c = p===null?'#a0b8c6':p>=80?'#2c9a6e':p>=60?'#ef9f27':'#e24b4a';
+    html += `<div style="display:flex;align-items:center;gap:12px;padding:0.6rem 0;border-bottom:1px solid #eef2f5">
+      <span style="font-size:0.8rem; color:#2c5a74; min-width:90px;">${cat}</span>
+      <div style="flex:1;height:6px;background:#e2eaf0;border-radius:10px;">
+        <div style="height:100%;width:${p??0}%;background:${c};border-radius:10px;transition:width 0.4s cubic-bezier(0.2,0.9,0.4,1.1)"></div>
+      </div>
+      <span style="font-size:0.75rem; font-weight:500; color:${c};">${data.correct}/${data.answered} (${p??'—'}%)</span>
+    </div>`;
+  });
+
+  html += `<div style="margin-top:2rem; display:flex; gap:14px; flex-wrap:wrap;">
+    <button class="btn btn-primary" onclick="restartQuiz()">⟳ Reprendre le QCM</button>
+    <button class="btn" onclick="reviewQuiz()">📖 Revoir les questions</button>
+  </div>`;
+
+  app.innerHTML = html;
+}
+
+function restartQuiz(){
+  current = 0;
+  answers = new Array(ALL_QUESTIONS.length).fill(null).map(()=>new Set());
+  submitted = new Array(ALL_QUESTIONS.length).fill(false);
+  showResults = false;
+  render();
+}
+
+function reviewQuiz(){
+  showResults = false;
+  current = 0;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
