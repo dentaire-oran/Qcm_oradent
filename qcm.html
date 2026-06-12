@@ -1,685 +1,812 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>QCM - Imagerie Médicale (CBCT, OPT, Scanner, IRM)</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCMs — Endodontie</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main: #0B0F19;
+  --bg-card: #151D30;
+  --bg-input: #1F2A45;
+  --border-color: #2E3C60;
+  --text-primary: #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --accent-cyan: #00F0FF;
+  --accent-blue: #3B82F6;
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+}
 
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: #f7f9fc;
-            padding: 20px;
-            color: #1a2a3f;
-        }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-            padding: 1.8rem 1.5rem;
-        }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  line-height: 1.5;
+  padding: 2rem 1rem;
+}
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 1.8rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
 
-        .header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #1e4b8f, #2c6eaf);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            letter-spacing: -0.3px;
-        }
+.header {
+  background: linear-gradient(135deg, var(--bg-card) 0%, #1A2642 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
 
-        .score-bar {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+.header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #FFF 0%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-        .score-chip {
-            background: #f1f5f9;
-            border-radius: 40px;
-            padding: 6px 16px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #1e293b;
-            border: 0.5px solid #cbd5e1;
-        }
+.score-bar {
+  display: flex;
+  gap: 0.75rem;
+}
 
-        .course-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 1.8rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 0.75rem;
-        }
+.score-chip {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background: var(--bg-input);
+}
 
-        .tab {
-            background: transparent;
-            border: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            padding: 8px 18px;
-            border-radius: 40px;
-            cursor: pointer;
-            color: #4a5b6e;
-            transition: all 0.2s;
-            background: #f1f5f9;
-            border: 0.5px solid #cbd5e1;
-        }
+.course-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
 
-        .tab.active {
-            background: #1e4b8f;
-            color: white;
-            border-color: #1e4b8f;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
+.course-tabs::-webkit-scrollbar {
+  height: 4px;
+}
 
-        .tab:hover:not(.active) {
-            background: #e6edf4;
-        }
+.course-tabs::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
+}
 
-        .filter-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 1.4rem;
-            flex-wrap: wrap;
-        }
+.tab {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
 
-        .filter-btn {
-            background: #f8fafc;
-            border: 0.5px solid #cbd5e1;
-            border-radius: 30px;
-            padding: 5px 14px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            color: #2c3e50;
-            transition: all 0.15s;
-        }
+.tab.active {
+  background: var(--accent-blue);
+  color: #FFF;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
 
-        .filter-btn.active {
-            background: #2c3e50;
-            color: white;
-            border-color: #2c3e50;
-        }
+.tab:hover:not(.active) {
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
 
-        .progress-info {
-            font-size: 0.85rem;
-            color: #4a627a;
-            margin-bottom: 1.2rem;
-            background: #f8fafc;
-            padding: 8px 14px;
-            border-radius: 24px;
-            display: inline-block;
-        }
+.filter-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
 
-        .qcard {
-            background: white;
-            border: 1px solid #e2edf7;
-            border-radius: 24px;
-            padding: 1.5rem;
-            margin-bottom: 1.6rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-            transition: 0.1s;
-        }
+.filter-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
 
-        .qnum {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 600;
-            color: #5b7a9a;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }
+.filter-btn.active {
+  background: var(--bg-input);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
 
-        .qtext {
-            font-size: 1.05rem;
-            font-weight: 500;
-            color: #0f2b3d;
-            line-height: 1.45;
-            margin-bottom: 1.2rem;
-        }
+.progress-info {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
 
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+.qcard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
 
-        .opt {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 14px;
-            border-radius: 18px;
-            border: 1px solid #e2e8f0;
-            background: white;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
+.qnum {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-cyan);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
 
-        .opt:hover:not(.disabled) {
-            background: #f7fafd;
-            border-color: #b9d0e7;
-        }
+.qtext {
+  font-size: 16px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
 
-        .opt.selected {
-            border-color: #1e4b8f;
-            background: #eef4fc;
-        }
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
 
-        .opt.correct {
-            border-color: #2b6e3c;
-            background: #e8f3e8;
-        }
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  background: var(--bg-input);
+  transition: all 0.2s ease;
+}
 
-        .opt.wrong {
-            border-color: #b91c1c;
-            background: #fee9e9;
-        }
+.opt:hover:not(.disabled) {
+  border-color: var(--accent-blue);
+  background: #253354;
+}
 
-        .opt.missed {
-            border-color: #b45309;
-            background: #fff0e6;
-        }
+.opt.selected {
+  border-color: var(--accent-blue);
+  background: rgba(59, 130, 246, 0.15);
+}
 
-        .opt-letter {
-            width: 28px;
-            height: 28px;
-            background: #f1f5f9;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #1e293b;
-            flex-shrink: 0;
-            border: 0.5px solid #cbd5e1;
-        }
+.opt.correct {
+  border-color: var(--color-success);
+  background: rgba(16, 185, 129, 0.15);
+}
 
-        .opt.selected .opt-letter {
-            background: #1e4b8f;
-            color: white;
-            border-color: #1e4b8f;
-        }
+.opt.wrong {
+  border-color: var(--color-error);
+  background: rgba(239, 68, 68, 0.15);
+}
 
-        .opt.correct .opt-letter {
-            background: #2b6e3c;
-            color: white;
-            border-color: #2b6e3c;
-        }
+.opt.missed {
+  border-color: var(--color-warning);
+  background: rgba(245, 158, 11, 0.11);
+}
 
-        .opt.wrong .opt-letter {
-            background: #b91c1c;
-            color: white;
-            border-color: #b91c1c;
-        }
+.opt-letter {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  background: var(--bg-card);
+}
 
-        .opt.missed .opt-letter {
-            background: #b45309;
-            color: white;
-            border-color: #b45309;
-        }
+.opt.selected .opt-letter {
+  background: var(--accent-blue);
+  color: #FFF;
+  border-color: var(--accent-blue);
+}
 
-        .opt-text {
-            font-size: 0.92rem;
-            line-height: 1.45;
-            color: #1e2f3f;
-            flex: 1;
-        }
+.opt.correct .opt-letter {
+  background: var(--color-success);
+  color: #FFF;
+  border-color: var(--color-success);
+}
 
-        .check-btn {
-            margin-top: 1.3rem;
-            background: #1e4b8f;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: white;
-            cursor: pointer;
-            transition: 0.15s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
+.opt.wrong .opt-letter {
+  background: var(--color-error);
+  color: #FFF;
+  border-color: var(--color-error);
+}
 
-        .check-btn:hover {
-            background: #0f3a6b;
-        }
+.opt.missed .opt-letter {
+  background: var(--color-warning);
+  color: #FFF;
+  border-color: var(--color-warning);
+}
 
-        .check-btn:disabled {
-            background: #b9cfec;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
+.opt-text {
+  font-size: 14px;
+  color: var(--text-primary);
+}
 
-        .explanation {
-            margin-top: 1.2rem;
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            background: #fef9e6;
-            border-left: 4px solid #f5b042;
-        }
+.check-btn {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, var(--accent-blue) 0%, #1D4ED8 100%);
+  color: #FFF;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
 
-        .explanation.success {
-            background: #e6f4ea;
-            border-left-color: #2b6e3c;
-            color: #14532d;
-        }
+.check-btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+}
 
-        .explanation.partial {
-            background: #fff0e0;
-            border-left-color: #c2410c;
-            color: #7c2d12;
-        }
+.check-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
 
-        .explanation.fail {
-            background: #ffe6e6;
-            border-left-color: #b91c1c;
-            color: #991b1b;
-        }
+.explanation {
+  margin-top: 1.25rem;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+}
 
-        .nav-row {
-            display: flex;
-            gap: 14px;
-            justify-content: space-between;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
+.explanation.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #34D399;
+  border-left: 4px solid var(--color-success);
+}
 
-        .nav-btn, .reset-btn {
-            padding: 8px 18px;
-            border-radius: 40px;
-            border: 0.5px solid #cbd5e1;
-            background: white;
-            font-weight: 500;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.1s;
-        }
+.explanation.partial {
+  background: rgba(245, 158, 11, 0.1);
+  color: #FBBF24;
+  border-left: 4px solid var(--color-warning);
+}
 
-        .nav-btn:hover, .reset-btn:hover {
-            background: #f1f5f9;
-        }
+.explanation.fail {
+  background: rgba(239, 68, 68, 0.1);
+  color: #F87171;
+  border-left: 4px solid var(--color-error);
+}
 
-        .reset-btn {
-            color: #b91c1c;
-            border-color: #f1c0c0;
-        }
+.nav-row {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
 
-        .reset-btn:hover {
-            background: #fee2e2;
-        }
+.nav-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
 
-        .disabled {
-            cursor: default !important;
-            opacity: 0.5;
-        }
+.nav-btn:hover:not(:disabled) {
+  background: var(--bg-input);
+  border-color: var(--text-secondary);
+}
 
-        @media (max-width: 640px) {
-            .container {
-                padding: 1.2rem;
-            }
-            .qcard {
-                padding: 1.2rem;
-            }
-        }
-    </style>
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.reset-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: transparent;
+  color: var(--color-error);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.dashboard-card {
+  background: linear-gradient(135deg, #16223F 0%, var(--bg-card) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.dashboard-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #FFF;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-box {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-val {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin-bottom: 0.25rem;
+}
+
+.stat-lbl {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 14px;
+}
+
+.dashboard-table th, .dashboard-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-table th {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.dashboard-table td {
+  color: var(--text-primary);
+}
+
+.progress-track {
+  background: var(--bg-main);
+  border-radius: 6px;
+  height: 8px;
+  width: 100px;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.progress-fill {
+  background: var(--accent-blue);
+  height: 100%;
+  width: 0;
+}
+
+.disabled {
+  cursor: default !important;
+}
+
+@media(max-width: 480px) {
+  .header { display: flex; flex-direction: column; align-items: flex-start; }
+  .score-bar { width: 100%; justify-content: space-between; }
+  .nav-row { flex-direction: column; gap: 0.5rem; }
+  .nav-btn, .reset-btn { width: 100%; text-align: center; }
+}
+</style>
 </head>
 <body>
+
 <div class="container">
-    <div class="header">
-        <h2>📚 Imagerie médicale – CBCT · OPT · Scanner · IRM</h2>
-        <div class="score-bar">
-            <div class="score-chip" id="score-display">Score : 0 / 0</div>
-            <div class="score-chip" id="progress-display">Répondues : 0 / 120</div>
-        </div>
+  <div class="header">
+    <h2>QCMs — Endodontie</h2>
+    <div class="score-bar">
+      <div class="score-chip" id="score-display">Score : 0 / 0</div>
+      <div class="score-chip" id="progress-display">Répondues : 0 / 80</div>
     </div>
-    <div class="course-tabs" id="course-tabs"></div>
-    <div class="filter-row">
-        <button class="filter-btn active" data-filter="all">Toutes</button>
-        <button class="filter-btn" data-filter="unanswered">Non répondues</button>
-        <button class="filter-btn" data-filter="wrong">Erreurs</button>
-        <button class="filter-btn" data-filter="correct">Correctes</button>
-    </div>
-    <div class="progress-info" id="progress-info"></div>
-    <div id="qlist"></div>
-    <div class="nav-row">
-        <button class="nav-btn" id="prev-btn">← Précédent</button>
-        <button class="reset-btn" id="reset-btn">Réinitialiser le cours</button>
-        <button class="nav-btn" id="next-btn">Suivant →</button>
-    </div>
+  </div>
+  <div class="course-tabs" id="course-tabs"></div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setFilter('all')">Toutes</button>
+    <button class="filter-btn" onclick="setFilter('unanswered')">Non répondues</button>
+    <button class="filter-btn" onclick="setFilter('wrong')">Erreurs</button>
+    <button class="filter-btn" onclick="setFilter('correct')">Correctes</button>
+  </div>
+  <div class="progress-info" id="progress-info"></div>
+  <div id="qlist"></div>
+  <div class="nav-row">
+    <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">← Précédent</button>
+    <button class="reset-btn" onclick="resetCourse()">Réinitialiser</button>
+    <button class="nav-btn" id="next-btn" onclick="navigate(1)">Suivant →</button>
+  </div>
+  <div id="dashboard-zone"></div>
 </div>
 
 <script>
-    // --------------------------------------------------------------
-    // DONNÉES : 120 questions issues du code imagerie (inchangées)
-    // Adaptation au format : {courseId, q, opts, correct}
-    // Mapping cours : 0 -> Cone Beam, 1 -> OPT et TDM, 2 -> IRM, 3 -> Scanner
-    // --------------------------------------------------------------
-    const questionsRaw = [
-        // COURS 0 : Cone Beam (30 questions)
-        {course:"Cone Beam", q:"Quelle est la différence fondamentale entre la TDM conventionnelle et le CBCT concernant le faisceau de rayons X ?",opts:["La TDM utilise un faisceau conique","Le CBCT utilise un faisceau en éventail","Le CBCT utilise un faisceau conique","La TDM nécessite plusieurs rotations","Le CBCT nécessite de multiples rotations"],correct:[2]},
-        {course:"Cone Beam", q:"Parmi les caractéristiques de l'algorithme de reconstruction du CBCT, lesquelles sont vraies ?",opts:["Il s'agit de l'algorithme FDK (Feldkamp, Davis et Kress)","Il produit des voxels anisotropes","Il permet une navigation dans trois plans orthogonaux","Il ne permet pas de rendus volumiques 3D","Les voxels ont des dimensions identiques en x, y et z"],correct:[0,2,4]},
-        {course:"Cone Beam", q:"Quels sont les éléments constitutifs principaux d'un appareil CBCT ?",opts:["Un bras rotatif en forme de C","Un tube émettant un faisceau en éventail","Un détecteur bidimensionnel à écran plan","Un panneau de contrôle pour choisir le FOV","Une station informatique sans carte graphique"],correct:[0,2,3]},
-        {course:"Cone Beam", q:"Lors de l'acquisition d'un CBCT, la rotation de l'appareil autour de la tête dure généralement :",opts:["De 1 à 2 secondes","De 5 à 40 secondes","Plus de 60 secondes","De 6 à 30 secondes en moyenne","Plusieurs minutes"],correct:[1,3]},
-        {course:"Cone Beam", q:"Concernant le nombre de projections (raw data) en CBCT :",opts:["Il varie typiquement de 180 à plus de 1024 images","Un nombre élevé diminue la résolution","Un nombre élevé réduit les artefacts de reconstruction","Un nombre élevé augmente le temps d'examen","Un nombre élevé réduit la dose d'exposition"],correct:[0,2,3]},
-        {course:"Cone Beam", q:"En endodontie, le CBCT est principalement indiqué dans quelles situations ?",opts:["En première intention pour le dépistage carieux systématique","En petit champ (FOV réduit)","Pour évaluer les canaux radiculaires oblitérés","En cas de suspicion de résorption radiculaire","Pour évaluer une tumeur maligne infiltrante"],correct:[1,2,3]},
-        {course:"Cone Beam", q:"Pour le bilan préopératoire d'une extraction de dent de sagesse, le CBCT est prescrit lorsque le panoramique montre :",opts:["Une indépendance certaine du canal mandibulaire","Une superposition des apex avec le canal mandibulaire","Une dent complètement incluse sans rapport à risque","La présence d'un crochet apical péri-canalaire suspecté","Une inclusion haute avec mésioversion au maxillaire"],correct:[1,3,4]},
-        {course:"Cone Beam", q:"En orthodontie, le CBCT petit champ et haute résolution (voxels ≤ 125 µm) est utile pour diagnostiquer :",opts:["L'analyse globale pour chirurgie orthognathique","Une ankylose dentaire","Une fente palatine","Une hypercémentose débutante","Une résorption externe liée à une dent incluse"],correct:[1,3,4]},
-        {course:"Cone Beam", q:"Concernant l'évaluation des sinus et de l'ATM par CBCT :",opts:["Il est recommandé en cas de suspicion d'infection fongique sinusienne","Il constitue une alternative à la TDM pour la rhinosinusite chronique","Il détecte efficacement l'arthrose condylienne","Il est la méthode de choix pour évaluer les tissus mous de l'ATM","Il détecte la condensation des pièces osseuses de l'ATM"],correct:[1,2,4]},
-        {course:"Cone Beam", q:"Parmi les inconvénients majeurs du CBCT, on retrouve :",opts:["Une irradiation supérieure à celle d'un scanner conventionnel","Une faible résolution de contraste pour les tissus mous","L'incapacité d'explorer les pathologies tumorales infiltrantes","Des densités exprimées en Unités Hounsfield absolues fiables","Une résolution spatiale inférieure à celle de la TDM"],correct:[1,2]},
-        {course:"Cone Beam", q:"Quelles sont les causes et conséquences des artefacts cinétiques au CBCT ?",opts:["Ils sont liés aux restaurations métalliques","Ils sont dus au mouvement du patient (déglutition)","Ils créent des bandes noires et blanches","Ils provoquent un flou de l'image","Ils causent un dédoublement des structures"],correct:[1,3,4]},
-        {course:"Cone Beam", q:"L'artefact de durcissement du faisceau (beam hardening) se caractérise par :",opts:["Une atténuation différentielle des rayons X","Des zones hyperdenses artificielles près des structures denses","Un flou cinétique","La disparition de l'émail dentaire sur l'image","L'apparition de stries métalliques directes"],correct:[0,1]},
-        {course:"Cone Beam", q:"En comparaison avec le scanner conventionnel (CT), le CBCT :",opts:["Nécessite un renforcement spécifique du plancher","A un coût environ 3 à 5 fois inférieur","Dispose d'un équipement plus léger et compact","Possède des pixels plus grands","Peut s'installer facilement dans un cabinet dentaire"],correct:[1,2,4]},
-        {course:"Cone Beam", q:"La préparation et l'installation du patient pour un CBCT incluent :",opts:["Le retrait systématique des objets métalliques","Une position obligatoirement allongée","L'utilisation d'une mentonnière et d'un appui-tête","La réalisation d'un topogramme (scout view) pour le centrage","L'injection obligatoire d'un produit de contraste"],correct:[0,2,3]},
-        {course:"Cone Beam", q:"Comment l'algorithme de reconstruction gère-t-il les données brutes du CBCT ?",opts:["Il utilise une carte graphique basse performance","Il effectue une rétroprojection filtrée","Il reconstruit un volume anatomique en 3D","Il transforme des voxels isotropes en pixels anisotropes","Il encode les données finales en format DICOM"],correct:[1,2,4]},
-        {course:"Cone Beam", q:"Qu'est-ce qui influence la dose d'exposition et la résolution spatiale en CBCT ?",opts:["La taille du champ de vue (FOV)","Le temps d'apnée du patient","Le nombre de projections acquises","La température de la salle","Les paramètres kV et mA"],correct:[0,2,4]},
-        {course:"Cone Beam", q:"Dans le cadre de l'implantologie, l'intérêt du CBCT réside dans :",opts:["La visualisation optimale des volumes osseux","La mesure de la densité osseuse en UH strictes","L'appréciation de l'architecture de l'os spongieux","L'évaluation précise des rapports anatomiques","L'exploration détaillée des fascias musculaires"],correct:[0,2,3]},
-        {course:"Cone Beam", q:"À quel moment l'invention du CBCT dentaire a-t-elle eu lieu ?",opts:["En 1972 par Godfrey Hounsfield","En 1997 par Arai","Sous le nom initial d'Ortho-CT","En 1946 par Felix Bloch","En 2023"],correct:[1,2]},
-        {course:"Cone Beam", q:"Pour un CBCT à 'champ moyen' (8 cm) ou 'petit' (4-6 cm) en orthodontie, les indications comprennent :",opts:["L'analyse globale pour chirurgie orthognathique","Les inclusions dentaires et kystes associés","Les anomalies de nombre","Les fentes palatines","L'évaluation des tissus mous pharyngés"],correct:[1,2,3]},
-        {course:"Cone Beam", q:"Les valeurs de densité en CBCT sont :",opts:["Des Unités Hounsfield absolues","Codées sur 12 ou 14 bits en niveaux de gris","Relatives et dépendantes du FOV","Variantes selon la position du patient et les artefacts","Aussi précises que la TDM pour l'analyse quantitative de l'os"],correct:[1,2,3]},
-        {course:"Cone Beam", q:"Quels artefacts sont typiquement liés aux amalgames ou implants au CBCT ?",opts:["Artefacts de mouvement","Stries d'artéfacts métalliques","Bandes noires et blanches","Dédoublement de l'image","Artefact de durcissement du faisceau périphérique"],correct:[1,2,4]},
-        {course:"Cone Beam", q:"Laquelle de ces affirmations sur le capteur d'un CBCT est exacte ?",opts:["Il se trouve du même côté que le tube à rayons X","C'est un détecteur bidimensionnel à écran plat","Il capture l'image en effectuant de multiples rotations","Il intercepte le faisceau conique après la traversée du patient","Il transforme les données numériques en signaux analogiques"],correct:[1,3]},
-        {course:"Cone Beam", q:"Lors d'un examen CBCT, le topogramme (scout view) sert principalement à :",opts:["Détecter les caries interproximales","Centrer précisément l'examen","Définir la zone exacte d'exploration (FOV)","Visualiser les tissus mous","Créer le rendu volumique final"],correct:[1,2]},
-        {course:"Cone Beam", q:"En CBCT, quelles sont les caractéristiques des voxels ?",opts:["Ils sont anisotropes","Leurs dimensions x, y et z sont strictement identiques","Leur isotropie empêche la reconstruction curviligne","Ils permettent des reconstructions multiplanaires sans déformation","Leur taille n'affecte pas la résolution"],correct:[1,3]},
-        {course:"Cone Beam", q:"Quelles recommandations s'appliquent pour les caries dentaires au CBCT ?",opts:["C'est l'examen de dépistage de première intention","Les radiographies rétro-coronaires (bite wing) restent supérieures","Elles doivent être ignorées lors de l'interprétation d'un CBCT implantologique","Elles doivent être signalées si découvertes fortuitement","Le CBCT remplace totalement le bite wing"],correct:[1,3]},
-        {course:"Cone Beam", q:"Un petit champ (FOV) en CBCT a pour conséquence :",opts:["Une résolution spatiale augmentée","Une résolution spatiale diminuée","Une dose d'irradiation augmentée pour le patient","Une dose d'irradiation diminuée pour le patient","L'impossibilité de voir la structure fine de la dent"],correct:[0,3]},
-        {course:"Cone Beam", q:"Concernant l'exploration des lésions kystiques par CBCT :",opts:["Il permet d'identifier les kystes odontogènes de grande taille","Il différencie parfaitement le contenu liquidien d'un tissu tumoral malin","Il est formellement indiqué pour explorer une suspicion de malignité","Il identifie les tumeurs bénignes calcifiées","Il montre très bien l'extension osseuse de la lésion"],correct:[0,3,4]},
-        {course:"Cone Beam", q:"Comment se comporte le faisceau de rayons X dans le CBCT ?",opts:["Il est continu ou pulsé","Il couvre tout l'organe en une seule rotation complète","Il irradie uniquement le plan transversal d'une coupe","Il diverge en forme de cône depuis le tube","Il nécessite le mouvement du lit du patient"],correct:[0,1,3]},
-        {course:"Cone Beam", q:"Lors du bilan d'une dent de sagesse mandibulaire au CBCT, le praticien cherche à évaluer :",opts:["La morphologie radiculaire précise de la dent","L'épaisseur de la gencive marginale","Les rapports exacts avec la 2ème molaire","L'intégrité de la corticale du canal mandibulaire","Le flux sanguin intra-pulpaire"],correct:[0,2,3]},
-        {course:"Cone Beam", q:"Le volume reconstruit par le CBCT permet de générer :",opts:["Des coupes axiales","Des coupes coronales","Des coupes sagittales","Des courbes curvilignes (panoramiques reconstruites)","Des reconstructions orthogonales à la crête"],correct:[0,1,2,3,4]},
-        // COURS 1 : OPT et TDM (30 questions)
-        {course:"OPT et TDM", q:"Le principe de l'orthopantomogramme (OPT) repose sur :",opts:["La tomographie rotative à faisceau conique","La tomographie rotative à faisceau étroit","L'acquisition d'images 3D natives","Un axe focal net avec un flou de balayage externe","L'émission d'un champ magnétique puissant"],correct:[1,3]},
-        {course:"OPT et TDM", q:"Parmi les critères de qualité d'un OPT, on recherche :",opts:["La visibilité parfaite des deux condyles mandibulaires","Une asymétrie entre les branches montantes pour l'effet de profondeur","Le palais dur projeté au-dessus des apex maxillaires","Une bande radioclaire sombre sur les apex si la langue est bien placée","L'absence d'artefacts métalliques"],correct:[0,2,4]},
-        {course:"OPT et TDM", q:"Si le patient n'applique pas sa langue contre le palais lors d'un OPT :",opts:["Une bande radio-opaque masque les dents mandibulaires","Une bande radioclaire (air pharyngé) barre les apex maxillaires","Cela simule de fausses lésions de lyse apicale","Le contraste global du cliché est amélioré","Une image fantôme de la langue apparaît"],correct:[1,2]},
-        {course:"OPT et TDM", q:"Concernant l'image fantôme sur un OPT :",opts:["Elle provient d'un objet de faible densité","Elle est générée par un objet situé en dehors du plan focal","Elle se projette de façon nette et précise","Elle se projette du côté opposé à sa position réelle","Elle apparaît surélevée et floue"],correct:[1,3,4]},
-        {course:"OPT et TDM", q:"Dans la méthodologie de lecture d'un OPT, le balayage de la région mandibulaire permet d'évaluer :",opts:["Les apophyses styloïdes","Le bord antérieur et postérieur de la branche montante","Le foramen mentonnier","L'échancrure sigmoïde et le coroné","La suture inter-maxillaire"],correct:[1,2,3]},
-        {course:"OPT et TDM", q:"Au scanner (TDM), la 'fenêtre osseuse' est essentielle pour analyser :",opts:["La trame osseuse trabéculaire","La graisse infra-temporale","La continuité des tables corticales","Les muscles masticateurs","Les structures dentaires minéralisées"],correct:[0,2,4]},
-        {course:"OPT et TDM", q:"La classification de Lodwick décrit l'ostéolyse géographique (Type I) comme :",opts:["Une lésion très agressive","IA : contours nets avec liseré d'ostéosclérose","IB : contours nets sans liseré","IC : contours mal visibles","Une lésion perméative"],correct:[1,2,3]},
-        {course:"OPT et TDM", q:"Un processus pathologique malin infiltrant à la mandibule se caractérise radiologiquement par :",opts:["Une ostéolyse mitée ou perméative","Des limites floues et mal définies","Une soufflure harmonique régulière de la corticale","Une réaction périostée spiculée (en feu d'herbe) ou un éperon de Codman","Une rhizalyse extrêmement nette et régulière des dents adjacentes"],correct:[0,1,3]},
-        {course:"OPT et TDM", q:"Le Signe de Garrington, observable en imagerie, correspond à :",opts:["Un élargissement symétrique du ligament parodontal","Un élargissement asymétrique de l'espace ligamentaire","La destruction de la lamina dura associée","Une indication d'ankylose dentaire bénigne","Un indicateur précoce d'infiltration maligne"],correct:[1,2,4]},
-        {course:"OPT et TDM", q:"Sur le plan directionnel dentaire, le terme 'mésial' signifie :",opts:["Vers le fond de la bouche","Vers la ligne médiane de l'arcade","Du côté de la langue","La surface de mastication","La face externe visible"],correct:[1]},
-        {course:"OPT et TDM", q:"Une lacune située sous le canal mandibulaire, près de l'angle, bien limitée et asymptomatique correspond typiquement à :",opts:["Un kyste radiculaire","Un améloblastome multiloculaire","La lacune de Stafne (défaut cortical statique)","Un kératokyste","Une invagination de la glande sous-maxillaire"],correct:[2,4]},
-        {course:"OPT et TDM", q:"Le kyste dentigère (folliculaire) présente les caractéristiques suivantes :",opts:["C'est un kyste inflammatoire","Il entoure la couronne d'une dent incluse","Son insertion se fait typiquement au collet anatomique de la dent","Il ne provoque jamais de soufflure corticale","Il siège souvent au niveau des 3èmes molaires mandibulaires"],correct:[1,2,4]},
-        {course:"OPT et TDM", q:"Quels sont les signes radiologiques du Kératokyste Odontogène (KCO) au scanner ?",opts:["Une croissance axiale longitudinale (pousse en longueur)","Une soufflure vestibulo-linguale massive d'emblée","Une lacune souvent pluriloculaire en 'bulles de savon'","Des bords festonnés bien limités par un liseré","Une continuité corticale maintenue longtemps malgré la taille"],correct:[0,3,4]},
-        {course:"OPT et TDM", q:"L'améloblastome est reconnu radiologiquement par :",opts:["Son aspect strictement monogéodique sans expansion","Sa croissance tridimensionnelle massive et déformante","Un aspect multiloculaire en 'nid d'abeilles' ou 'bulles de savon'","Une rhizalyse abrupte des racines dentaires","La présence de nodules charnus muraux prenant le contraste en IRM/TDM"],correct:[1,2,3,4]},
-        {course:"OPT et TDM", q:"Le syndrome de Gorlin-Goltz est suspecté devant :",opts:["Des cémentomes multiples","Des kératokystes odontogènes multiples","Des kystes radiculaires à répétition","Des calcifications précoces de la faux du cerveau","Des carcinomes basocellulaires cutanés"],correct:[1,3,4]},
-        {course:"OPT et TDM", q:"Quelles lésions sont considérées comme d'origine NON odontogène ?",opts:["La lacune de Stafne","Le kyste folliculaire","Le kyste du canal naso-palatin","Le cémentoblastome","Le kyste osseux simple (traumatique)"],correct:[0,2,4]},
-        {course:"OPT et TDM", q:"Le cémentome (dysplasie cémento-osseuse) au stade mature se caractérise par :",opts:["Une ostéolyse massive perméative","Une masse radio-opaque hyperdense unie à la racine","Un fin liseré radioclair périphérique continu l'isolant de l'os sain","Une rupture corticale avec envahissement","Une prédilection pour les femmes d'âge moyen"],correct:[1,2,4]},
-        {course:"OPT et TDM", q:"Le kyste radiculaire se forme généralement :",opts:["Autour d'une couronne de dent saine incluse","Suite à la nécrose pulpaire (infection)","Par stimulation des débris épithéliaux de Malassez","A cause du virus HPV","Au centre d'une lacune statique de Stafne"],correct:[1,2]},
-        {course:"OPT et TDM", q:"En imagerie, l'aspect de 'dent flottante' est caractéristique :",opts:["D'un kyste dentigère","D'une maladie parodontale terminale ou d'un processus malin infiltrant","D'un cémentome mature","D'un améloblastome localisé","De la destruction complète de l'os alvéolaire d'ancrage"],correct:[1,4]},
-        {course:"OPT et TDM", q:"Dans la sémiologie d'un processus bénin, on observe typiquement :",opts:["Une corticale rompue","Des limites nettes géographiques (Lodwick IA/IB)","Un refoulement et une divergence des axes radiculaires","Une rhizalyse nette et régulière","Une réaction périostée en bulbe d'oignon"],correct:[1,2,3]},
-        {course:"OPT et TDM", q:"L'espace desmodontal (ligament parodontal) normal à l'OPT apparaît comme :",opts:["Une ligne radio-opaque épaisse","Un espace radioclair fin","Entouré par une ligne blanche appelée lamina dura","Absolument invisible","Hyperdense à sa périphérie apicale uniquement"],correct:[1,2]},
-        {course:"OPT et TDM", q:"Le logiciel DentaScan d'un scanner permet de :",opts:["Faire une imagerie par résonance magnétique","Générer des coupes perpendiculaires à l'arcade","Mesurer avec une très grande précision l'épaisseur osseuse disponible","Se passer totalement d'irradiation","Apprécier la distance entre la crête et le canal alvéolaire inférieur"],correct:[1,2,4]},
-        {course:"OPT et TDM", q:"Une lésion centrée sur la couronne d'une dent et située au-dessus du canal mandibulaire est le plus souvent :",opts:["D'origine odontogénique","Une métastase d'un cancer profond","Une lacune de Stafne","Une ostéomyélite chronique","Un kyste dentigère si elle entoure la couronne d'une dent incluse"],correct:[0,4]},
-        {course:"OPT et TDM", q:"Parmi ces images radio-opaques, lesquelles n'ont aucun rapport direct avec la dent ?",opts:["Cémentoblastome","Ostéome","Odontome composé","Ostéite condensante périradiculaire","Torus mandibulaire (exostose)"],correct:[1,4]},
-        {course:"OPT et TDM", q:"Une réaction périostée plurilamellaire ou spiculée est le signe d'un processus :",opts:["Bénin à croissance très lente","Hautement agressif ou malin","Kystique inflammatoire simple","Odontogénique exclusivement","Ostéosarcomateux par exemple"],correct:[1,4]},
-        {course:"OPT et TDM", q:"Une lacune osseuse dont les contours sont flous, mal définis et d'aspect mité traduit :",opts:["Une évolutivité lente (Lodwick IA)","Un processus potentiellement agressif (Lodwick Type II)","Un kyste folliculaire non compliqué","Une destruction osseuse rapide sans liseré de condensation","Une lacune statique de Stafne"],correct:[1,3]},
-        {course:"OPT et TDM", q:"Comment se présente l'ostéolyse sur une radiographie (OPT) ?",opts:["Par une disparition plus ou moins prononcée de l'os","Par une radio-opacité marquée","Par une image radioclaire (noire/sombre)","Par une condensation focale","Par un liseré ostéosclérotique exclusif"],correct:[0,2]},
-        {course:"OPT et TDM", q:"Une lésion mixte (lytique et condensante) peut se rencontrer dans :",opts:["Le kyste radiculaire pur","Le fibrome ossifiant","La dysplasie cémento-osseuse en phase intermédiaire","Le kyste osseux simple","L'ostéosarcome ostéogénique"],correct:[1,2,4]},
-        {course:"OPT et TDM", q:"La région de l'oropharynx et du rhinopharynx sur un OPT correspond à :",opts:["Des structures osseuses hyperdenses","Des clartés aériques pouvant masquer certaines zones osseuses","Des opacités liées aux tissus mous","La cavité glénoïde","Des espaces qui nécessitent de plaquer la langue au palais pour les éviter"],correct:[1,4]},
-        {course:"OPT et TDM", q:"Lors de l'analyse d'un kyste inflammatoire apical à la TDM, on s'attend à observer :",opts:["Une densité liquidienne pure (10-30 UH)","Une densité très élevée (>500 UH)","Une lésion homogène délimitée par ostéosclérose","Une extension perméative massive","L'absence totale de corticalisation (Lodwick III)"],correct:[0,2]},
-        // COURS 2 : IRM (30 questions)
-        {course:"IRM", q:"Quels sont les avantages majeurs de l'IRM par rapport au scanner en dentisterie ?",opts:["Elle utilise des rayons X à très faible dose","Elle offre une absence totale de radiations ionisantes","Elle possède un excellent contraste pour les tissus mous","Elle est la référence pour l'étude de l'os cortical","Elle est très abordable et toujours prescrite en première intention"],correct:[1,2]},
-        {course:"IRM", q:"Le principe de polarisation en IRM consiste en :",opts:["L'alignement des spins des protons d'hydrogène selon le champ magnétique B0","La création d'une aimantation longitudinale (Mz)","L'émission d'une onde radiofréquence B1","L'absorption d'énergie par les électrons","Le basculement direct dans le plan transversal"],correct:[0,1]},
-        {course:"IRM", q:"La fréquence de précession des protons autour de l'axe de B0 s'appelle :",opts:["La fréquence de Faraday","La fréquence de Larmor","La fréquence de Hounsfield","La résonance de Lauterbur","La fréquence de Bloch"],correct:[1]},
-        {course:"IRM", q:"Le paramètre TE (Temps d'Écho) en IRM correspond à :",opts:["L'intervalle entre deux excitations successives","L'intervalle entre l'excitation et la mesure du signal","La vitesse de rotation des protons","La durée totale de l'examen","Le temps de suppression de la graisse"],correct:[1]},
-        {course:"IRM", q:"Concernant les séquences pondérées en T1 :",opts:["Le TR et le TE sont courts","L'anatomie et la graisse y apparaissent en blanc (intense)","L'eau et les liquides y apparaissent en blanc","Elles sont idéales pour voir l'œdème inflammatoire","Elles fournissent un signal noir pour la graisse"],correct:[0,1]},
-        {course:"IRM", q:"En séquence T2 à l'IRM :",opts:["Le TR et le TE sont longs","La graisse est noire","L'eau, le liquide et l'œdème apparaissent en blanc (intense)","L'os cortical apparaît très blanc","C'est la séquence reine pour repérer les inflammations et épanchements liquidiens"],correct:[0,2,4]},
-        {course:"IRM", q:"Quelle séquence IRM est considérée comme le meilleur compromis pour étudier l'ATM ?",opts:["La séquence T1 stricte","La séquence T2 Fat-Sat","La séquence Densité Protonique (DP)","La séquence STIR uniquement","Le DentaScan"],correct:[2]},
-        {course:"IRM", q:"La séquence STIR ou Fat-Sat a pour propriété de :",opts:["Mettre la graisse en évidence avec un signal intense","Supprimer le signal de la graisse (apparaît noire)","Faciliter la visualisation des phénomènes inflammatoires et de l'œdème","Rendre l'eau totalement noire","Être inexploitable en pathologie infectieuse"],correct:[1,2]},
-        {course:"IRM", q:"Parmi les éléments constitutifs de l'appareillage IRM, on trouve :",opts:["Un aimant supraconducteur générant B0 (souvent 1,5 ou 3 Tesla)","Un tube à rayons X rotatif","Une cage de Faraday pour protéger des interférences","Des antennes radio-fréquences","Un détecteur à écran plat amorphe"],correct:[0,2,3]},
-        {course:"IRM", q:"L'IRM de l'ATM permet d'évaluer de manière dynamique (bouche ouverte/fermée) :",opts:["L'épaisseur exacte de la table osseuse vestibulaire","La position et la morphologie du disque articulaire","La luxation discale avec ou sans réduction","Les kystes radiculaires des incisives","Les éventuelles ankyloses osseuses pures"],correct:[1,2]},
-        {course:"IRM", q:"Pour le bilan d'un cancer de la langue, l'IRM :",opts:["Est moins performante que le CBCT","Offre une meilleure caractérisation de l'extension locale tissulaire que la TDM","Permet de bien délimiter la tumeur par rapport aux muscles","Est formellement contre-indiquée","Nécessite obligatoirement un marqueur iodé"],correct:[1,2]},
-        {course:"IRM", q:"Quelles sont les contre-indications ABSOLUES de l'IRM ?",opts:["Insuffisance rénale sévère","Présence d'un pacemaker non compatible","Clips anévrismaux ferromagnétiques intracrâniens","Claustrophobie","Corps étrangers métalliques intra-oculaires"],correct:[1,2,4]},
-        {course:"IRM", q:"Quelles sont les contre-indications RELATIVES de l'IRM ?",opts:["Insuffisance rénale sévère (si injection de Gadolinium)","Allergie connue au Gadolinium","Grossesse au 1er trimestre","Implant cochléaire ancien","Stent cardiaque posé il y a 10 ans"],correct:[0,1,2]},
-        {course:"IRM", q:"L'avancée technologique UTE (Ultra Short Echo Time) en IRM permet :",opts:["De reconstruire des images de type orthopantomogramme (IRM-OPG)","De rendre l'examen totalement silencieux","Une meilleure visualisation directe des structures osseuses et dentaires","De scanner un patient porteur d'un pacemaker","De se passer définitivement d'antennes de surface"],correct:[0,2]},
-        {course:"IRM", q:"Quels sont les inconvénients liés au déroulement de l'examen IRM pour le patient ?",opts:["Irradiation forte et accumulée","Bruit acoustique important durant les séquences","Durée d'examen assez longue (20 à 45 min)","Sensation de claustrophobie dans le tunnel","Chaleur intense due aux rayons X"],correct:[1,2,3]},
-        {course:"IRM", q:"La résonance magnétique nucléaire a été découverte en 1946 par :",opts:["Godfrey Hounsfield","Felix Bloch","Edward Purcell","Paul Lauterbur","Wilhelm Röntgen"],correct:[1,2]},
-        {course:"IRM", q:"Que se passe-t-il lors de la phase de relaxation en IRM ?",opts:["Les protons reviennent à leur état d'équilibre","Ils émettent de l'énergie sous forme d'onde radiofréquence","L'aimantation bascule dans le plan transversal","Le signal émis est capté par les antennes","Les spins s'alignent pour la première fois avec B0"],correct:[0,1,3]},
-        {course:"IRM", q:"Lors d'une luxation discale de l'ATM avec réduction :",opts:["Bouche fermée, le disque est luxé en arrière","Bouche fermée, le disque est luxé en avant du condyle","Bouche ouverte, le condyle glisse et recapture le disque","Cela est souvent responsable d'un 'clac' articulaire audible","Le condyle est fracturé"],correct:[1,2,3]},
-        {course:"IRM", q:"Pour l'imagerie du nerf alvéolaire inférieur ou du trijumeau (recherche de neurinome), l'examen de choix est :",opts:["L'OPT","Le Cone Beam","L'IRM","La radiographie rétroalvéolaire","Le scanner non injecté"],correct:[2]},
-        {course:"IRM", q:"Le contraste de l'IRM pour l'os trabéculaire et cortical comparativement au CBCT est :",opts:["Très supérieur","Faible","Strictement identique","Excellent","Inexistant (noir absolu)"],correct:[1]},
-        {course:"IRM", q:"En IRM, si une lésion apparaît très blanche (hyperintense) en T2 et s'assombrit en T1, elle contient probablement :",opts:["De la graisse dense","De l'os très corticalisé","Une forte proportion d'eau, de liquide ou d'œdème","Un alliage métallique lourd","De l'air"],correct:[2]},
-        {course:"IRM", q:"L'indication privilégiée de l'IRM maxillo-faciale regroupe :",opts:["Les fêlures dentaires coronaires","Les caries débutantes","La pathologie de l'ATM, des tissus mous et des nerfs","Les bilans infectieux inflammatoires complexes (cellulites profondes)","Les planifications canalaires fines"],correct:[2,3]},
-        {course:"IRM", q:"Pourquoi l'examen clinique est-il jugé indispensable avant de prescrire une IRM ?",opts:["Pour ajuster la dose de rayons X","Pour permettre au radiologue d'adapter le protocole, le FOV et les séquences","Pour déterminer s'il faut utiliser le champ B0 ou non","Car le type d'antenne dépend de la température du patient","Pour vérifier que le patient peut rester en apnée"],correct:[1]},
-        {course:"IRM", q:"Le signal de la graisse en IRM :",opts:["Est hyperintense (blanc) en T1","Est hypointense (noir) en T1","Peut être annulé volontairement grâce à la séquence Fat-Sat","Est hyperintense (blanc) en STIR","Masque toujours l'œdème en T1"],correct:[0,2]},
-        {course:"IRM", q:"Qu'est-ce qu'une cage de Faraday en IRM ?",opts:["Le tube qui génère le faisceau conique","Un revêtement isolant de la pièce contre les ondes électromagnétiques externes","Le lit motorisé du patient","Le détecteur d'images 3D","L'aimant principal supraconducteur"],correct:[1]},
-        {course:"IRM", q:"Le coût et l'accessibilité de l'IRM par rapport au CBCT sont :",opts:["Moindres (IRM est moins chère)","Plus élevés et d'accès plus difficile","Équivalents","L'IRM est présente dans la majorité des cabinets dentaires","Totalement remboursés de manière illimitée"],correct:[1]},
-        {course:"IRM", q:"Dans quel cas l'injection de Gadolinium est-elle potentiellement risquée en IRM ?",opts:["Allergie avérée à l'iode pure","Insuffisance rénale sévère","Patient porteur d'une prothèse de hanche en titane","Allergie connue au Gadolinium","Patient asthmatique léger sans antécédent d'allergie de contraste"],correct:[1,3]},
-        {course:"IRM", q:"Le 'clac' articulaire de l'ATM lors de l'ouverture de la bouche traduit typiquement :",opts:["Une luxation discale sans réduction","Une luxation discale avec réduction (recapture du disque)","Une fracture du condyle","Une ankylose totale","Une perforation du ménisque"],correct:[1]},
-        {course:"IRM", q:"Lors du passage de l'onde radiofréquence B1 en IRM, que se passe-t-il physiquement ?",opts:["Les protons absorbent l'énergie B1","L'aimantation Mz est complètement détruite","L'aimantation bascule de l'axe longitudinal vers le plan transversal (Mxy)","Le champ B0 est coupé","Des rayons X sont émis en retour"],correct:[0,2]},
-        {course:"IRM", q:"Paul Lauterbur a marqué l'histoire de l'IRM en 1973 en :",opts:["Découvrant la résonance des spins","Produisant la première image 2D par résonance magnétique","Créant la séquence T2","Inventant l'échelle de Hounsfield","Développant le CBCT"],correct:[1]},
-        // COURS 3 : Scanner (30 questions)
-        {course:"Scanner", q:"Le principe physique du Scanner (TDM) utilise :",opts:["Des ondes radiofréquences et un champ magnétique","Des rayons X atténués lors de la traversée des tissus","La détection des protons d'hydrogène","Un faisceau de rayons X en éventail ou hélicoïdal","Des détecteurs sous forme de barrettes"],correct:[1,3,4]},
-        {course:"Scanner", q:"Comparativement au CBCT, la tomodensitométrie conventionnelle (TDM) offre :",opts:["Une irradiation beaucoup plus faible","Une excellente résolution en contraste pour les tissus mous","Une indication de première intention en implantologie standard","Une utilisation courante directement dans les cabinets dentaires","Une plus forte susceptibilité aux artéfacts métalliques (stries importantes)"],correct:[1,4]},
-        {course:"Scanner", q:"L'échelle de Hounsfield (UH) en TDM attribue conventionnellement :",opts:["La valeur 0 à l'air","La valeur 0 à l'eau","La valeur -1000 à l'air","La valeur +1000 aux tissus mous","Des valeurs de +800 à +2000 pour l'os compact et l'émail"],correct:[1,2,4]},
-        {course:"Scanner", q:"En TDM, les tissus adipeux (graisse) présentent une densité :",opts:["Isodense par rapport à l'os","Hypodense (valeur négative, environ -100 UH)","Hyperdense (+30 à +70 UH)","Similaire à celle de l'air (-1000 UH)","Généralement autour de 0 UH"],correct:[1]},
-        {course:"Scanner", q:"Concernant le fenêtrage parenchymateux en TDM, il sert principalement à analyser :",opts:["La trame osseuse fine","La graisse infra-temporale et les espaces profonds","Les muscles masticateurs","Les glandes salivaires","La continuité des corticales mandibulaires"],correct:[1,2,3]},
-        {course:"Scanner", q:"Lors d'un scanner injecté, le produit de contraste utilisé est :",opts:["Le Gadolinium","Le Baryum","Un produit iodé (PDCI)","De l'air injecté en intra-veineux","Radioactif (Technétium)"],correct:[2]},
-        {course:"Scanner", q:"Les indications principales du scanner maxillo-facial incluent :",opts:["Le bilan carieux de routine","Le bilan d'extension des tumeurs malignes (carcinomes)","Les traumatismes complexes (fracture du massif facial)","Les cellulites cervico-faciales avec recherche d'abcès","L'étude dynamique du disque de l'ATM"],correct:[1,2,3]},
-        {course:"Scanner", q:"Pour un patient diabétique sous Metformine devant recevoir un scanner avec injection :",opts:["Il n'y a aucune précaution particulière","Il y a un risque d'acidose lactique","La Metformine doit être arrêtée le jour de l'examen et 48h après","L'examen est définitivement contre-indiqué","Un contrôle de la créatininémie est recommandé après"],correct:[1,2,4]},
-        {course:"Scanner", q:"Que signifie l'aspect 'hyperdense' sur une image tomodensitométrique ?",opts:["La structure est plus sombre que le tissu environnant","La structure est plus blanche que le tissu environnant","Il s'agit typiquement d'une collection liquidienne (abcès)","Il s'agit typiquement de tissu osseux cortical ou d'émail","Il s'agit d'une zone d'ostéolyse"],correct:[1,3]},
-        {course:"Scanner", q:"L'artefact métallique au scanner provoque typiquement :",opts:["Un flou cinétique général","Des bandes ou stries hyperdenses rayonnantes","Une disparition totale du tissu mou","Une transformation de l'échelle de Hounsfield","Des faux positifs de kystes aériques"],correct:[1]},
-        {course:"Scanner", q:"Parmi les contre-indications à l'injection de produit de contraste iodé (PDCI), on retient :",opts:["L'allergie connue aux PDCI","Le port d'un pacemaker","L'insuffisance rénale sévère","La claustrophobie","La grossesse (contre-indication absolue indépendante de l'injection)"],correct:[0,2]},
-        {course:"Scanner", q:"Au cours du processus TDM, le signal mesuré par les détecteurs est :",opts:["L'atténuation du rayonnement après sa traversée du corps","L'émission radiofréquence des protons","La réflexion des ultrasons","Converti en données numériques pour être reconstruit","Reconstruit en matrice de voxels 3D"],correct:[0,3,4]},
-        {course:"Scanner", q:"La grossesse représente quelle contre-indication pour le scanner maxillo-facial ?",opts:["Absolue, même en cas d'urgence vitale","Relative mais majeure, surtout au 1er trimestre","Relative uniquement au 3ème trimestre","Il est conseillé de mettre un tablier de plomb si l'examen est indispensable","Aucune contre-indication si le crâne seul est scanné"],correct:[1,3]},
-        {course:"Scanner", q:"Quelles structures sont très bien visualisées dans la fenêtre osseuse du scanner ?",opts:["La pulpe dentaire","La trame osseuse trabéculaire","La continuité de la corticale osseuse","Le canal mandibulaire","Le muscle masséter"],correct:[1,2,3]},
-        {course:"Scanner", q:"Le principe ALARA en imagerie radiologique signifie :",opts:["As Long As Radiography Allows","Maintenir l'irradiation aussi basse que raisonnablement possible","Une norme de fenêtrage automatique","As Low As Reasonably Achievable","L'interdiction des scanners multibarrettes"],correct:[1,3]},
-        {course:"Scanner", q:"Dans quel cas précis le scanner est-il préféré au CBCT en odontologie ?",opts:["Pose d'un implant unitaire simple","Recherche d'un canal radiculaire accessoire","Bilan d'une cellulite cervico-faciale s'étendant au cou","Analyse d'une tumeur maligne avec invasion des parties molles","Évaluation de la position d'une dent de sagesse sans signe infectieux"],correct:[2,3]},
-        {course:"Scanner", q:"Lors de la réalisation d'un scanner, le patient :",opts:["Doit rester en apnée prolongée pendant plusieurs minutes","Passe très rapidement dans le gantry (quelques secondes)","Est allongé en décubitus dorsal","A généralement le plan d'occlusion perpendiculaire à la table","Est debout dans le statif"],correct:[1,2,3]},
-        {course:"Scanner", q:"Les post-traitements possibles à partir d'une acquisition scanner incluent :",opts:["Des reconstructions axiales, coronales et sagittales (MPR)","L'annulation du signal de l'eau (Fat-Sat)","Des reconstructions 3D (Volume rendering, MIP)","Le DentaScan (coupes perpendiculaires)","La mesure du temps de relaxation T2"],correct:[0,2,3]},
-        {course:"Scanner", q:"Concernant l'ostéosarcome au scanner, on s'attend typiquement à trouver :",opts:["Une lésion purement liquidienne uniloculaire","Une masse mixte lytique et condensante","Une rupture de la corticale osseuse","Une réaction périostée spiculée","Un respect total de l'os environnant"],correct:[1,2,3]},
-        {course:"Scanner", q:"Le sang aigu récent au scanner, sans injection, se situe dans quelle plage de densité ?",opts:["-1000 UH","Entre 0 et 20 UH","Entre 60 et 90 UH (hyperdense par rapport au liquide simple)","Entre 300 et 800 UH","> 1000 UH"],correct:[2]},
-        {course:"Scanner", q:"Qu'appelle-t-on 'scanner multibarrettes' ?",opts:["Un scanner qui utilise plusieurs aimants","Un appareil possédant plusieurs rangées de détecteurs","Une technique qui permet une acquisition plus rapide","Un scanner qui n'utilise pas de rayons X","Un scanner à haute résolution isotrope utilisé sans tube rotatif"],correct:[1,2]},
-        {course:"Scanner", q:"Le logiciel DentaScan est particulièrement précieux pour :",opts:["La recherche de caries précoces","Apprécier la distance exacte entre le rebord de crête et le canal alvéolaire inférieur","Générer des coupes orthogonales (transaxiales) le long de l'arcade","Étudier l'inflammation des tissus gingivaux","Réaliser des sialographies virtuelles"],correct:[1,2]},
-        {course:"Scanner", q:"Une zone isodense au scanner :",opts:["Est noire, comme l'air","A la même densité (le même gris) que le tissu adjacent","Est difficile à distinguer sans injection de produit de contraste","Est caractéristique de l'émail dentaire pur","Apparaît toujours blanche"],correct:[1,2]},
-        {course:"Scanner", q:"Le diagnostic de pathologie des glandes salivaires au scanner peut mettre en évidence :",opts:["Des lithiases canalaires (calculs radio-opaques)","Des tumeurs parotidiennes (masse hypodense ou prenant le contraste)","Des kystes radiculaires","Un élargissement de l'espace desmodontal","Une infection des muscles masticateurs adjacents"],correct:[0,1]},
-        {course:"Scanner", q:"Si un patient est agité ou déglutit pendant le balayage scanner :",opts:["L'image présentera des stries hyperdenses","L'image sera nette mais sous-exposée","L'image présentera un artefact cinétique (flou)","Le faisceau durcira localement","Un dédoublement des structures osseuses peut survenir"],correct:[2,4]},
-        {course:"Scanner", q:"Un abcès dentaire compliqué d'une cellulite au scanner injecté se présentera souvent comme :",opts:["Une collection liquidienne centrale (hypodense)","Une prise de contraste (hyperdense) en anneau de sa coque périphérique","Un nodule purement osseux (+1000 UH)","Une infiltration de la graisse sous-cutanée","Une image strictement identique au tissu musculaire sain"],correct:[0,1,3]},
-        {course:"Scanner", q:"L'équipement de la salle de scanner inclut obligatoirement :",opts:["Une cage de Faraday","Un pupitre de commande protégé par une vitre plombée","Le statif (gantry)","La table motorisée","Des bobines de gradient radiofréquence"],correct:[1,2,3]},
-        {course:"Scanner", q:"Parmi ces pathologies traumatiques, le scanner est l'examen de choix pour :",opts:["Les microfêlures de l'émail","Les fractures complexes du tiers moyen de la face","L'évaluation du plancher de l'orbite après un choc","La luxation méniscale de l'ATM","Les fractures basi-crâniennes associées"],correct:[1,2,4]},
-        {course:"Scanner", q:"Pour un bilan pré-chirurgical implantaire d'un seul édentement, quelle est la recommandation actuelle ?",opts:["Le Scanner en première intention","Le CBCT en première intention car moins irradiant et précis pour l'os","L'IRM pour vérifier la gencive","Le panoramique seul suffit toujours","L'échographie dentaire"],correct:[1]},
-        {course:"Scanner", q:"Une lésion qui absorbe beaucoup de rayons X au scanner sera codée :",opts:["Avec une valeur de Hounsfield négative","Avec une valeur de Hounsfield très élevée (positive)","En noir (clarté)","En blanc (opacité/hyperdensité)","Comme une collection aérique"],correct:[1,3]}
-    ];
+const COURSES = [
+  {id:0, name:"Cavité d'accès", short:"Cavité d'accès"},
+  {id:1, name:"Techniques d'obturation", short:"Techniques d'obturation"},
+  {id:2, name:"Thérapeutique des pulpites", short:"Thérapeutique des pulpites"},
+  {id:3, name:"Instrumentation endo", short:"Instrumentation endo"}
+];
 
-    // Transformation en ALL_QUESTIONS avec id de cours
-    const courseMap = {
-        "Cone Beam": 0,
-        "OPT et TDM": 1,
-        "IRM": 2,
-        "Scanner": 3
+const ALL_QUESTIONS = [
+{course:0,q:"Concernant les objectifs de la cavité d'accès endodontique (CAE), quelles propositions sont exactes ?",opts:["Elle doit permettre un passage direct à l'orifice des canaux","Elle doit obligatoirement être réalisée avec spray pour éviter la surchauffe","Les entrées canalaires doivent être visibles directement sans déplacer le miroir","Elle doit être réalisée à minima pour économiser le tissu dentaire","La mise en dépouille des parois est inutile si la chambre est propre"],correct:[0,2,3]},
+{course:0,q:"Lors de la réalisation de la cavité de délinéation, quel instrument est utilisé en première intention ?",opts:["Fraise boule longue n°2 montée sur contre-angle","Fraise 170L ou surtaillée montée sur turbine","Fraise Zekrya Endo à pointe mousse","Fraise de BATT montée sur contre-angle lent","Fraise LN de Maillefer"],correct:[1]},
+{course:0,q:"Pour la suppression du plafond pulpaire, quelles affirmations sont correctes ?",opts:["La fraise est utilisée exclusivement en poussée apicale","On utilise une fraise boule long col de diamètre 012 ou 014 sans spray","La sonde n°17 vérifie la suppression complète du plafond","La fraise est montée sur contre-angle bleu","La fraise Endo Z peut remplacer la fraise boule long col pour cette étape"],correct:[1,2,3,4]},
+{course:0,q:"Pour la molaire maxillaire, lesquelles des propositions suivantes sont exactes ?",opts:["La cavité d'accès est de forme triangulaire","La 1ère molaire maxillaire presents très fréquemment 4 canaux","Le canal MV2 est recherché avant les 3 canaux principaux","La cavité est en mésial de la face occlusale et ne dépasse pas le pont d'émail","Le canal palatin est le plus large et justifie la forme trapézoïdale de la cavité"],correct:[1,3,4]},
+{course:0,q:"Concernant l'incisive centrale maxillaire, quelles propositions sont exactes ?",opts:["La cavité d'accès est réalisée sur la face vestibulaire","La forme de la cavité est triangulaire à sommet au niveau du cingulum","Le triangle dentinaire palatin doit être supprimé","L'approfondissement se fait selon l'axe de la couronne comme pour les dents cuspidées","Le canal a une section triangulaire qui devient circulaire en apical"],correct:[1,2,4]},
+{course:0,q:"Pour la 1ère prémolaire mandibulaire, quelles affirmations sont correctes ?",opts:["Elle présente toujours un seul canal","La cavité d'accès ovalaire est réalisée aux dépens de la cuspide vestibulaire","L'approfondissement se fait selon le grand axe de la dent confondu avec celui de la couronne","La chambre pulpaire est au milieu de la dent","La partie vestibulaire représente environ les 2/3 de la face occlusale"],correct:[1,3,4]},
+{course:0,q:"Concernant la localisation du canal MV2 de la 1ère molaire maxillaire, quelles techniques sont valides ?",opts:["Utilisation du bleu de méthylène pour colorer les zones avec tissu pulpaire","L'hypochlorite produit des bulles au niveau des canaux non traités contenant du tissu","Sondage parodontal évaluant la position de la furcation MV-P","Radiographie en incidence disto-excentrée (Walton)","Le MV2 est visible dès l'ouverture de la CAE sans recherche particulière"],correct:[0,1,2,3]},
+{course:0,q:"Les accidents lors de la préparation de la CAE comprennent, lesquels ?",opts:["La perforation vestibulaire due à une erreur d'axe","La perforation du plancher pulpaire de pronostic défavorable aux molaires maxillaires","L'ouverture insuffisante qui facilite le nettoyage pulpaire","La perforation desmodontale consécutive à une fausse route","L'élargissement excessif qui est toujours bénéfique pour l'accès canalaire"],correct:[0,1,3]},
+{course:0,q:"Concernant la notion d'axe lors de l'approfondissement de la cavité, lesquelles sont exactes ?",opts:["L'axe de la couronne est toujours confondu avec l'axe de la racine","Pour les prémolaires mandibulaires l'axe couronne est orienté occlusio-lingual","Pour les molaires mandibulaires, l'inclinaison linguale de la couronne ne doit pas être négligée","La diminution du volume pulpaire modifie l'axe de la CAE sur les dents antérieures","Une version mésiale de la dent oblige à adapter l'axe d'approfondissement"],correct:[1,2,3,4]},
+{course:0,q:"Pour les incisives mandibulaires, quelles propositions sont exactes ?",opts:["Les incisives mandibulaires présentent deux canaux dans 100% des cas","Elles sont les plus petites dents de la cavité buccale de l'adulte","La cavité est réalisée sur la face linguale avec une forme triangulaire","Les racines sont fines et aplaties dans le sens mésio-distal","La perforation iatrogène la plus fréquente est en lingual"],correct:[1,2,3]},
+{course:0,q:"Concernant la finition de la cavité d'accès, quelles affirmations sont exactes ?",opts:["Une occluso-divergence de 2 à 3 degrés améliore l'étanchéité du pansement","Les parois doivent être lisses sans aspérités","Si les points de référence coronaires ne sont pas fiables, les pointes cuspidiennes sont réduites d'environ 1 mm","La cavité doit permettre de voir toutes les entrées canalaires sans bouger le miroir","Les stops en silicone des instruments sont positionnés en regard du bord incisif"],correct:[0,1,2,3]},
+{course:0,q:"Pour la 1ère molaire mandibulaire, lesquelles des propositions sont exactes ?",opts:["Elle présente systématiquement 3 canaux, jamais 4","La racine mésiale présente une courbure distale","La zone neutre est délimitée par les sillons intercuspidiens vestibulaire et lingual","La cavité est de forme trapézoïdale située sur la partie mésiale","L'axe couronne et l'axe radiculaire sont confondus en vue proximale"],correct:[1,2,3]},
+{course:0,q:"Lors des étapes préliminaires à la CAE (préambule), lesquelles sont correctes ?",opts:["Si la dent est trop délabrée, la restauration provisoire est faite avant la pose de la digue","Le curetage de carie se fait à la fraise boule n°6 ou 8 sur contre-angle à vitesse lente","Les parois d'émail fragiles doivent être conservées pour maintenir le crampon","Si la dent porte une couronne défectueuse, elle est déposée lors de cette étape","La mise en place de la digue se fait toujours avant toute intervention sur la dent délabrée"],correct:[0,1,3]},
+{course:0,q:"Concernant la fraise Zekrya Endo, quelles propositions sont exactes ?",opts:["Elle est utilisée à la turbine en prenant appui sur le plancher pulpaire","Sa pointe active permet de fraiser en poussée sans risque de perforation","Sa longueur permet de donner la forme définitive aux parois de la CAE","Elle est montée sur contre-angle lent uniquement","Elle présente une pointe mousse pour travailler sans perforation"],correct:[0,2,4]},
+{course:0,q:"Pour le groupe incisivo-canin maxillaire, quelles affirmations sont correctes ?",opts:["La canine a une cavité ovalaire contrairement aux incisives","L'incisive latérale présente quasi-constamment une courbure apicale en distopalatin","L'approfondissement se fait dans l'axe de la couronne comme pour les prémolaires","Le triangle palatin est supprimé avec la fraise boule LN insérée à l'arrêt puis utilisée en retrait","La cavité doit toucher légèrement le bord incisif pour une meilleure accessibilité"],correct:[0,1,3]},
+{course:0,q:"Concernant le repérage des cornes pulpaires de la molaire maxillaire, lesquelles sont exactes ?",opts:["La corne MV est placée à l'intersection du sillon intercuspidien vestibulaire et du sillon principal","La corne palatine est juste sous la cuspide du même nom","Le MV2 se trouve en mésial de l'axe P-MV1 dans un triangle formé par la hauteur","Le canal palatin est plus étroit que le canal MV, ce qui explique la forme triangulaire","La cavité finale est légèrement trapézoïdale permettant l'accès aux 4 canaux sans interférence"],correct:[0,2,4]},
+{course:0,q:"Pour les 2ème et 3ème molaires mandibulaires, lesquelles sont exactes ?",opts:["Les repères sont identiques à ceux de la 1ère molaire","La 2ème molaire possède toujours 4 cuspides","Plus la dent est distale, plus les canaux mésiaux ont tendance à fusionner","La forme trapézoïdale de la cavité est accentuée pour les dents distales","La forme de la cavité tend vers le rectangle quand les canaux mésiaux se rapprochent"],correct:[0,1,2,4]},
+{course:0,q:"Concernant les obstacles à la préparation de la CAE, lesquelles sont exactes ?",opts:["Les calcifications intra-pulpaires peuvent oblitérer totalement la chambre chez les sujets âgés","En cas de calcification, les ultrasons permettent de désolidariser le pulpolithe","La fraise LN peut fraiser en direction des orifices si les ultrasons sont inefficaces","La présence d'un pivot contre-indique définitivement tout retraitement","Des clichés radiographiques fréquents sont nécessaires lors du fraisage des calcifications"],correct:[0,1,2,4]},
+{course:0,q:"Pour le cathétérisme canalaire après la CAE, quelles affirmations sont correctes ?",opts:["On introduit une lime K ou MMC n°8, 10 ou 15 selon le diamètre du canal","Le cathétérisme vérifie l'axe du canal et l'absence d'interférence avec les parois de la CAE","Si une interférence persiste, la fraise Zekrya est utilisée pour rectifier en forçant","Le cathétérisme confirme que le traitement endodontique peut être entrepris","On peut utiliser une sonde de Rhein pour vérifier l'orientation des canaux"],correct:[0,1,3,4]},
+{course:0,q:"Concernant la perforation du plancher pulpaire, lesquelles des propositions sont exactes ?",opts:["Le pronostic est plus favorable aux molaires maxillaires","À la mandibule, une séparation de racine peut être envisagée","L'obturation peut être tentée après arrêt de l'hémorragie","Elle peut conduire à une lésion de furcation","Elle est facilement évitée par une orientation précise de la fraise selon les principes de la CAE"],correct:[1,2,3,4]},
+{course:1,q:"Selon WEINE (1977), l'obturation canalaire est définie comme :",opts:["La 1ère étape du traitement endodontique après le diagnostic","Le scellement de toute la cavité endodontique isolant le système canalaire du milieu buccal et du parodonte profond","L'élimination chimique des bactéries résiduelles par irrigation","La condensation latérale de gutta-percha autour d'un maître cône","Le remplissage partiel du canal principal uniquement"],correct:[1]},
+{course:1,q:"Les conditions techniques préalables au scellement canalaire comprennent lesquelles ?",opts:["Asymptomatologie de la dent","Présence d'une légère exsudation intra-canalaire témoignant de la vitalité tissulaire","Cultures intra-canalaires négatives","Absence d'exsudation intra-canalaire","Radiographie de contrôle post-opératoire déjà réalisée"],correct:[0,2,3]},
+{course:1,q:"Concernant la technique simple à la pâte seule, lesquelles sont exactes ?",opts:["C'est l'une des techniques les plus anciennes","Elle assure une étanchéité parfaite et durable","L'homogénéité de l'obturation est souvent imparfaite","Les pâtes se rétractent après prise et sont souvent solubles dans les liquides tissulaires","Elle constitue la base des nouvelles techniques d'obturation"],correct:[0,2,3,4]},
+{course:1,q:"Concernant la technique mono-cône, lesquelles sont exactes ?",opts:["Elle utilise un seul cône de gutta normalisé associé à un ciment de scellement","Elle est utilisable avec tous les types de préparation canalaire","La masse importante de pâte avec rétraction de prise est un inconvénient majeur","Elle n'offre aucun intérêt clinique par rapport à la technique à la pâte seule","Elle respecte l'anatomie canalaire initiale"],correct:[0,1,2,4]},
+{course:1,q:"Lors de la condensation latérale à froid, le choix du cône principal repose sur :",opts:["Le diamètre du dernier instrument ayant travaillé à l'apex","La longueur totale de la racine","La conicité du spreader utilisé","Le fait que le cône doit résister au retrait depuis la longueur de travail","La couleur du cône correspondant au numéro de l'instrument"],correct:[0,3]},
+{course:1,q:"Les avantages de la condensation latérale à froid comprennent lesquelles des propositions ?",opts:["Une technique simple et bonne adaptation aux parois","Un faible risque de retraitement","Une parfaite homogénéité de la masse d'obturation sans hétérogénéité","Un bon contrôle de la longueur de travail","Une bonne stabilité dimensionnelle"],correct:[0,1,3,4]},
+{course:1,q:"Concernant la technique de Schilder (compactage vertical en vague multiple), lesquelles sont exactes ?",opts:["Elle utilise des fouloirs verticaux et des réchauffeurs (heat-carriers)","L'avantage principal est l'adaptation de la gutta dans toutes les irrégularités de la cavité","L'inconvénient majeur est le risque de franchissement apical de la pâte","Les fouloirs latéraux (spreaders) remplacent les pluggers dans cette technique","La gutta préchauffée et ramollie s'adapte aux canaux latéraux accessoires"],correct:[0,1,2,4]},
+{course:1,q:"Dans la technique de compactage vertical modifié (CVM) décrite par Laurichesse, lesquelles sont exactes ?",opts:["Elle a été appelée condensation verticale normalisée","Le scellement concerne la zone apicale par un cône principal et le reste par des cônes latéraux de complément","L'avantage est une compression permettant d'obturer autant de canaux latéraux que toute autre technique","L'inconvénient majeur est le risque de franchissement apical","Elle ne nécessite pas de ciment de scellement canalaire"],correct:[0,1,2,3]},
+{course:1,q:"Concernant le Thermafil, lesquelles des propositions sont exactes ?",opts:["Le tuteur en plastique est laissé in situ","Plus de 99% du volume du canal est rempli par la gutta","La cuve Thermaprep assure un réchauffage uniforme et contrôlé","Le vérifier est utilisé pour jauger le diamètre apical et sélectionner le bon obturateur","La température de réchauffage est identique quel que soit le diamètre du Thermafil"],correct:[0,1,2,3]},
+{course:1,q:"Pour la sélection du Thermafil par le vérifier, quelles affirmations sont exactes ?",opts:["Le vérifier doit glisser librement à l'apex sans aucun contact","Le vérifier doit s'ajuster avec une sensation de friction entre 0.5 et 1 mm de la LT","Un vérifier qui avance facilement sous pression verticale indique un sous-dimensionnement","L'obturateur Thermafil est bloqué par un stop en silicone à la longueur de travail","Si la friction apicale est trop légère, un vérifier de diamètre supérieur est utilisé"],correct:[1,2,3,4]},
+{course:1,q:"Concernant le système B de Buchanan, lesquelles sont exactes ?",opts:["Il est dérivé de la technique de Schilder","Il utilise un seul instrument jouant le rôle de fouloir et réchauffeur","La température du système B est réglée à 200°C avec puissance sur 10","Le cône de gutta doit glisser sans friction pour venir s'ajuster à 0.5-1 mm de la LT","Le fouloir est utilisé jusqu'à 5 mm de la longueur de travail"],correct:[0,1,2,3]},
+{course:1,q:"Les inconvénients du système B comprennent lesquelles ?",opts:["Dans les canaux longs et fins où le fouloir ne peut descendre à moins de 5mm de la LT, l'efficacité est douteuse","L'augmentation de température dans les 2 derniers mm apicaux est inférieure à 1°C lors de la descente","Il est difficile à contrôler en longueur de travail","C'est une technique très lente et complexe réservée aux spécialistes","La gutta n'est pas suffisamment ramollie dans la région apicale des canaux fins"],correct:[0,1,2,4]},
+{course:1,q:"Concernant la technique de condensation thermomécanique de Mac Spadden, lesquelles sont exactes ?",opts:["Elle utilise un compacteur en nickel titane","La chaleur produite par friction ramollit la gutta percha","Elle est recommandée pour tous les canaux fins et courbes","Elle nécessite un minimum d'entraînement pour les canaux larges et avec apex ouvert","Elle est réservée aux canaux droits et relativement larges"],correct:[0,1,3,4]},
+{course:1,q:"La nouvelle technique Mac Spadden gutta phases I et II présente lesquelles des caractéristiques ?",opts:["Elle utilise 2 types de gutta percha (phase I et II)","Elle est très lente mais très précise","Elle permet d'obturer très facilement des canaux fins et courbes","Le seul inconvénient est le coût des matériels nécessaires","La chaleur est produite par friction du compacteur"],correct:[0,2,3,4]},
+{course:1,q:"Concernant la technique hybride (condensation à froid + compactage thermomécanique), lesquelles sont exactes ?",opts:["Les 4 ou 5 mm apicaux sont obturés d'abord par condensation à froid","Les 2/3 coronaires sont obturés par un thermo-compacteur sur contre-angle bague bleue","Elle présente les mêmes inconvénients que la condensation latérale à froid","Elle est plus lente que la condensation latérale seule","Elle offre une meilleure étanchéité au 1/3 moyen et supérieur"],correct:[0,1,2,4]},
+{course:1,q:"Concernant la technique MicroSeal, lesquelles sont exactes ?",opts:["Elle a été introduite en 1996","Elle utilise des fouloirs NiTi mécanisés à 5000-7000 tr/min","Elle est dérivée de la technique de thermo-compactage de Mac Spadden","Elle est applicable aux canaux courbes grâce aux fouloirs en nickel-titane","Elle n'utilise pas de ciment de scellement"],correct:[0,1,2,3]},
+{course:1,q:"Pour la technique obtura, lesquelles des propositions sont correctes ?",opts:["On utilise un ciment de scellement à prise lente comme lubrifiant","L'aiguille doit être maintenue sous pression contre les parois apicales","L'aiguille est repoussée en arrière automatiquement au fur et à mesure que la gutta s'écoule","Le temps de compactage est entre 3 et 5 minutes","La gutta à forte viscosité s'adapte aux irrégularités grâce au ciment de scellement"],correct:[0,2,3,4]},
+{course:1,q:"Concernant la technique du monocône ajusté (cône adapté en taille et conicité), lesquelles sont exactes ?",opts:["Elle utilise une irrigation par EDTA à 17% comme rinçage final avant l'obturation","Elle assure une extrusion minimale du ciment au niveau apical","Elle offre une meilleure qualité d'obturation par rapport aux autres méthodes","La présence d'une masse de ciment importante à l'interface paroi est son avantage principal","Elle élimine les contraintes latérales évitant les fractures radiculaires"],correct:[0,1,2,4]},
+{course:1,q:"Concernant l'objectif biologique de l'obturation canalaire, lesquelles sont exactes ?",opts:["Créer un joint étanche pour conserver l'environnement de la cavité pulpaire désinfecté","Le matériau d'obturation ne doit pas modifier ou doit modifier favorablement l'environnement apical","L'objectif biologique consiste uniquement à combler l'espace mort par de la gutta","Maintenir le résultat obtenu par la préparation canalaire","Associée à la restauration coronaire, elle prévient l'apparition des pathologies péri-apicales"],correct:[0,1,3,4]},
+{course:1,q:"Pour la 3ème étape du Thermafil (section de l'obturateur), lesquelles sont exactes ?",opts:["L'obturateur est sectionné à l'entrée du canal par la fraise thermacut sur turbine sans eau","Pour les molaires, les canaux sont obturés puis les Thermafil sectionnés les uns après les autres","La préparation du logement de tenon est réalisée dans la même séance avec le Post Space Bur","Le pansement provisoire est posé avant les radiographies post-opératoires","L'utilisation d'un fouloir vertical manuel compacte la gutta autour du tuteur en coronaire"],correct:[0,1,2,4]},
+{course:2,q:"Concernant la définition de la dépulpation (biopulpectomie), lesquelles sont exactes ?",opts:["C'est une intervention chirurgicale consistant en l'ablation de tout le parenchyme pulpaire","Elle est suivie de la mise en forme et de l'obturation de la cavité endodontique","Elle permet la cicatrisation du desmodonte et la fermeture cémentaire de l'orifice apical","Elle peut être pratiquée sous anesthésie locale ou loco-régionale","Elle est pratiquée après escarrification médicamenteuse selon la technique actuelle recommandée"],correct:[0,1,2,3]},
+{course:2,q:"Concernant les indications de la pulpectomie selon l'état pathologique de la pulpe, lesquelles sont incluses ?",opts:["Les pulpites totales quelle que soit leur origine","Les pulpites partielles réversibles traitées par coiffage","Les pulpites fermées aiguës primaires ou secondaires","Les pulpodesmodontites","Les résorptions térébrantes intraradiculaires centrales (granulome interne vrai)"],correct:[0,2,3,4]},
+{course:2,q:"Les limites anatomiques de la pulpectomie s'expliquent par lesquelles des propositions ?",opts:["La pulpectomie peut jamais être totale en raison de la complexité morphologique","La limite de la pulpectomie correspond théoriquement à la JCD","L'extirpation et l'obturation doivent être en deçà de l'apex","Au niveau des canaux secondaires, on ne peut intervenir que sur le tronc","Les prolongements odontoblastiques dans les canalicules sont entièrement éliminés par pulpectomie"],correct:[0,1,2,3]},
+{course:2,q:"Concernant le processus cicatriciel après pulpectomie, lesquelles sont exactes ?",opts:["C'est un processus cémentogène","La clé du succès réside dans le maintien en bonne santé du desmodonte","Il faut rester en deçà de l'apex pour respecter le desmodonte","Si la matière obturatrice déborde du foramen, la cémentogenèse se produit normalement autour du corps étranger","Si la substance obturatrice n'atteint pas le desmodonte et le canal est vide, un espace mort se crée et l'infection s'installe"],correct:[0,1,2,4]},
+{course:2,q:"Concernant les 4 situations possibles entre matière obturatrice et desmodonte, lesquelles décrivent une évolution favorable ?",opts:["La pâte au contact du desmodonte qu'elle coiffe : cicatrisation sous la substance","La présence d'un peu de tissu entre pâte et desmodonte : le cément cicatriciel se constitue sous ce tissu","Le débordement de la matière obturatrice du foramen apical","La substance obturatrice n'atteint pas le desmodonte et le canal est vide","Si la pâte est au contact du desmodonte et le débordement minime, l'inflammation est temporaire et réversible"],correct:[0,1]},
+{course:2,q:"Le mécanisme réel du processus cémentogène après obturation comprend lesquelles des étapes ?",opts:["Nécrose des tissus de l'espace de black","Formation d'une trame collagénique","Les fibroblastes se différencient en cémentoblastes","Précipitation des sels minéraux vers la trame organique","Les cémentoblastes sécrètent la matrice cémentoïde créant une barrière apicale"],correct:[0,1,2,3,4]},
+{course:2,q:"Concernant le protocole opératoire de la pulpectomie, dans quel ordre ces étapes se succèdent-elles logiquement ? Lesquelles sont correctes ?",opts:["Anesthésie puis pose de la digue puis trépanation","Extirpation pulpaire puis hémostase","Radiographie peropératoire (lime en place) avant la préparation canalaire","Obturation canalaire après séchage","Radiographie post-opératoire en dernier lieu"],correct:[0,1,2,3,4]},
+{course:2,q:"Les indications de la pulpectomie selon les exigences prothétiques comprennent lesquelles ?",opts:["Dent dont la perte de substance est telle que sa restauration exige un ancrage canalaire sous forme de tenon","Toute dent porteuse d'une couronne doit être dépulpée préalablement","Restauration nécessitant une rétention en profondeur canalaire","Dent présentant une carie simple sans atteinte pulpaire","Connaissance radiographique préalable de la morphologie interne est nécessaire"],correct:[0,2,4]},
+{course:2,q:"Concernant le taux de succès de la pulpectomie, lesquelles sont exactes ?",opts:["Le taux de succès est de 7/10, considéré comme faible pour une intervention courante","Le succès histologique est le vrai test pour juger le succès de l'intervention","Le succès radiographique se traduit par le respect des structures péri-apicales","L'absence de défenses immunitaires apicales avant l'intervention améliore le pronostic","L'intervention est aveugle et la technique jamais totalement sûre"],correct:[0,1,2,4]},
+{course:2,q:"Concernant l'évolution clinique après pulpectomie, lesquelles sont exactes ?",opts:["La pulpectomie n'est jamais suivie de symptomatologie dans les suites immédiates","Une parodontite apicale subaiguë peut survenir suite à des dépassements mécaniques ou chimiques","Le malade doit être revu dans les 4 ou 7ème jours suivants","Une douleur au point d'injection de l'anesthésie locale est possible","Le taux de succès est supérieur à celui du traitement d'une gangrène accompagnée d'un granulome"],correct:[1,2,3]},
+{course:2,q:"Concernant la contre-indication de la pulpectomie selon l'ouverture de la bouche, lesquelles sont exactes ?",opts:["Une ouverture réduite est une contre-indication, surtout pour les dents les plus distales","L'ouverture de bouche n'influence pas l'indication de la pulpectomie","L'inclinaison de la dent en bouche est sans rapport avec l'accès canalaire","La morphologie radiculaire doit être connue avant toute intervention pulpaire","Une incidence droite et oblique sont nécessaires pour la radiographie préopératoire"],correct:[0,3,4]},
+{course:2,q:"Le traitement étiologique de la pulpite est impossible car :",opts:["La lésion pulpaire est irréversible","La pulpe est accessible sans anesthésie","Le traitement lésionnel (extirpation) est la seule option","La pulpite peut toujours guérir spontanément avec une antibiothérapie adaptée","La dépulpation peut être réalisée sans anesthésie dans tous les cas"],correct:[0,2]},
+{course:2,q:"Concernant la pulpectomie comme intervention cémentogène, lesquelles sont exactes ?",opts:["Elle favorise la cicatrisation cémentaire de l'orifice apical","Elle supprime la vacuité du canal après extirpation","Elle permet la cicatrisation du desmodonte","Elle est contre-indiquée en présence d'une résorption interne","Elle nécessite l'obturation complète pour prévenir tout réensemencement bactérien"],correct:[0,1,2,4]},
+{course:2,q:"Concernant la limite théorique de la pulpectomie, lesquelles sont correctes ?",opts:["Le foramen apical est souvent unique et simple","La JCD (jonction cémentodentinaire) est la limite théorique de la pulpectomie","Le foramen apical présente souvent la forme d'un delta","Les canaux secondaires peuvent être pleins ou vides après extirpation de la pulpe tronc","L'obturation doit être en deçà de l'apex pour respecter le desmodonte"],correct:[1,2,3,4]},
+{course:2,q:"Les causes expliquant le faible taux de succès de la pulpectomie incluent lesquelles ?",opts:["L'intervention aveugle et la technique jamais totalement sûre","La mauvaise section de la pulpe entraîne toujours une réaction inflammatoire péri-apicale qui peut rétrocéder","L'absence de défenses immunitaires apicales avant l'intervention","La présence systématique de bactéries multi-résistantes dans le canal","Le taux de succès de 7/10 est inférieur au traitement d'une gangrène avec granulome"],correct:[0,1,2,4]},
+{course:2,q:"Concernant les pulpites hyperplasiques ou ulcéreuses, lesquelles sont exactes ?",opts:["Elles sont des pulpites ouvertes indiquant la pulpectomie","Elles peuvent être traitées par coiffage direct avec du MTA","Les pulpites ouvertes font partie des indications de la pulpectomie selon l'état pathologique","La présence de tissu hyperplasique à l'entrée du canal contre-indique la pulpectomie","Elles figurent parmi les pulpites indiquées pour la dépulpation"],correct:[0,2,4]},
+{course:2,q:"Concernant le succès radiographique de la pulpectomie, quelles propositions sont exactes ?",opts:["Il se traduit par le respect des structures péri-apicales sans altérations","Une image radioclaire péri-apicale post-opératoire indique systématiquement un échec","La radiographie est le vrai test de succès de la pulpectomie","Le succès histologique doit compléter le bilan radiographique","Une obturation courte laissant un espace mort peut conduire à l'échec"],correct:[0,3,4]},
+{course:2,q:"Concernant la situation où la substance obturatrice déborde du foramen apical, lesquelles sont exactes ?",opts:["La cémentogenèse n'a pas lieu autour du corps étranger tant qu'il constitue une irritation","Un granulome peut se former et se compliquer en kyste apical","La cémentogenèse se produit normalement car le desmodonte est en contact avec la pâte","L'inflammation est entretenue par la présence du corps étranger","Le corps étranger constitue une irritation pour le desmodonte"],correct:[0,1,3,4]},
+{course:2,q:"L'hémostase après extirpation pulpaire est une étape opératoire importante car :",opts:["Elle prépare le canal à l'obturation en assurant un milieu sec","Elle facilite la mesure exacte de la longueur de travail","Elle permet la prise de la radiographie peropératoire dans de meilleures conditions","Un canal hémorragique compromet la qualité de l'obturation canalaire","L'hémostase intervient après l'irrigation et avant l'obturation"],correct:[0,3]},
+{course:2,q:"Pour la conclusion sur l'avenir de la thérapeutique des pulpites, lesquelles sont correctes ?",opts:["Les thérapeutiques conventionnelles insistent sur la conservation de la vitalité pulpaire","La génie génétique pourrait permettre de mettre en place une structure pulpodentinaire synthétique","Le traitement endodontique conventionnel est encore pratiqué en insistant sur le respect des indications","La triade actuellement recommandée est : pulpectomie + obturation + restauration coronaire","La recherche sur les biomatériaux est intégrée aux pratiques actuelles"],correct:[0,1,2,3,4]},
+{course:3,q:"Selon la classification ISO/FDI des instruments endodontiques, lesquelles sont exactes ?",opts:["Le groupe I réunit les instruments à canaux exclusivement manuels","Le groupe II comporte les instruments mécanisés dont les lames sont celles du groupe I plus le bourre-pâte de Lentulo","Le groupe III est celui des forets mécanisés (Gates Glidden, Peeso...)","Le groupe IV se rapporte aux pointes canalaires d'absorption et d'obturation","Le tire-nerf appartient au groupe II car utilisé mécaniquement"],correct:[0,1,2,3]},
+{course:3,q:"Concernant la normalisation des instruments endodontiques (conférence de Philadelphie 1958), lesquelles sont exactes ?",opts:["La conférence a adopté une forme conique pour tous les instruments","La progression uniforme des diamètres est un des 4 critères retenus","Selon la norme ISO, la conicité est de 2% (augmentation de 0.02mm par mm)","Du n°10 au n°60, l'augmentation du diamètre se fait par 5/100 mm","D2 est calculé par : D2 = D1 + 0.32mm (lame active de 16mm)"],correct:[0,1,2,3,4]},
+{course:3,q:"Concernant la lime type K (KERR), lesquelles sont exactes ?",opts:["Elle is obtenue par la torsion d'une matrice quadrangulaire d'acier inoxydable","Son symbole d'identification est un triangle","Elle est plus rigide que la broche et plus efficace en pénétration","Elle est l'instrument de choix pour le cathétérisme","Son action de limage est optimale en mouvements de va et vient longitudinaux à 45° de rotation"],correct:[0,2,3,4]},
+{course:3,q:"Concernant la broche à canaux (Reamer/alésoir), lesquelles sont exactes ?",opts:["C'est le résultat de la torsion d'une matrice triangulaire d'acier inoxydable","Son symbole d'identification est un carré","Son pas est long, ce qui lui donne un encombrement réduit","La pyramide terminale est triangulaire et pointue","Sa dynamique est un quart de tour dans le sens horaire"],correct:[0,2,3,4]},
+{course:3,q:"Concernant la lime de Hedstrom (type H), lesquelles sont exactes ?",opts:["Elle est normalisée et usinée par micro-meulage à partir d'une matrice cylindrique","Son profil est similaire à une vis à bois à pas constant","Son symbole est un cercle","Toute rotation dans le canal est interdite sous peine de blocage et fracture","Elle peut être tournée librement en sens horaire et anti-horaire"],correct:[0,1,2,3]},
+{course:3,q:"Concernant le K Flexo-File, lesquelles des propositions sont correctes ?",opts:["Sa section est triangulaire","Sa flexibilité très supérieure à la lime K réduit le rappel élastique du métal","Il est destiné au cathétérisme et à l'élargissement canalaire des canaux courbes","Sa dynamique est différente de celle de la lime K","Il est normalisé selon les normes ISO"],correct:[0,1,2,4]},
+{course:3,q:"Concernant le foret de Gates-Glidden, lesquelles sont exactes ?",opts:["Sa pointe est non travaillante","Il possède 3 lames sur une partie active courte de 2.5 à 4.5 mm","Il est utilisé sur contre-angle à bague bleue à 8000 tr/min en rotation pure","Il permet d'atteindre l'action des fraises boules au tiers cervical du canal","Il est normalisé selon les normes ISO"],correct:[0,1,2,3]},
+{course:3,q:"Pour le code couleur normalisé des instruments endodontiques, lesquelles sont correctes ?",opts:["Le blanc correspond aux instruments n°15 et 45","Le jaune correspond aux n°20 et 70","Le rouge correspond aux n°25 et 80","Le bleu correspond aux n°30 et 90","Le vert correspond aux n°35 et 90"],correct:[1,2,3]},
+{course:3,q:"La normalisation ISO ne concerne pas lesquelles des catégories suivantes ?",opts:["Les forets et instruments destinés à la préparation coronaire des canaux","Les instruments rotatifs d'obturation canalaire","Les fouloirs à canaux","Les instruments de cathétérisme tels que le tire-nerf","Les limes type K et H manuelles ou mécanisées"],correct:[0,1,2,3]},
+{course:3,q:"Concernant la fraise LN de Maillefer, lesquelles sont exactes ?",opts:["Elle est munie d'un col très fin et long avec une extrémité active ronde de petit calibre","Elle mesure 28mm de longueur","Elle autorise un contrôle visuel dans la recherche d'un orifice canalaire calcifié","Elle est utilisé pour la mise en dépouille des parois de la CAE","Elle permet la réalisation de la cavité de trépanation canalaire"],correct:[0,1,2,4]},
+{course:3,q:"Concernant les spreaders et pluggers, lesquelles sont exactes ?",opts:["Les spreaders ont une extrémité pointue et condensent la gutta latéralement à froid","Les pluggers ont une extrémité plate et condensent la gutta verticalement après réchauffement","Ni les spreaders ni les pluggers ne sont normalisés ISO","Les pluggers sont appelés fouloirs latéraux et les spreaders fouloirs vertifaux","Les spreaders sont fins et coniques pour descendre profondément dans les canaux"],correct:[0,1,2,4]},
+{course:3,q:"Concernant les instruments en nickel-titane (NiTi), lesquelles des propriétés sont correctes ?",opts:["La flexibilité est la capacité de l'instrument à se déformer de façon réversible sous contrainte","La conicité des instruments NiTi peut être constante ou variable","Les instruments NiTi peuvent avoir des sections triangulaires, pentagonales ou triple hélicoïdales","Les longueurs disponibles sont 21, 25, 29 et 31mm","Tous les instruments NiTi ont la même conicité de 2% selon la norme ISO"],correct:[0,1,2,3]},
+{course:3,q:"Le Past Inject (Bourre-pâte de Lentulo), lesquelles des propositions sont exactes ?",opts:["C'est un instrument rotatif non normalisé","Il résulte d'une torsion d'une lamelle métallique aplatie","Il est disponible du n°20 au n°40 en 5 diamètres et 3 longueurs","Il est destiné à l'obturation à l'aide d'une pâte durcissante","Il est monté sur turbine uniquement"],correct:[0,1,2,3]},
+{course:3,q:"Concernant la broche-foret ou foret TORPAN, lesquelles sont exactes ?",opts:["C'est une lame de broche pourvue d'un mandrin adaptable sur contre-angle","Elle est normalisée selon les normes ISO","Son usage endo-canalaire oblige à une prudence extrême","La perte de sensation tactile est un danger majeur lors de son usage motorisé","Elle peut préparer les zones cervicales des canaux et rendre service lors des reprises"],correct:[0,1,2,3,4]},
+{course:3,q:"Concernant la seringue d'irrigation canalaire, lesquelles sont exactes ?",opts:["Les canules d'irrigation ont une extrémité arrondie et une ouverture latérale","Les aiguilles fines et flexibles réduisent le risque d'expulsion d'irrigant en direction apicale","L'irrigation assistée ultrasonique associe un réservoir et un insert ultrasonique","Le volume d'irrigant doit être éjecté en direction pariétale sans pression","La canule doit toujours être insérée au-delà de la longueur de travail pour une meilleure efficacité"],correct:[0,1,2,3]},
+{course:3,q:"Concernant les instruments Protaper, lesquelles sont exactes ?",opts:["Ce sont des instruments à conicité variable","La conicité variable différencie les Protaper des instruments à conicité constante","Ils font partie des instruments NiTi rotatifs","La section peut être asymétrique ou symétrique","Ils respectent strictement la conicité de 2% de la norme ISO sur toute leur longueur"],correct:[0,1,2,3]},
+{course:3,q:"La réglette endodontique (endomètre de Maillefer) et les stops en silicone servent à :",opts:["Ajuster les stops en silicone directement sur l'instrument","Matérialiser la longueur de travail calculée préalablement","Vérifier la conicité des instruments utilisés","Les stops mesurent 1.5 à 2.5mm de largeur et sont perforés au milieu","Certains instruments intègrent le stop directement sur leur corps"],correct:[0,1,3,4]},
+{course:3,q:"Concernant les accessoires endodontiques, lesquelles sont exactes ?",opts:["L'éponge de transfert contient une solution d'hypochlorite assurant la décontamination des instruments","L'éponge est stérilisable à 200°C","Les boîtes endodontiques en aluminium peuvent être stérilisées à l'autoclave","L'éponge utilise des disques de mousse à usage unique","Les boîtes endodontiques résistent à la désinfection chimique"],correct:[0,1,2,3,4]},
+{course:3,q:"Concernant la description d'un instrument endodontique normalisé, lesquelles sont exactes ?",opts:["Le diamètre de la pointe D1 exprimé en 100ème de mm donne le numéro de l'instrument","Tous les instruments endodontiques présentent une lame active de 16mm","La conicité ISO est de 2%","D2 = D1 + 0.32mm quelle que soit la conicité de l'instrument","Du n°60 au n°140 l'augmentation de diamètre se fait par 5/100mm"],correct:[0,1,2,3]},
+{course:3,q:"Concernant les instruments d'accès à la chambre pulpaire, lesquelles sont exactes ?",opts:["La fraise Zekrya Endo permet un accès sécurisé sans risque de perforation grâce à sa pointe mousse","La fraise Endo Access est également utilisée pour l'accès à la chambre","Le groupe IV de la classification ISO regroupe les instruments d'accès coronaire","La fraise LN peut s'utiliser pour visualiser et atteindre un orifice canalaire calcifié","Les instruments d'accès à la chambre pulpaire sont tous normalisés selon l'ISO"],correct:[0,1,3]}
+];
+
+let currentCourse = 0;
+let currentQ = 0;
+let filter = 'all';
+let state = ALL_QUESTIONS.map(() => ({ selected: new Set(), checked: false }));
+
+function getFiltered() {
+  return ALL_QUESTIONS.map((q, i) => ({ q, i })).filter(({ q, i }) => {
+    if (q.course !== currentCourse) return false;
+    if (filter === 'all') return true;
+    if (filter === 'unanswered') return !state[i].checked;
+    if (filter === 'wrong') return state[i].checked && !isCorrect(i);
+    if (filter === 'correct') return state[i].checked && isCorrect(i);
+    return true;
+  });
+}
+
+function isCorrect(i) {
+  const q = ALL_QUESTIONS[i], s = state[i];
+  const correct = new Set(q.correct);
+  if (s.selected.size !== correct.size) return false;
+  for (let c of correct) if (!s.selected.has(c)) return false;
+  return true;
+}
+
+function render() {
+  const filtered = getFiltered();
+  const pi = document.getElementById('progress-info');
+  const qlist = document.getElementById('qlist');
+  
+  if (filtered.length === 0) {
+    pi.innerHTML = '<span>Aucune question dans ce filtre.</span>';
+    qlist.innerHTML = '';
+    document.getElementById('prev-btn').disabled = true;
+    document.getElementById('next-btn').disabled = true;
+    renderDashboard();
+    return;
+  }
+  
+  if (currentQ >= filtered.length) currentQ = 0;
+  const { q, i } = filtered[currentQ];
+  
+  pi.innerHTML = `<span>Question <strong>${currentQ + 1}</strong> / ${filtered.length}</span><span>(Q${i + 1} global)</span>`;
+  
+  const s = state[i];
+  const checked = s.checked;
+  
+  let html = `<div class="qcard">
+    <div class="qnum">Cours ${currentCourse + 1} — ${COURSES[currentCourse].name}</div>
+    <div class="qtext">${q.q}</div>
+    <div class="options">`;
+    
+  const letters = ['A', 'B', 'C', 'D', 'E'];
+  q.opts.forEach((opt, oi) => {
+    let cls = 'opt';
+    if (checked) {
+      cls += ' disabled';
+      const isRight = q.correct.includes(oi);
+      const isSel = s.selected.has(oi);
+      if (isRight && isSel) cls += ' correct';
+      else if (!isRight && isSel) cls += ' wrong';
+      else if (isRight && !isSel) cls += ' missed';
+    } else {
+      if (s.selected.has(oi)) cls += ' selected';
+    }
+    const onclick = checked ? '' : `onclick="toggle(${i},${oi})"`;
+    html += `<div class="${cls}" ${onclick}>
+      <div class="opt-letter">${letters[oi]}</div>
+      <div class="opt-text">${opt}</div>
+    </div>`;
+  });
+  
+  html += `</div>`;
+  
+  if (!checked) {
+    html += `<button class="check-btn" onclick="check(${i})" ${s.selected.size === 0 ? 'disabled' : ''}>Vérifier ma réponse</button>`;
+  } else {
+    const correct = new Set(q.correct);
+    const allRight = isCorrect(i);
+    const partiallyCorrect = [...s.selected].some(x => correct.has(x)) && !allRight;
+    let exCls = allRight ? 'success' : partiallyCorrect ? 'partial' : 'fail';
+    let exText = allRight ? '✓ Parfait ! Toutes les bonnes réponses sélectionnées.' :
+      partiallyCorrect ? `△ Réponse partielle. Réponses correctes : ${q.correct.map(c => letters[c]).join(', ')}` :
+      `✗ Incorrect. Réponses correctes : ${q.correct.map(c => letters[c]).join(', ')}`;
+    html += `<div class="explanation ${exCls}">${exText}</div>`;
+  }
+  
+  html += `</div>`;
+  qlist.innerHTML = html;
+  
+  document.getElementById('prev-btn').disabled = currentQ === 0;
+  document.getElementById('next-btn').disabled = currentQ >= filtered.length - 1;
+  
+  updateScore();
+  renderDashboard();
+}
+
+function toggle(i, oi) {
+  if (state[i].checked) return;
+  if (state[i].selected.has(oi)) state[i].selected.delete(oi);
+  else state[i].selected.add(oi);
+  render();
+}
+
+function check(i) {
+  state[i].checked = true;
+  render();
+}
+
+function navigate(dir) {
+  const filtered = getFiltered();
+  currentQ = Math.max(0, Math.min(filtered.length - 1, currentQ + dir));
+  render();
+}
+
+function setFilter(f) {
+  filter = f;
+  currentQ = 0;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function updateScore() {
+  const courseQs = ALL_QUESTIONS.map((q, i) => ({ q, i })).filter(({ q }) => q.course === currentCourse);
+  const checked = courseQs.filter(({ i }) => state[i].checked);
+  const correct = checked.filter(({ i }) => isCorrect(i));
+  document.getElementById('score-display').textContent = `Score : ${correct.length} / ${checked.length}`;
+  
+  const totalChecked = ALL_QUESTIONS.filter((_, i) => state[i].checked).length;
+  document.getElementById('progress-display').textContent = `Répondues : ${totalChecked} / 80`;
+}
+
+function resetCourse() {
+  ALL_QUESTIONS.forEach((q, i) => {
+    if (q.course === currentCourse) { state[i] = { selected: new Set(), checked: false }; }
+  });
+  currentQ = 0;
+  render();
+}
+
+function renderDashboard() {
+  const zone = document.getElementById('dashboard-zone');
+  
+  let globalTotal = ALL_QUESTIONS.length;
+  let globalChecked = state.filter(s => s.checked).length;
+  let globalCorrect = ALL_QUESTIONS.filter((_, i) => state[i].checked && isCorrect(i)).length;
+  let pct = globalChecked > 0 ? Math.round((globalCorrect / globalChecked) * 100) : 0;
+  
+  let html = `
+    <div class="dashboard-card">
+      <div class="dashboard-title">Tableau de bord des Résultats</div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-val">${globalChecked} / ${globalTotal}</div>
+          <div class="stat-lbl">Questions répondues</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">${globalCorrect}</div>
+          <div class="stat-lbl">Réponses correctes</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">${pct}%</div>
+          <div class="stat-lbl">Précision globale</div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="dashboard-table">
+          <thead>
+            <tr>
+              <th>Cours / Thématique</th>
+              <th>Progression</th>
+              <th>Score</th>
+              <th>Taux</th>
+            </tr>
+          </thead>
+          <tbody>
+  `;
+  
+  COURSES.forEach(c => {
+    const qIndices = ALL_QUESTIONS.map((q, idx) => ({ q, idx })).filter(x => x.q.course === c.id);
+    const totalC = qIndices.length;
+    const checkedC = qIndices.filter(x => state[x.idx].checked).length;
+    const correctC = qIndices.filter(x => state[x.idx].checked && isCorrect(x.idx)).length;
+    const barPct = Math.round((checkedC / totalC) * 100);
+    const successPct = checkedC > 0 ? Math.round((correctC / checkedC) * 100) : 0;
+    
+    html += `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td>
+          <div class="progress-track"><div class="progress-fill" style="width: ${barPct}%"></div></div>
+          <span>${checkedC}/${totalC}</span>
+        </td>
+        <td>${correctC} / ${checkedC}</td>
+        <td><span style="color: ${successPct >= 70 ? 'var(--color-success)' : successPct >= 40 ? 'var(--color-warning)' : 'var(--color-error)'}; font-weight:600;">${successPct}%</span></td>
+      </tr>
+    `;
+  });
+  
+  html += `</tbody></table></div></div>`;
+  zone.innerHTML = html;
+}
+
+function buildTabs() {
+  const el = document.getElementById('course-tabs');
+  COURSES.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === 0 ? ' active' : '');
+    btn.textContent = c.name;
+    btn.onclick = () => {
+      currentCourse = i;
+      currentQ = 0;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      render();
     };
-    const COURSES = [
-        { id: 0, name: "Cone Beam", short: "CBCT" },
-        { id: 1, name: "OPT et TDM", short: "OPT/TDM" },
-        { id: 2, name: "IRM", short: "IRM" },
-        { id: 3, name: "Scanner", short: "Scanner" }
-    ];
+    el.appendChild(btn);
+  });
+}
 
-    const ALL_QUESTIONS = questionsRaw.map(item => ({
-        course: courseMap[item.course],
-        q: item.q,
-        opts: item.opts,
-        correct: item.correct
-    }));
-
-    // ---------- logique identique au premier code ----------
-    let currentCourse = 0;
-    let currentQ = 0;
-    let filter = 'all';
-    let state = ALL_QUESTIONS.map(() => ({ selected: new Set(), checked: false }));
-
-    function getFiltered() {
-        return ALL_QUESTIONS.map((q, i) => ({ q, i })).filter(({ q, i }) => {
-            if (q.course !== currentCourse) return false;
-            if (filter === 'all') return true;
-            if (filter === 'unanswered') return !state[i].checked;
-            if (filter === 'wrong') return state[i].checked && !isCorrect(i);
-            if (filter === 'correct') return state[i].checked && isCorrect(i);
-            return true;
-        });
-    }
-
-    function isCorrect(i) {
-        const q = ALL_QUESTIONS[i];
-        const s = state[i];
-        const correctSet = new Set(q.correct);
-        if (s.selected.size !== correctSet.size) return false;
-        for (let c of correctSet) if (!s.selected.has(c)) return false;
-        return true;
-    }
-
-    function render() {
-        const filtered = getFiltered();
-        const pi = document.getElementById('progress-info');
-        if (filtered.length === 0) {
-            pi.textContent = 'Aucune question dans ce filtre.';
-            document.getElementById('qlist').innerHTML = '';
-            return;
-        }
-        if (currentQ >= filtered.length) currentQ = 0;
-        const { q, i } = filtered[currentQ];
-        pi.textContent = `Question ${currentQ+1} / ${filtered.length} (Q${i+1} global)`;
-        const s = state[i];
-        const checked = s.checked;
-        const letters = ['A', 'B', 'C', 'D', 'E'];
-        let html = `<div class="qcard">
-            <div class="qnum">${COURSES[currentCourse].name} · Question ${i+1}</div>
-            <div class="qtext">${q.q}</div>
-            <div class="options">`;
-        q.opts.forEach((opt, oi) => {
-            let cls = 'opt';
-            if (checked) {
-                cls += ' disabled';
-                const isRight = q.correct.includes(oi);
-                const isSel = s.selected.has(oi);
-                if (isRight && isSel) cls += ' correct';
-                else if (!isRight && isSel) cls += ' wrong';
-                else if (isRight && !isSel) cls += ' missed';
-            } else {
-                if (s.selected.has(oi)) cls += ' selected';
-            }
-            const onclick = checked ? '' : `onclick="toggle(${i},${oi})"`;
-            html += `<div class="${cls}" ${onclick}>
-                <div class="opt-letter">${letters[oi]}</div>
-                <div class="opt-text">${opt}</div>
-            </div>`;
-        });
-        html += `</div>`;
-        if (!checked) {
-            html += `<button class="check-btn" onclick="check(${i})" ${s.selected.size === 0 ? 'disabled' : ''}>Vérifier ma réponse</button>`;
-        } else {
-            const allRight = isCorrect(i);
-            const partiallyCorrect = [...s.selected].some(x => q.correct.includes(x)) && !allRight;
-            let exCls = allRight ? 'success' : (partiallyCorrect ? 'partial' : 'fail');
-            let exText = allRight ? '✓ Parfait ! Toutes les bonnes réponses sélectionnées.' :
-                (partiallyCorrect ? `△ Réponse partielle. Bonnes réponses : ${q.correct.map(c=>letters[c]).join(', ')}` :
-                `✗ Incorrect. Bonnes réponses : ${q.correct.map(c=>letters[c]).join(', ')}`);
-            html += `<div class="explanation ${exCls}">${exText}</div>`;
-        }
-        html += `</div>`;
-        document.getElementById('qlist').innerHTML = html;
-        document.getElementById('prev-btn').disabled = currentQ === 0;
-        document.getElementById('next-btn').disabled = currentQ >= filtered.length - 1;
-        updateScore();
-    }
-
-    function toggle(i, oi) {
-        if (state[i].checked) return;
-        if (state[i].selected.has(oi)) state[i].selected.delete(oi);
-        else state[i].selected.add(oi);
-        render();
-    }
-
-    function check(i) {
-        state[i].checked = true;
-        render();
-    }
-
-    function navigate(dir) {
-        const filtered = getFiltered();
-        currentQ = Math.max(0, Math.min(filtered.length - 1, currentQ + dir));
-        render();
-    }
-
-    function setFilter(f) {
-        filter = f;
-        currentQ = 0;
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`.filter-btn[data-filter="${f}"]`).classList.add('active');
-        render();
-    }
-
-    function updateScore() {
-        const courseQs = ALL_QUESTIONS.map((q, idx) => ({ q, idx })).filter(({ q }) => q.course === currentCourse);
-        const checked = courseQs.filter(({ idx }) => state[idx].checked);
-        const correct = checked.filter(({ idx }) => isCorrect(idx));
-        document.getElementById('score-display').textContent = `Score : ${correct.length} / ${checked.length}`;
-        const totalAnswered = ALL_QUESTIONS.filter((_, idx) => state[idx].checked).length;
-        document.getElementById('progress-display').textContent = `Répondues : ${totalAnswered} / 120`;
-    }
-
-    function resetCourse() {
-        ALL_QUESTIONS.forEach((q, i) => {
-            if (q.course === currentCourse) {
-                state[i] = { selected: new Set(), checked: false };
-            }
-        });
-        currentQ = 0;
-        render();
-    }
-
-    function buildTabs() {
-        const container = document.getElementById('course-tabs');
-        COURSES.forEach((c, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'tab' + (idx === 0 ? ' active' : '');
-            btn.textContent = c.name;
-            btn.onclick = () => {
-                currentCourse = idx;
-                currentQ = 0;
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                btn.classList.add('active');
-                render();
-            };
-            container.appendChild(btn);
-        });
-    }
-
-    // Event listeners
-    document.getElementById('prev-btn').addEventListener('click', () => navigate(-1));
-    document.getElementById('next-btn').addEventListener('click', () => navigate(1));
-    document.getElementById('reset-btn').addEventListener('click', resetCourse);
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => setFilter(btn.getAttribute('data-filter')));
-    });
-
-    buildTabs();
-    render();
+buildTabs();
+render();
 </script>
+
 </body>
 </html>
