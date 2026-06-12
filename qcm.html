@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>QCM - Imagerie Médicale (CBCT, OPT, Scanner, IRM)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f7f9fc;
+            padding: 20px;
+            color: #1a2a3f;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            padding: 1.8rem 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 1.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1e4b8f, #2c6eaf);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .score-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .score-chip {
+            background: #f1f5f9;
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1e293b;
+            border: 0.5px solid #cbd5e1;
+        }
+
+        .course-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.75rem;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            color: #4a5b6e;
+            transition: all 0.2s;
+            background: #f1f5f9;
+            border: 0.5px solid #cbd5e1;
+        }
+
+        .tab.active {
+            background: #1e4b8f;
+            color: white;
+            border-color: #1e4b8f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .tab:hover:not(.active) {
+            background: #e6edf4;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.4rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #f8fafc;
+            border: 0.5px solid #cbd5e1;
+            border-radius: 30px;
+            padding: 5px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #2c3e50;
+            transition: all 0.15s;
+        }
+
+        .filter-btn.active {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        .progress-info {
+            font-size: 0.85rem;
+            color: #4a627a;
+            margin-bottom: 1.2rem;
+            background: #f8fafc;
+            padding: 8px 14px;
+            border-radius: 24px;
+            display: inline-block;
+        }
+
+        .qcard {
+            background: white;
+            border: 1px solid #e2edf7;
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 1.6rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: 0.1s;
+        }
+
+        .qnum {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #5b7a9a;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .qtext {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #0f2b3d;
+            line-height: 1.45;
+            margin-bottom: 1.2rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .opt {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .opt:hover:not(.disabled) {
+            background: #f7fafd;
+            border-color: #b9d0e7;
+        }
+
+        .opt.selected {
+            border-color: #1e4b8f;
+            background: #eef4fc;
+        }
+
+        .opt.correct {
+            border-color: #2b6e3c;
+            background: #e8f3e8;
+        }
+
+        .opt.wrong {
+            border-color: #b91c1c;
+            background: #fee9e9;
+        }
+
+        .opt.missed {
+            border-color: #b45309;
+            background: #fff0e6;
+        }
+
+        .opt-letter {
+            width: 28px;
+            height: 28px;
+            background: #f1f5f9;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1e293b;
+            flex-shrink: 0;
+            border: 0.5px solid #cbd5e1;
+        }
+
+        .opt.selected .opt-letter {
+            background: #1e4b8f;
+            color: white;
+            border-color: #1e4b8f;
+        }
+
+        .opt.correct .opt-letter {
+            background: #2b6e3c;
+            color: white;
+            border-color: #2b6e3c;
+        }
+
+        .opt.wrong .opt-letter {
+            background: #b91c1c;
+            color: white;
+            border-color: #b91c1c;
+        }
+
+        .opt.missed .opt-letter {
+            background: #b45309;
+            color: white;
+            border-color: #b45309;
+        }
+
+        .opt-text {
+            font-size: 0.92rem;
+            line-height: 1.45;
+            color: #1e2f3f;
+            flex: 1;
+        }
+
+        .check-btn {
+            margin-top: 1.3rem;
+            background: #1e4b8f;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .check-btn:hover {
+            background: #0f3a6b;
+        }
+
+        .check-btn:disabled {
+            background: #b9cfec;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            margin-top: 1.2rem;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            background: #fef9e6;
+            border-left: 4px solid #f5b042;
+        }
+
+        .explanation.success {
+            background: #e6f4ea;
+            border-left-color: #2b6e3c;
+            color: #14532d;
+        }
+
+        .explanation.partial {
+            background: #fff0e0;
+            border-left-color: #c2410c;
+            color: #7c2d12;
+        }
+
+        .explanation.fail {
+            background: #ffe6e6;
+            border-left-color: #b91c1c;
+            color: #991b1b;
+        }
+
+        .nav-row {
+            display: flex;
+            gap: 14px;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn, .reset-btn {
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 0.5px solid #cbd5e1;
+            background: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .nav-btn:hover, .reset-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .reset-btn {
+            color: #b91c1c;
+            border-color: #f1c0c0;
+        }
+
+        .reset-btn:hover {
+            background: #fee2e2;
+        }
+
+        .disabled {
+            cursor: default !important;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.2rem;
+            }
+            .qcard {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>📚 Imagerie médicale – CBCT · OPT · Scanner · IRM</h2>
+        <div class="score-bar">
+            <div class="score-chip" id="score-display">Score : 0 / 0</div>
+            <div class="score-chip" id="progress-display">Répondues : 0 / 120</div>
+        </div>
+    </div>
+    <div class="course-tabs" id="course-tabs"></div>
+    <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">Toutes</button>
+        <button class="filter-btn" data-filter="unanswered">Non répondues</button>
+        <button class="filter-btn" data-filter="wrong">Erreurs</button>
+        <button class="filter-btn" data-filter="correct">Correctes</button>
+    </div>
+    <div class="progress-info" id="progress-info"></div>
+    <div id="qlist"></div>
+    <div class="nav-row">
+        <button class="nav-btn" id="prev-btn">← Précédent</button>
+        <button class="reset-btn" id="reset-btn">Réinitialiser le cours</button>
+        <button class="nav-btn" id="next-btn">Suivant →</button>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // DONNÉES : 120 questions issues du code imagerie (inchangées)
+    // Adaptation au format : {courseId, q, opts, correct}
+    // Mapping cours : 0 -> Cone Beam, 1 -> OPT et TDM, 2 -> IRM, 3 -> Scanner
+    // --------------------------------------------------------------
+    const questionsRaw = [
+        // COURS 0 : Cone Beam (30 questions)
+        {course:"Cone Beam", q:"Quelle est la différence fondamentale entre la TDM conventionnelle et le CBCT concernant le faisceau de rayons X ?",opts:["La TDM utilise un faisceau conique","Le CBCT utilise un faisceau en éventail","Le CBCT utilise un faisceau conique","La TDM nécessite plusieurs rotations","Le CBCT nécessite de multiples rotations"],correct:[2]},
+        {course:"Cone Beam", q:"Parmi les caractéristiques de l'algorithme de reconstruction du CBCT, lesquelles sont vraies ?",opts:["Il s'agit de l'algorithme FDK (Feldkamp, Davis et Kress)","Il produit des voxels anisotropes","Il permet une navigation dans trois plans orthogonaux","Il ne permet pas de rendus volumiques 3D","Les voxels ont des dimensions identiques en x, y et z"],correct:[0,2,4]},
+        {course:"Cone Beam", q:"Quels sont les éléments constitutifs principaux d'un appareil CBCT ?",opts:["Un bras rotatif en forme de C","Un tube émettant un faisceau en éventail","Un détecteur bidimensionnel à écran plan","Un panneau de contrôle pour choisir le FOV","Une station informatique sans carte graphique"],correct:[0,2,3]},
+        {course:"Cone Beam", q:"Lors de l'acquisition d'un CBCT, la rotation de l'appareil autour de la tête dure généralement :",opts:["De 1 à 2 secondes","De 5 à 40 secondes","Plus de 60 secondes","De 6 à 30 secondes en moyenne","Plusieurs minutes"],correct:[1,3]},
+        {course:"Cone Beam", q:"Concernant le nombre de projections (raw data) en CBCT :",opts:["Il varie typiquement de 180 à plus de 1024 images","Un nombre élevé diminue la résolution","Un nombre élevé réduit les artefacts de reconstruction","Un nombre élevé augmente le temps d'examen","Un nombre élevé réduit la dose d'exposition"],correct:[0,2,3]},
+        {course:"Cone Beam", q:"En endodontie, le CBCT est principalement indiqué dans quelles situations ?",opts:["En première intention pour le dépistage carieux systématique","En petit champ (FOV réduit)","Pour évaluer les canaux radiculaires oblitérés","En cas de suspicion de résorption radiculaire","Pour évaluer une tumeur maligne infiltrante"],correct:[1,2,3]},
+        {course:"Cone Beam", q:"Pour le bilan préopératoire d'une extraction de dent de sagesse, le CBCT est prescrit lorsque le panoramique montre :",opts:["Une indépendance certaine du canal mandibulaire","Une superposition des apex avec le canal mandibulaire","Une dent complètement incluse sans rapport à risque","La présence d'un crochet apical péri-canalaire suspecté","Une inclusion haute avec mésioversion au maxillaire"],correct:[1,3,4]},
+        {course:"Cone Beam", q:"En orthodontie, le CBCT petit champ et haute résolution (voxels ≤ 125 µm) est utile pour diagnostiquer :",opts:["L'analyse globale pour chirurgie orthognathique","Une ankylose dentaire","Une fente palatine","Une hypercémentose débutante","Une résorption externe liée à une dent incluse"],correct:[1,3,4]},
+        {course:"Cone Beam", q:"Concernant l'évaluation des sinus et de l'ATM par CBCT :",opts:["Il est recommandé en cas de suspicion d'infection fongique sinusienne","Il constitue une alternative à la TDM pour la rhinosinusite chronique","Il détecte efficacement l'arthrose condylienne","Il est la méthode de choix pour évaluer les tissus mous de l'ATM","Il détecte la condensation des pièces osseuses de l'ATM"],correct:[1,2,4]},
+        {course:"Cone Beam", q:"Parmi les inconvénients majeurs du CBCT, on retrouve :",opts:["Une irradiation supérieure à celle d'un scanner conventionnel","Une faible résolution de contraste pour les tissus mous","L'incapacité d'explorer les pathologies tumorales infiltrantes","Des densités exprimées en Unités Hounsfield absolues fiables","Une résolution spatiale inférieure à celle de la TDM"],correct:[1,2]},
+        {course:"Cone Beam", q:"Quelles sont les causes et conséquences des artefacts cinétiques au CBCT ?",opts:["Ils sont liés aux restaurations métalliques","Ils sont dus au mouvement du patient (déglutition)","Ils créent des bandes noires et blanches","Ils provoquent un flou de l'image","Ils causent un dédoublement des structures"],correct:[1,3,4]},
+        {course:"Cone Beam", q:"L'artefact de durcissement du faisceau (beam hardening) se caractérise par :",opts:["Une atténuation différentielle des rayons X","Des zones hyperdenses artificielles près des structures denses","Un flou cinétique","La disparition de l'émail dentaire sur l'image","L'apparition de stries métalliques directes"],correct:[0,1]},
+        {course:"Cone Beam", q:"En comparaison avec le scanner conventionnel (CT), le CBCT :",opts:["Nécessite un renforcement spécifique du plancher","A un coût environ 3 à 5 fois inférieur","Dispose d'un équipement plus léger et compact","Possède des pixels plus grands","Peut s'installer facilement dans un cabinet dentaire"],correct:[1,2,4]},
+        {course:"Cone Beam", q:"La préparation et l'installation du patient pour un CBCT incluent :",opts:["Le retrait systématique des objets métalliques","Une position obligatoirement allongée","L'utilisation d'une mentonnière et d'un appui-tête","La réalisation d'un topogramme (scout view) pour le centrage","L'injection obligatoire d'un produit de contraste"],correct:[0,2,3]},
+        {course:"Cone Beam", q:"Comment l'algorithme de reconstruction gère-t-il les données brutes du CBCT ?",opts:["Il utilise une carte graphique basse performance","Il effectue une rétroprojection filtrée","Il reconstruit un volume anatomique en 3D","Il transforme des voxels isotropes en pixels anisotropes","Il encode les données finales en format DICOM"],correct:[1,2,4]},
+        {course:"Cone Beam", q:"Qu'est-ce qui influence la dose d'exposition et la résolution spatiale en CBCT ?",opts:["La taille du champ de vue (FOV)","Le temps d'apnée du patient","Le nombre de projections acquises","La température de la salle","Les paramètres kV et mA"],correct:[0,2,4]},
+        {course:"Cone Beam", q:"Dans le cadre de l'implantologie, l'intérêt du CBCT réside dans :",opts:["La visualisation optimale des volumes osseux","La mesure de la densité osseuse en UH strictes","L'appréciation de l'architecture de l'os spongieux","L'évaluation précise des rapports anatomiques","L'exploration détaillée des fascias musculaires"],correct:[0,2,3]},
+        {course:"Cone Beam", q:"À quel moment l'invention du CBCT dentaire a-t-elle eu lieu ?",opts:["En 1972 par Godfrey Hounsfield","En 1997 par Arai","Sous le nom initial d'Ortho-CT","En 1946 par Felix Bloch","En 2023"],correct:[1,2]},
+        {course:"Cone Beam", q:"Pour un CBCT à 'champ moyen' (8 cm) ou 'petit' (4-6 cm) en orthodontie, les indications comprennent :",opts:["L'analyse globale pour chirurgie orthognathique","Les inclusions dentaires et kystes associés","Les anomalies de nombre","Les fentes palatines","L'évaluation des tissus mous pharyngés"],correct:[1,2,3]},
+        {course:"Cone Beam", q:"Les valeurs de densité en CBCT sont :",opts:["Des Unités Hounsfield absolues","Codées sur 12 ou 14 bits en niveaux de gris","Relatives et dépendantes du FOV","Variantes selon la position du patient et les artefacts","Aussi précises que la TDM pour l'analyse quantitative de l'os"],correct:[1,2,3]},
+        {course:"Cone Beam", q:"Quels artefacts sont typiquement liés aux amalgames ou implants au CBCT ?",opts:["Artefacts de mouvement","Stries d'artéfacts métalliques","Bandes noires et blanches","Dédoublement de l'image","Artefact de durcissement du faisceau périphérique"],correct:[1,2,4]},
+        {course:"Cone Beam", q:"Laquelle de ces affirmations sur le capteur d'un CBCT est exacte ?",opts:["Il se trouve du même côté que le tube à rayons X","C'est un détecteur bidimensionnel à écran plat","Il capture l'image en effectuant de multiples rotations","Il intercepte le faisceau conique après la traversée du patient","Il transforme les données numériques en signaux analogiques"],correct:[1,3]},
+        {course:"Cone Beam", q:"Lors d'un examen CBCT, le topogramme (scout view) sert principalement à :",opts:["Détecter les caries interproximales","Centrer précisément l'examen","Définir la zone exacte d'exploration (FOV)","Visualiser les tissus mous","Créer le rendu volumique final"],correct:[1,2]},
+        {course:"Cone Beam", q:"En CBCT, quelles sont les caractéristiques des voxels ?",opts:["Ils sont anisotropes","Leurs dimensions x, y et z sont strictement identiques","Leur isotropie empêche la reconstruction curviligne","Ils permettent des reconstructions multiplanaires sans déformation","Leur taille n'affecte pas la résolution"],correct:[1,3]},
+        {course:"Cone Beam", q:"Quelles recommandations s'appliquent pour les caries dentaires au CBCT ?",opts:["C'est l'examen de dépistage de première intention","Les radiographies rétro-coronaires (bite wing) restent supérieures","Elles doivent être ignorées lors de l'interprétation d'un CBCT implantologique","Elles doivent être signalées si découvertes fortuitement","Le CBCT remplace totalement le bite wing"],correct:[1,3]},
+        {course:"Cone Beam", q:"Un petit champ (FOV) en CBCT a pour conséquence :",opts:["Une résolution spatiale augmentée","Une résolution spatiale diminuée","Une dose d'irradiation augmentée pour le patient","Une dose d'irradiation diminuée pour le patient","L'impossibilité de voir la structure fine de la dent"],correct:[0,3]},
+        {course:"Cone Beam", q:"Concernant l'exploration des lésions kystiques par CBCT :",opts:["Il permet d'identifier les kystes odontogènes de grande taille","Il différencie parfaitement le contenu liquidien d'un tissu tumoral malin","Il est formellement indiqué pour explorer une suspicion de malignité","Il identifie les tumeurs bénignes calcifiées","Il montre très bien l'extension osseuse de la lésion"],correct:[0,3,4]},
+        {course:"Cone Beam", q:"Comment se comporte le faisceau de rayons X dans le CBCT ?",opts:["Il est continu ou pulsé","Il couvre tout l'organe en une seule rotation complète","Il irradie uniquement le plan transversal d'une coupe","Il diverge en forme de cône depuis le tube","Il nécessite le mouvement du lit du patient"],correct:[0,1,3]},
+        {course:"Cone Beam", q:"Lors du bilan d'une dent de sagesse mandibulaire au CBCT, le praticien cherche à évaluer :",opts:["La morphologie radiculaire précise de la dent","L'épaisseur de la gencive marginale","Les rapports exacts avec la 2ème molaire","L'intégrité de la corticale du canal mandibulaire","Le flux sanguin intra-pulpaire"],correct:[0,2,3]},
+        {course:"Cone Beam", q:"Le volume reconstruit par le CBCT permet de générer :",opts:["Des coupes axiales","Des coupes coronales","Des coupes sagittales","Des courbes curvilignes (panoramiques reconstruites)","Des reconstructions orthogonales à la crête"],correct:[0,1,2,3,4]},
+        // COURS 1 : OPT et TDM (30 questions)
+        {course:"OPT et TDM", q:"Le principe de l'orthopantomogramme (OPT) repose sur :",opts:["La tomographie rotative à faisceau conique","La tomographie rotative à faisceau étroit","L'acquisition d'images 3D natives","Un axe focal net avec un flou de balayage externe","L'émission d'un champ magnétique puissant"],correct:[1,3]},
+        {course:"OPT et TDM", q:"Parmi les critères de qualité d'un OPT, on recherche :",opts:["La visibilité parfaite des deux condyles mandibulaires","Une asymétrie entre les branches montantes pour l'effet de profondeur","Le palais dur projeté au-dessus des apex maxillaires","Une bande radioclaire sombre sur les apex si la langue est bien placée","L'absence d'artefacts métalliques"],correct:[0,2,4]},
+        {course:"OPT et TDM", q:"Si le patient n'applique pas sa langue contre le palais lors d'un OPT :",opts:["Une bande radio-opaque masque les dents mandibulaires","Une bande radioclaire (air pharyngé) barre les apex maxillaires","Cela simule de fausses lésions de lyse apicale","Le contraste global du cliché est amélioré","Une image fantôme de la langue apparaît"],correct:[1,2]},
+        {course:"OPT et TDM", q:"Concernant l'image fantôme sur un OPT :",opts:["Elle provient d'un objet de faible densité","Elle est générée par un objet situé en dehors du plan focal","Elle se projette de façon nette et précise","Elle se projette du côté opposé à sa position réelle","Elle apparaît surélevée et floue"],correct:[1,3,4]},
+        {course:"OPT et TDM", q:"Dans la méthodologie de lecture d'un OPT, le balayage de la région mandibulaire permet d'évaluer :",opts:["Les apophyses styloïdes","Le bord antérieur et postérieur de la branche montante","Le foramen mentonnier","L'échancrure sigmoïde et le coroné","La suture inter-maxillaire"],correct:[1,2,3]},
+        {course:"OPT et TDM", q:"Au scanner (TDM), la 'fenêtre osseuse' est essentielle pour analyser :",opts:["La trame osseuse trabéculaire","La graisse infra-temporale","La continuité des tables corticales","Les muscles masticateurs","Les structures dentaires minéralisées"],correct:[0,2,4]},
+        {course:"OPT et TDM", q:"La classification de Lodwick décrit l'ostéolyse géographique (Type I) comme :",opts:["Une lésion très agressive","IA : contours nets avec liseré d'ostéosclérose","IB : contours nets sans liseré","IC : contours mal visibles","Une lésion perméative"],correct:[1,2,3]},
+        {course:"OPT et TDM", q:"Un processus pathologique malin infiltrant à la mandibule se caractérise radiologiquement par :",opts:["Une ostéolyse mitée ou perméative","Des limites floues et mal définies","Une soufflure harmonique régulière de la corticale","Une réaction périostée spiculée (en feu d'herbe) ou un éperon de Codman","Une rhizalyse extrêmement nette et régulière des dents adjacentes"],correct:[0,1,3]},
+        {course:"OPT et TDM", q:"Le Signe de Garrington, observable en imagerie, correspond à :",opts:["Un élargissement symétrique du ligament parodontal","Un élargissement asymétrique de l'espace ligamentaire","La destruction de la lamina dura associée","Une indication d'ankylose dentaire bénigne","Un indicateur précoce d'infiltration maligne"],correct:[1,2,4]},
+        {course:"OPT et TDM", q:"Sur le plan directionnel dentaire, le terme 'mésial' signifie :",opts:["Vers le fond de la bouche","Vers la ligne médiane de l'arcade","Du côté de la langue","La surface de mastication","La face externe visible"],correct:[1]},
+        {course:"OPT et TDM", q:"Une lacune située sous le canal mandibulaire, près de l'angle, bien limitée et asymptomatique correspond typiquement à :",opts:["Un kyste radiculaire","Un améloblastome multiloculaire","La lacune de Stafne (défaut cortical statique)","Un kératokyste","Une invagination de la glande sous-maxillaire"],correct:[2,4]},
+        {course:"OPT et TDM", q:"Le kyste dentigère (folliculaire) présente les caractéristiques suivantes :",opts:["C'est un kyste inflammatoire","Il entoure la couronne d'une dent incluse","Son insertion se fait typiquement au collet anatomique de la dent","Il ne provoque jamais de soufflure corticale","Il siège souvent au niveau des 3èmes molaires mandibulaires"],correct:[1,2,4]},
+        {course:"OPT et TDM", q:"Quels sont les signes radiologiques du Kératokyste Odontogène (KCO) au scanner ?",opts:["Une croissance axiale longitudinale (pousse en longueur)","Une soufflure vestibulo-linguale massive d'emblée","Une lacune souvent pluriloculaire en 'bulles de savon'","Des bords festonnés bien limités par un liseré","Une continuité corticale maintenue longtemps malgré la taille"],correct:[0,3,4]},
+        {course:"OPT et TDM", q:"L'améloblastome est reconnu radiologiquement par :",opts:["Son aspect strictement monogéodique sans expansion","Sa croissance tridimensionnelle massive et déformante","Un aspect multiloculaire en 'nid d'abeilles' ou 'bulles de savon'","Une rhizalyse abrupte des racines dentaires","La présence de nodules charnus muraux prenant le contraste en IRM/TDM"],correct:[1,2,3,4]},
+        {course:"OPT et TDM", q:"Le syndrome de Gorlin-Goltz est suspecté devant :",opts:["Des cémentomes multiples","Des kératokystes odontogènes multiples","Des kystes radiculaires à répétition","Des calcifications précoces de la faux du cerveau","Des carcinomes basocellulaires cutanés"],correct:[1,3,4]},
+        {course:"OPT et TDM", q:"Quelles lésions sont considérées comme d'origine NON odontogène ?",opts:["La lacune de Stafne","Le kyste folliculaire","Le kyste du canal naso-palatin","Le cémentoblastome","Le kyste osseux simple (traumatique)"],correct:[0,2,4]},
+        {course:"OPT et TDM", q:"Le cémentome (dysplasie cémento-osseuse) au stade mature se caractérise par :",opts:["Une ostéolyse massive perméative","Une masse radio-opaque hyperdense unie à la racine","Un fin liseré radioclair périphérique continu l'isolant de l'os sain","Une rupture corticale avec envahissement","Une prédilection pour les femmes d'âge moyen"],correct:[1,2,4]},
+        {course:"OPT et TDM", q:"Le kyste radiculaire se forme généralement :",opts:["Autour d'une couronne de dent saine incluse","Suite à la nécrose pulpaire (infection)","Par stimulation des débris épithéliaux de Malassez","A cause du virus HPV","Au centre d'une lacune statique de Stafne"],correct:[1,2]},
+        {course:"OPT et TDM", q:"En imagerie, l'aspect de 'dent flottante' est caractéristique :",opts:["D'un kyste dentigère","D'une maladie parodontale terminale ou d'un processus malin infiltrant","D'un cémentome mature","D'un améloblastome localisé","De la destruction complète de l'os alvéolaire d'ancrage"],correct:[1,4]},
+        {course:"OPT et TDM", q:"Dans la sémiologie d'un processus bénin, on observe typiquement :",opts:["Une corticale rompue","Des limites nettes géographiques (Lodwick IA/IB)","Un refoulement et une divergence des axes radiculaires","Une rhizalyse nette et régulière","Une réaction périostée en bulbe d'oignon"],correct:[1,2,3]},
+        {course:"OPT et TDM", q:"L'espace desmodontal (ligament parodontal) normal à l'OPT apparaît comme :",opts:["Une ligne radio-opaque épaisse","Un espace radioclair fin","Entouré par une ligne blanche appelée lamina dura","Absolument invisible","Hyperdense à sa périphérie apicale uniquement"],correct:[1,2]},
+        {course:"OPT et TDM", q:"Le logiciel DentaScan d'un scanner permet de :",opts:["Faire une imagerie par résonance magnétique","Générer des coupes perpendiculaires à l'arcade","Mesurer avec une très grande précision l'épaisseur osseuse disponible","Se passer totalement d'irradiation","Apprécier la distance entre la crête et le canal alvéolaire inférieur"],correct:[1,2,4]},
+        {course:"OPT et TDM", q:"Une lésion centrée sur la couronne d'une dent et située au-dessus du canal mandibulaire est le plus souvent :",opts:["D'origine odontogénique","Une métastase d'un cancer profond","Une lacune de Stafne","Une ostéomyélite chronique","Un kyste dentigère si elle entoure la couronne d'une dent incluse"],correct:[0,4]},
+        {course:"OPT et TDM", q:"Parmi ces images radio-opaques, lesquelles n'ont aucun rapport direct avec la dent ?",opts:["Cémentoblastome","Ostéome","Odontome composé","Ostéite condensante périradiculaire","Torus mandibulaire (exostose)"],correct:[1,4]},
+        {course:"OPT et TDM", q:"Une réaction périostée plurilamellaire ou spiculée est le signe d'un processus :",opts:["Bénin à croissance très lente","Hautement agressif ou malin","Kystique inflammatoire simple","Odontogénique exclusivement","Ostéosarcomateux par exemple"],correct:[1,4]},
+        {course:"OPT et TDM", q:"Une lacune osseuse dont les contours sont flous, mal définis et d'aspect mité traduit :",opts:["Une évolutivité lente (Lodwick IA)","Un processus potentiellement agressif (Lodwick Type II)","Un kyste folliculaire non compliqué","Une destruction osseuse rapide sans liseré de condensation","Une lacune statique de Stafne"],correct:[1,3]},
+        {course:"OPT et TDM", q:"Comment se présente l'ostéolyse sur une radiographie (OPT) ?",opts:["Par une disparition plus ou moins prononcée de l'os","Par une radio-opacité marquée","Par une image radioclaire (noire/sombre)","Par une condensation focale","Par un liseré ostéosclérotique exclusif"],correct:[0,2]},
+        {course:"OPT et TDM", q:"Une lésion mixte (lytique et condensante) peut se rencontrer dans :",opts:["Le kyste radiculaire pur","Le fibrome ossifiant","La dysplasie cémento-osseuse en phase intermédiaire","Le kyste osseux simple","L'ostéosarcome ostéogénique"],correct:[1,2,4]},
+        {course:"OPT et TDM", q:"La région de l'oropharynx et du rhinopharynx sur un OPT correspond à :",opts:["Des structures osseuses hyperdenses","Des clartés aériques pouvant masquer certaines zones osseuses","Des opacités liées aux tissus mous","La cavité glénoïde","Des espaces qui nécessitent de plaquer la langue au palais pour les éviter"],correct:[1,4]},
+        {course:"OPT et TDM", q:"Lors de l'analyse d'un kyste inflammatoire apical à la TDM, on s'attend à observer :",opts:["Une densité liquidienne pure (10-30 UH)","Une densité très élevée (>500 UH)","Une lésion homogène délimitée par ostéosclérose","Une extension perméative massive","L'absence totale de corticalisation (Lodwick III)"],correct:[0,2]},
+        // COURS 2 : IRM (30 questions)
+        {course:"IRM", q:"Quels sont les avantages majeurs de l'IRM par rapport au scanner en dentisterie ?",opts:["Elle utilise des rayons X à très faible dose","Elle offre une absence totale de radiations ionisantes","Elle possède un excellent contraste pour les tissus mous","Elle est la référence pour l'étude de l'os cortical","Elle est très abordable et toujours prescrite en première intention"],correct:[1,2]},
+        {course:"IRM", q:"Le principe de polarisation en IRM consiste en :",opts:["L'alignement des spins des protons d'hydrogène selon le champ magnétique B0","La création d'une aimantation longitudinale (Mz)","L'émission d'une onde radiofréquence B1","L'absorption d'énergie par les électrons","Le basculement direct dans le plan transversal"],correct:[0,1]},
+        {course:"IRM", q:"La fréquence de précession des protons autour de l'axe de B0 s'appelle :",opts:["La fréquence de Faraday","La fréquence de Larmor","La fréquence de Hounsfield","La résonance de Lauterbur","La fréquence de Bloch"],correct:[1]},
+        {course:"IRM", q:"Le paramètre TE (Temps d'Écho) en IRM correspond à :",opts:["L'intervalle entre deux excitations successives","L'intervalle entre l'excitation et la mesure du signal","La vitesse de rotation des protons","La durée totale de l'examen","Le temps de suppression de la graisse"],correct:[1]},
+        {course:"IRM", q:"Concernant les séquences pondérées en T1 :",opts:["Le TR et le TE sont courts","L'anatomie et la graisse y apparaissent en blanc (intense)","L'eau et les liquides y apparaissent en blanc","Elles sont idéales pour voir l'œdème inflammatoire","Elles fournissent un signal noir pour la graisse"],correct:[0,1]},
+        {course:"IRM", q:"En séquence T2 à l'IRM :",opts:["Le TR et le TE sont longs","La graisse est noire","L'eau, le liquide et l'œdème apparaissent en blanc (intense)","L'os cortical apparaît très blanc","C'est la séquence reine pour repérer les inflammations et épanchements liquidiens"],correct:[0,2,4]},
+        {course:"IRM", q:"Quelle séquence IRM est considérée comme le meilleur compromis pour étudier l'ATM ?",opts:["La séquence T1 stricte","La séquence T2 Fat-Sat","La séquence Densité Protonique (DP)","La séquence STIR uniquement","Le DentaScan"],correct:[2]},
+        {course:"IRM", q:"La séquence STIR ou Fat-Sat a pour propriété de :",opts:["Mettre la graisse en évidence avec un signal intense","Supprimer le signal de la graisse (apparaît noire)","Faciliter la visualisation des phénomènes inflammatoires et de l'œdème","Rendre l'eau totalement noire","Être inexploitable en pathologie infectieuse"],correct:[1,2]},
+        {course:"IRM", q:"Parmi les éléments constitutifs de l'appareillage IRM, on trouve :",opts:["Un aimant supraconducteur générant B0 (souvent 1,5 ou 3 Tesla)","Un tube à rayons X rotatif","Une cage de Faraday pour protéger des interférences","Des antennes radio-fréquences","Un détecteur à écran plat amorphe"],correct:[0,2,3]},
+        {course:"IRM", q:"L'IRM de l'ATM permet d'évaluer de manière dynamique (bouche ouverte/fermée) :",opts:["L'épaisseur exacte de la table osseuse vestibulaire","La position et la morphologie du disque articulaire","La luxation discale avec ou sans réduction","Les kystes radiculaires des incisives","Les éventuelles ankyloses osseuses pures"],correct:[1,2]},
+        {course:"IRM", q:"Pour le bilan d'un cancer de la langue, l'IRM :",opts:["Est moins performante que le CBCT","Offre une meilleure caractérisation de l'extension locale tissulaire que la TDM","Permet de bien délimiter la tumeur par rapport aux muscles","Est formellement contre-indiquée","Nécessite obligatoirement un marqueur iodé"],correct:[1,2]},
+        {course:"IRM", q:"Quelles sont les contre-indications ABSOLUES de l'IRM ?",opts:["Insuffisance rénale sévère","Présence d'un pacemaker non compatible","Clips anévrismaux ferromagnétiques intracrâniens","Claustrophobie","Corps étrangers métalliques intra-oculaires"],correct:[1,2,4]},
+        {course:"IRM", q:"Quelles sont les contre-indications RELATIVES de l'IRM ?",opts:["Insuffisance rénale sévère (si injection de Gadolinium)","Allergie connue au Gadolinium","Grossesse au 1er trimestre","Implant cochléaire ancien","Stent cardiaque posé il y a 10 ans"],correct:[0,1,2]},
+        {course:"IRM", q:"L'avancée technologique UTE (Ultra Short Echo Time) en IRM permet :",opts:["De reconstruire des images de type orthopantomogramme (IRM-OPG)","De rendre l'examen totalement silencieux","Une meilleure visualisation directe des structures osseuses et dentaires","De scanner un patient porteur d'un pacemaker","De se passer définitivement d'antennes de surface"],correct:[0,2]},
+        {course:"IRM", q:"Quels sont les inconvénients liés au déroulement de l'examen IRM pour le patient ?",opts:["Irradiation forte et accumulée","Bruit acoustique important durant les séquences","Durée d'examen assez longue (20 à 45 min)","Sensation de claustrophobie dans le tunnel","Chaleur intense due aux rayons X"],correct:[1,2,3]},
+        {course:"IRM", q:"La résonance magnétique nucléaire a été découverte en 1946 par :",opts:["Godfrey Hounsfield","Felix Bloch","Edward Purcell","Paul Lauterbur","Wilhelm Röntgen"],correct:[1,2]},
+        {course:"IRM", q:"Que se passe-t-il lors de la phase de relaxation en IRM ?",opts:["Les protons reviennent à leur état d'équilibre","Ils émettent de l'énergie sous forme d'onde radiofréquence","L'aimantation bascule dans le plan transversal","Le signal émis est capté par les antennes","Les spins s'alignent pour la première fois avec B0"],correct:[0,1,3]},
+        {course:"IRM", q:"Lors d'une luxation discale de l'ATM avec réduction :",opts:["Bouche fermée, le disque est luxé en arrière","Bouche fermée, le disque est luxé en avant du condyle","Bouche ouverte, le condyle glisse et recapture le disque","Cela est souvent responsable d'un 'clac' articulaire audible","Le condyle est fracturé"],correct:[1,2,3]},
+        {course:"IRM", q:"Pour l'imagerie du nerf alvéolaire inférieur ou du trijumeau (recherche de neurinome), l'examen de choix est :",opts:["L'OPT","Le Cone Beam","L'IRM","La radiographie rétroalvéolaire","Le scanner non injecté"],correct:[2]},
+        {course:"IRM", q:"Le contraste de l'IRM pour l'os trabéculaire et cortical comparativement au CBCT est :",opts:["Très supérieur","Faible","Strictement identique","Excellent","Inexistant (noir absolu)"],correct:[1]},
+        {course:"IRM", q:"En IRM, si une lésion apparaît très blanche (hyperintense) en T2 et s'assombrit en T1, elle contient probablement :",opts:["De la graisse dense","De l'os très corticalisé","Une forte proportion d'eau, de liquide ou d'œdème","Un alliage métallique lourd","De l'air"],correct:[2]},
+        {course:"IRM", q:"L'indication privilégiée de l'IRM maxillo-faciale regroupe :",opts:["Les fêlures dentaires coronaires","Les caries débutantes","La pathologie de l'ATM, des tissus mous et des nerfs","Les bilans infectieux inflammatoires complexes (cellulites profondes)","Les planifications canalaires fines"],correct:[2,3]},
+        {course:"IRM", q:"Pourquoi l'examen clinique est-il jugé indispensable avant de prescrire une IRM ?",opts:["Pour ajuster la dose de rayons X","Pour permettre au radiologue d'adapter le protocole, le FOV et les séquences","Pour déterminer s'il faut utiliser le champ B0 ou non","Car le type d'antenne dépend de la température du patient","Pour vérifier que le patient peut rester en apnée"],correct:[1]},
+        {course:"IRM", q:"Le signal de la graisse en IRM :",opts:["Est hyperintense (blanc) en T1","Est hypointense (noir) en T1","Peut être annulé volontairement grâce à la séquence Fat-Sat","Est hyperintense (blanc) en STIR","Masque toujours l'œdème en T1"],correct:[0,2]},
+        {course:"IRM", q:"Qu'est-ce qu'une cage de Faraday en IRM ?",opts:["Le tube qui génère le faisceau conique","Un revêtement isolant de la pièce contre les ondes électromagnétiques externes","Le lit motorisé du patient","Le détecteur d'images 3D","L'aimant principal supraconducteur"],correct:[1]},
+        {course:"IRM", q:"Le coût et l'accessibilité de l'IRM par rapport au CBCT sont :",opts:["Moindres (IRM est moins chère)","Plus élevés et d'accès plus difficile","Équivalents","L'IRM est présente dans la majorité des cabinets dentaires","Totalement remboursés de manière illimitée"],correct:[1]},
+        {course:"IRM", q:"Dans quel cas l'injection de Gadolinium est-elle potentiellement risquée en IRM ?",opts:["Allergie avérée à l'iode pure","Insuffisance rénale sévère","Patient porteur d'une prothèse de hanche en titane","Allergie connue au Gadolinium","Patient asthmatique léger sans antécédent d'allergie de contraste"],correct:[1,3]},
+        {course:"IRM", q:"Le 'clac' articulaire de l'ATM lors de l'ouverture de la bouche traduit typiquement :",opts:["Une luxation discale sans réduction","Une luxation discale avec réduction (recapture du disque)","Une fracture du condyle","Une ankylose totale","Une perforation du ménisque"],correct:[1]},
+        {course:"IRM", q:"Lors du passage de l'onde radiofréquence B1 en IRM, que se passe-t-il physiquement ?",opts:["Les protons absorbent l'énergie B1","L'aimantation Mz est complètement détruite","L'aimantation bascule de l'axe longitudinal vers le plan transversal (Mxy)","Le champ B0 est coupé","Des rayons X sont émis en retour"],correct:[0,2]},
+        {course:"IRM", q:"Paul Lauterbur a marqué l'histoire de l'IRM en 1973 en :",opts:["Découvrant la résonance des spins","Produisant la première image 2D par résonance magnétique","Créant la séquence T2","Inventant l'échelle de Hounsfield","Développant le CBCT"],correct:[1]},
+        // COURS 3 : Scanner (30 questions)
+        {course:"Scanner", q:"Le principe physique du Scanner (TDM) utilise :",opts:["Des ondes radiofréquences et un champ magnétique","Des rayons X atténués lors de la traversée des tissus","La détection des protons d'hydrogène","Un faisceau de rayons X en éventail ou hélicoïdal","Des détecteurs sous forme de barrettes"],correct:[1,3,4]},
+        {course:"Scanner", q:"Comparativement au CBCT, la tomodensitométrie conventionnelle (TDM) offre :",opts:["Une irradiation beaucoup plus faible","Une excellente résolution en contraste pour les tissus mous","Une indication de première intention en implantologie standard","Une utilisation courante directement dans les cabinets dentaires","Une plus forte susceptibilité aux artéfacts métalliques (stries importantes)"],correct:[1,4]},
+        {course:"Scanner", q:"L'échelle de Hounsfield (UH) en TDM attribue conventionnellement :",opts:["La valeur 0 à l'air","La valeur 0 à l'eau","La valeur -1000 à l'air","La valeur +1000 aux tissus mous","Des valeurs de +800 à +2000 pour l'os compact et l'émail"],correct:[1,2,4]},
+        {course:"Scanner", q:"En TDM, les tissus adipeux (graisse) présentent une densité :",opts:["Isodense par rapport à l'os","Hypodense (valeur négative, environ -100 UH)","Hyperdense (+30 à +70 UH)","Similaire à celle de l'air (-1000 UH)","Généralement autour de 0 UH"],correct:[1]},
+        {course:"Scanner", q:"Concernant le fenêtrage parenchymateux en TDM, il sert principalement à analyser :",opts:["La trame osseuse fine","La graisse infra-temporale et les espaces profonds","Les muscles masticateurs","Les glandes salivaires","La continuité des corticales mandibulaires"],correct:[1,2,3]},
+        {course:"Scanner", q:"Lors d'un scanner injecté, le produit de contraste utilisé est :",opts:["Le Gadolinium","Le Baryum","Un produit iodé (PDCI)","De l'air injecté en intra-veineux","Radioactif (Technétium)"],correct:[2]},
+        {course:"Scanner", q:"Les indications principales du scanner maxillo-facial incluent :",opts:["Le bilan carieux de routine","Le bilan d'extension des tumeurs malignes (carcinomes)","Les traumatismes complexes (fracture du massif facial)","Les cellulites cervico-faciales avec recherche d'abcès","L'étude dynamique du disque de l'ATM"],correct:[1,2,3]},
+        {course:"Scanner", q:"Pour un patient diabétique sous Metformine devant recevoir un scanner avec injection :",opts:["Il n'y a aucune précaution particulière","Il y a un risque d'acidose lactique","La Metformine doit être arrêtée le jour de l'examen et 48h après","L'examen est définitivement contre-indiqué","Un contrôle de la créatininémie est recommandé après"],correct:[1,2,4]},
+        {course:"Scanner", q:"Que signifie l'aspect 'hyperdense' sur une image tomodensitométrique ?",opts:["La structure est plus sombre que le tissu environnant","La structure est plus blanche que le tissu environnant","Il s'agit typiquement d'une collection liquidienne (abcès)","Il s'agit typiquement de tissu osseux cortical ou d'émail","Il s'agit d'une zone d'ostéolyse"],correct:[1,3]},
+        {course:"Scanner", q:"L'artefact métallique au scanner provoque typiquement :",opts:["Un flou cinétique général","Des bandes ou stries hyperdenses rayonnantes","Une disparition totale du tissu mou","Une transformation de l'échelle de Hounsfield","Des faux positifs de kystes aériques"],correct:[1]},
+        {course:"Scanner", q:"Parmi les contre-indications à l'injection de produit de contraste iodé (PDCI), on retient :",opts:["L'allergie connue aux PDCI","Le port d'un pacemaker","L'insuffisance rénale sévère","La claustrophobie","La grossesse (contre-indication absolue indépendante de l'injection)"],correct:[0,2]},
+        {course:"Scanner", q:"Au cours du processus TDM, le signal mesuré par les détecteurs est :",opts:["L'atténuation du rayonnement après sa traversée du corps","L'émission radiofréquence des protons","La réflexion des ultrasons","Converti en données numériques pour être reconstruit","Reconstruit en matrice de voxels 3D"],correct:[0,3,4]},
+        {course:"Scanner", q:"La grossesse représente quelle contre-indication pour le scanner maxillo-facial ?",opts:["Absolue, même en cas d'urgence vitale","Relative mais majeure, surtout au 1er trimestre","Relative uniquement au 3ème trimestre","Il est conseillé de mettre un tablier de plomb si l'examen est indispensable","Aucune contre-indication si le crâne seul est scanné"],correct:[1,3]},
+        {course:"Scanner", q:"Quelles structures sont très bien visualisées dans la fenêtre osseuse du scanner ?",opts:["La pulpe dentaire","La trame osseuse trabéculaire","La continuité de la corticale osseuse","Le canal mandibulaire","Le muscle masséter"],correct:[1,2,3]},
+        {course:"Scanner", q:"Le principe ALARA en imagerie radiologique signifie :",opts:["As Long As Radiography Allows","Maintenir l'irradiation aussi basse que raisonnablement possible","Une norme de fenêtrage automatique","As Low As Reasonably Achievable","L'interdiction des scanners multibarrettes"],correct:[1,3]},
+        {course:"Scanner", q:"Dans quel cas précis le scanner est-il préféré au CBCT en odontologie ?",opts:["Pose d'un implant unitaire simple","Recherche d'un canal radiculaire accessoire","Bilan d'une cellulite cervico-faciale s'étendant au cou","Analyse d'une tumeur maligne avec invasion des parties molles","Évaluation de la position d'une dent de sagesse sans signe infectieux"],correct:[2,3]},
+        {course:"Scanner", q:"Lors de la réalisation d'un scanner, le patient :",opts:["Doit rester en apnée prolongée pendant plusieurs minutes","Passe très rapidement dans le gantry (quelques secondes)","Est allongé en décubitus dorsal","A généralement le plan d'occlusion perpendiculaire à la table","Est debout dans le statif"],correct:[1,2,3]},
+        {course:"Scanner", q:"Les post-traitements possibles à partir d'une acquisition scanner incluent :",opts:["Des reconstructions axiales, coronales et sagittales (MPR)","L'annulation du signal de l'eau (Fat-Sat)","Des reconstructions 3D (Volume rendering, MIP)","Le DentaScan (coupes perpendiculaires)","La mesure du temps de relaxation T2"],correct:[0,2,3]},
+        {course:"Scanner", q:"Concernant l'ostéosarcome au scanner, on s'attend typiquement à trouver :",opts:["Une lésion purement liquidienne uniloculaire","Une masse mixte lytique et condensante","Une rupture de la corticale osseuse","Une réaction périostée spiculée","Un respect total de l'os environnant"],correct:[1,2,3]},
+        {course:"Scanner", q:"Le sang aigu récent au scanner, sans injection, se situe dans quelle plage de densité ?",opts:["-1000 UH","Entre 0 et 20 UH","Entre 60 et 90 UH (hyperdense par rapport au liquide simple)","Entre 300 et 800 UH","> 1000 UH"],correct:[2]},
+        {course:"Scanner", q:"Qu'appelle-t-on 'scanner multibarrettes' ?",opts:["Un scanner qui utilise plusieurs aimants","Un appareil possédant plusieurs rangées de détecteurs","Une technique qui permet une acquisition plus rapide","Un scanner qui n'utilise pas de rayons X","Un scanner à haute résolution isotrope utilisé sans tube rotatif"],correct:[1,2]},
+        {course:"Scanner", q:"Le logiciel DentaScan est particulièrement précieux pour :",opts:["La recherche de caries précoces","Apprécier la distance exacte entre le rebord de crête et le canal alvéolaire inférieur","Générer des coupes orthogonales (transaxiales) le long de l'arcade","Étudier l'inflammation des tissus gingivaux","Réaliser des sialographies virtuelles"],correct:[1,2]},
+        {course:"Scanner", q:"Une zone isodense au scanner :",opts:["Est noire, comme l'air","A la même densité (le même gris) que le tissu adjacent","Est difficile à distinguer sans injection de produit de contraste","Est caractéristique de l'émail dentaire pur","Apparaît toujours blanche"],correct:[1,2]},
+        {course:"Scanner", q:"Le diagnostic de pathologie des glandes salivaires au scanner peut mettre en évidence :",opts:["Des lithiases canalaires (calculs radio-opaques)","Des tumeurs parotidiennes (masse hypodense ou prenant le contraste)","Des kystes radiculaires","Un élargissement de l'espace desmodontal","Une infection des muscles masticateurs adjacents"],correct:[0,1]},
+        {course:"Scanner", q:"Si un patient est agité ou déglutit pendant le balayage scanner :",opts:["L'image présentera des stries hyperdenses","L'image sera nette mais sous-exposée","L'image présentera un artefact cinétique (flou)","Le faisceau durcira localement","Un dédoublement des structures osseuses peut survenir"],correct:[2,4]},
+        {course:"Scanner", q:"Un abcès dentaire compliqué d'une cellulite au scanner injecté se présentera souvent comme :",opts:["Une collection liquidienne centrale (hypodense)","Une prise de contraste (hyperdense) en anneau de sa coque périphérique","Un nodule purement osseux (+1000 UH)","Une infiltration de la graisse sous-cutanée","Une image strictement identique au tissu musculaire sain"],correct:[0,1,3]},
+        {course:"Scanner", q:"L'équipement de la salle de scanner inclut obligatoirement :",opts:["Une cage de Faraday","Un pupitre de commande protégé par une vitre plombée","Le statif (gantry)","La table motorisée","Des bobines de gradient radiofréquence"],correct:[1,2,3]},
+        {course:"Scanner", q:"Parmi ces pathologies traumatiques, le scanner est l'examen de choix pour :",opts:["Les microfêlures de l'émail","Les fractures complexes du tiers moyen de la face","L'évaluation du plancher de l'orbite après un choc","La luxation méniscale de l'ATM","Les fractures basi-crâniennes associées"],correct:[1,2,4]},
+        {course:"Scanner", q:"Pour un bilan pré-chirurgical implantaire d'un seul édentement, quelle est la recommandation actuelle ?",opts:["Le Scanner en première intention","Le CBCT en première intention car moins irradiant et précis pour l'os","L'IRM pour vérifier la gencive","Le panoramique seul suffit toujours","L'échographie dentaire"],correct:[1]},
+        {course:"Scanner", q:"Une lésion qui absorbe beaucoup de rayons X au scanner sera codée :",opts:["Avec une valeur de Hounsfield négative","Avec une valeur de Hounsfield très élevée (positive)","En noir (clarté)","En blanc (opacité/hyperdensité)","Comme une collection aérique"],correct:[1,3]}
+    ];
+
+    // Transformation en ALL_QUESTIONS avec id de cours
+    const courseMap = {
+        "Cone Beam": 0,
+        "OPT et TDM": 1,
+        "IRM": 2,
+        "Scanner": 3
+    };
+    const COURSES = [
+        { id: 0, name: "Cone Beam", short: "CBCT" },
+        { id: 1, name: "OPT et TDM", short: "OPT/TDM" },
+        { id: 2, name: "IRM", short: "IRM" },
+        { id: 3, name: "Scanner", short: "Scanner" }
+    ];
+
+    const ALL_QUESTIONS = questionsRaw.map(item => ({
+        course: courseMap[item.course],
+        q: item.q,
+        opts: item.opts,
+        correct: item.correct
+    }));
+
+    // ---------- logique identique au premier code ----------
+    let currentCourse = 0;
+    let currentQ = 0;
+    let filter = 'all';
+    let state = ALL_QUESTIONS.map(() => ({ selected: new Set(), checked: false }));
+
+    function getFiltered() {
+        return ALL_QUESTIONS.map((q, i) => ({ q, i })).filter(({ q, i }) => {
+            if (q.course !== currentCourse) return false;
+            if (filter === 'all') return true;
+            if (filter === 'unanswered') return !state[i].checked;
+            if (filter === 'wrong') return state[i].checked && !isCorrect(i);
+            if (filter === 'correct') return state[i].checked && isCorrect(i);
+            return true;
+        });
+    }
+
+    function isCorrect(i) {
+        const q = ALL_QUESTIONS[i];
+        const s = state[i];
+        const correctSet = new Set(q.correct);
+        if (s.selected.size !== correctSet.size) return false;
+        for (let c of correctSet) if (!s.selected.has(c)) return false;
+        return true;
+    }
+
+    function render() {
+        const filtered = getFiltered();
+        const pi = document.getElementById('progress-info');
+        if (filtered.length === 0) {
+            pi.textContent = 'Aucune question dans ce filtre.';
+            document.getElementById('qlist').innerHTML = '';
+            return;
+        }
+        if (currentQ >= filtered.length) currentQ = 0;
+        const { q, i } = filtered[currentQ];
+        pi.textContent = `Question ${currentQ+1} / ${filtered.length} (Q${i+1} global)`;
+        const s = state[i];
+        const checked = s.checked;
+        const letters = ['A', 'B', 'C', 'D', 'E'];
+        let html = `<div class="qcard">
+            <div class="qnum">${COURSES[currentCourse].name} · Question ${i+1}</div>
+            <div class="qtext">${q.q}</div>
+            <div class="options">`;
+        q.opts.forEach((opt, oi) => {
+            let cls = 'opt';
+            if (checked) {
+                cls += ' disabled';
+                const isRight = q.correct.includes(oi);
+                const isSel = s.selected.has(oi);
+                if (isRight && isSel) cls += ' correct';
+                else if (!isRight && isSel) cls += ' wrong';
+                else if (isRight && !isSel) cls += ' missed';
+            } else {
+                if (s.selected.has(oi)) cls += ' selected';
+            }
+            const onclick = checked ? '' : `onclick="toggle(${i},${oi})"`;
+            html += `<div class="${cls}" ${onclick}>
+                <div class="opt-letter">${letters[oi]}</div>
+                <div class="opt-text">${opt}</div>
+            </div>`;
+        });
+        html += `</div>`;
+        if (!checked) {
+            html += `<button class="check-btn" onclick="check(${i})" ${s.selected.size === 0 ? 'disabled' : ''}>Vérifier ma réponse</button>`;
+        } else {
+            const allRight = isCorrect(i);
+            const partiallyCorrect = [...s.selected].some(x => q.correct.includes(x)) && !allRight;
+            let exCls = allRight ? 'success' : (partiallyCorrect ? 'partial' : 'fail');
+            let exText = allRight ? '✓ Parfait ! Toutes les bonnes réponses sélectionnées.' :
+                (partiallyCorrect ? `△ Réponse partielle. Bonnes réponses : ${q.correct.map(c=>letters[c]).join(', ')}` :
+                `✗ Incorrect. Bonnes réponses : ${q.correct.map(c=>letters[c]).join(', ')}`);
+            html += `<div class="explanation ${exCls}">${exText}</div>`;
+        }
+        html += `</div>`;
+        document.getElementById('qlist').innerHTML = html;
+        document.getElementById('prev-btn').disabled = currentQ === 0;
+        document.getElementById('next-btn').disabled = currentQ >= filtered.length - 1;
+        updateScore();
+    }
+
+    function toggle(i, oi) {
+        if (state[i].checked) return;
+        if (state[i].selected.has(oi)) state[i].selected.delete(oi);
+        else state[i].selected.add(oi);
+        render();
+    }
+
+    function check(i) {
+        state[i].checked = true;
+        render();
+    }
+
+    function navigate(dir) {
+        const filtered = getFiltered();
+        currentQ = Math.max(0, Math.min(filtered.length - 1, currentQ + dir));
+        render();
+    }
+
+    function setFilter(f) {
+        filter = f;
+        currentQ = 0;
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.filter-btn[data-filter="${f}"]`).classList.add('active');
+        render();
+    }
+
+    function updateScore() {
+        const courseQs = ALL_QUESTIONS.map((q, idx) => ({ q, idx })).filter(({ q }) => q.course === currentCourse);
+        const checked = courseQs.filter(({ idx }) => state[idx].checked);
+        const correct = checked.filter(({ idx }) => isCorrect(idx));
+        document.getElementById('score-display').textContent = `Score : ${correct.length} / ${checked.length}`;
+        const totalAnswered = ALL_QUESTIONS.filter((_, idx) => state[idx].checked).length;
+        document.getElementById('progress-display').textContent = `Répondues : ${totalAnswered} / 120`;
+    }
+
+    function resetCourse() {
+        ALL_QUESTIONS.forEach((q, i) => {
+            if (q.course === currentCourse) {
+                state[i] = { selected: new Set(), checked: false };
+            }
+        });
+        currentQ = 0;
+        render();
+    }
+
+    function buildTabs() {
+        const container = document.getElementById('course-tabs');
+        COURSES.forEach((c, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'tab' + (idx === 0 ? ' active' : '');
+            btn.textContent = c.name;
+            btn.onclick = () => {
+                currentCourse = idx;
+                currentQ = 0;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                render();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    // Event listeners
+    document.getElementById('prev-btn').addEventListener('click', () => navigate(-1));
+    document.getElementById('next-btn').addEventListener('click', () => navigate(1));
+    document.getElementById('reset-btn').addEventListener('click', resetCourse);
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => setFilter(btn.getAttribute('data-filter')));
+    });
+
+    buildTabs();
+    render();
+</script>
+</body>
+</html>
