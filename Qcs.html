@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banque QCM Endodontie - 8 Modules</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --accent: #2b6cb0;
+            --success: #276749;
+            --danger: #9b2c2c;
+            --warning: #b7791f;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --hover: #edf2f7;
+            --text: #2d3748;
+            --muted: #718096;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --radius: 10px;
+            --transition: 0.2s;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #eef2f7;
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        .app-header {
+            background: var(--primary);
+            color: #fff;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .app-header h1 {
+            font-size: 1.25em;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .btn-dashboard {
+            background: #fff;
+            color: var(--primary);
+            border: 2px solid #fff;
+        }
+        .btn-dashboard:hover {
+            background: #e2e8f0;
+        }
+        .btn-course-select {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-course-select:hover {
+            background: #1e5a9e;
+        }
+        .btn-validate {
+            background: #38a169;
+            color: #fff;
+            font-size: 1em;
+            padding: 12px 28px;
+        }
+        .btn-validate:hover {
+            background: #2f855a;
+        }
+        .btn-validate:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+        .btn-nav {
+            background: #fff;
+            color: var(--primary);
+            border: 2px solid var(--border);
+        }
+        .btn-nav:hover {
+            background: var(--hover);
+        }
+        .btn-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-skip {
+            background: #ed8936;
+            color: #fff;
+        }
+        .btn-skip:hover {
+            background: #dd6b20;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+        }
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            font-size: 1.3em;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .card .subtitle {
+            color: var(--muted);
+            font-size: 0.9em;
+            margin-bottom: 16px;
+        }
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        @media (min-width: 640px) {
+            .course-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .course-card {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .course-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(43, 108, 176, 0.1);
+            transform: translateY(-1px);
+        }
+        .course-card .course-name {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95em;
+        }
+        .progress-bar-bg {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            background: var(--accent);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .progress-bar-fill.completed {
+            background: var(--success);
+        }
+        .question-number {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+        .question-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 18px;
+        }
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 11px 14px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            background: #fafcfd;
+        }
+        .option-label:hover {
+            background: var(--hover);
+            border-color: #cbd5e0;
+        }
+        .option-label input[type="checkbox"] {
+            margin-top: 3px;
+            transform: scale(1.25);
+            accent-color: var(--accent);
+            flex-shrink: 0;
+        }
+        .option-label.mark-correct {
+            background: #e6ffed;
+            border-color: #68d391;
+            color: #22543d;
+            font-weight: 600;
+        }
+        .option-label.mark-incorrect {
+            background: #fff5f5;
+            border-color: #fc8181;
+            color: #742a2a;
+            text-decoration: line-through;
+        }
+        .option-label.mark-missed {
+            background: #fffff0;
+            border-color: #f6e05e;
+            color: #744210;
+        }
+        .explanation-box {
+            margin-top: 16px;
+            padding: 16px 18px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.93em;
+            line-height: 1.5;
+        }
+        .explanation-box.show {
+            display: block;
+        }
+        .explanation-box.correct-box {
+            background: #e6ffed;
+            border-left: 5px solid var(--success);
+            color: #22543d;
+        }
+        .explanation-box.wrong-box {
+            background: #fff5f5;
+            border-left: 5px solid var(--danger);
+            color: #742a2a;
+        }
+        .nav-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 18px;
+        }
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .dashboard-table th,
+        .dashboard-table td {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .dashboard-table th {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+        }
+        .overall-score {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 800;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+        .toast {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: #1a365d;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 200;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>📚 QCM Endodontie</h1>
+        <div class="nav-btns">
+            <button class="btn btn-course-select" onclick="showCourseSelect()">📋 Modules</button>
+            <button class="btn btn-dashboard" onclick="showDashboard()">📊 Tableau de Bord</button>
+        </div>
+    </header>
+    <div class="main-container">
+        <div id="view-course-select" class="view active">
+            <div class="card">
+                <h2>📋 Sélectionnez un Module</h2>
+                <p class="subtitle">8 modules de 20 questions chacun — Choisissez pour commencer ou continuer</p>
+                <div class="course-grid" id="course-grid"></div>
+            </div>
+        </div>
+        <div id="view-question" class="view">
+            <div class="card" id="question-card">
+                <div class="question-number" id="question-number"></div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options" id="options-container"></div>
+                <div class="explanation-box" id="explanation-box">
+                    <strong>Explication :</strong> <span id="explanation-text"></span>
+                </div>
+                <div class="nav-row">
+                    <button class="btn btn-nav" id="btn-prev" onclick="prevQuestion()">◀ Précédent</button>
+                    <button class="btn btn-validate" id="btn-validate" onclick="validateAnswer()">✔ Valider</button>
+                    <button class="btn btn-nav" id="btn-next" onclick="nextQuestion()" style="display:none;">Suivant ▶</button>
+                    <button class="btn btn-skip" id="btn-skip" onclick="skipQuestion()" style="display:none;">⏭ Passer</button>
+                </div>
+            </div>
+        </div>
+        <div id="view-dashboard" class="view">
+            <div class="card">
+                <h2>📊 Tableau de Bord</h2>
+                <p class="subtitle">Suivi de progression sur les 8 modules</p>
+                <div id="dashboard-content"></div>
+                <div style="text-align:center;margin-top:16px;">
+                    <button class="btn btn-course-select" onclick="showCourseSelect()">📋 Retour aux Modules</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>
+        // ==================== DATA (8 courses, 160 questions) ====================
+        const allCourses = [
+            {
+                id: 'preparation_canalaire',
+                name: 'Préparations Canalaires',
+                qs: [
+                    { q: "Concernant l'anatomie de la région apicale et ses variations liées à l'âge, déterminez la ou les propositions exactes :", o: [
+                        { t: "La jonction cémento-dentinaire (JCD) constitue la zone de rétrécissement maximal appelée constriction apicale.", v: true },
+                        { t: "Chez l'adulte jeune, la constriction apicale se situe en moyenne à 0,524 mm du foramen apical.", v: true },
+                        { t: "Chez la personne âgée, la JCD se rapproche du foramen apical, s'établissant à une distance de 0,312 mm.", v: false },
+                        { t: "Avec l'âge, le dépôt continu de cément fait que la JCD s'éloigne du foramen pour atteindre environ 0,629 mm.", v: true },
+                        { t: "Le cône cémentaire renferme du tissu pulpaire fonctionnel qu'il faut impérativement extirper.", v: false }
+                    ], e: "A et B : repères standards. D : dépôt cémentaire continu augmente la distance. C : la distance augmente à 0,629 mm. E : le cône cémentaire ne renferme pas de tissu pulpaire." },
+                    { q: "Les classifications morphologiques guident le clinicien. À propos des classifications de Dedeus (1975) et de Weine, quelles affirmations sont vraies ?", o: [
+                        { t: "La classification de Dedeus montre que le canal latéral est situé au niveau du tiers moyen de la racine.", v: true },
+                        { t: "Selon Dedeus, le canal secondaire se situe dans les 1 à 3 millimètres terminaux proches de l'apex.", v: true },
+                        { t: "Le Type II de Weine correspond à deux canaux distincts qui restent totalement indépendants.", v: false },
+                        { t: "Le Type IV de Weine décrit un canal unique qui se divise en deux canaux distincts peu avant l'apex.", v: true },
+                        { t: "Le Type III de Weine correspond à deux canaux qui se réunissent en cours de route.", v: false }
+                    ], e: "A et B : nomenclature de Dedeus. D : type IV de Weine. C : type II = deux canaux qui se réunissent. E : type III = deux canaux totalement séparés." },
+                    { q: "Quels repères topographiques et statistiques de la région apicale sont cliniquement exacts ?", o: [
+                        { t: "L'apex anatomique correspond au point le plus extrême de la surface radiculaire en trois dimensions.", v: true },
+                        { t: "L'apex radiographique est la limite terminale de la racine sur une image en deux dimensions.", v: true },
+                        { t: "Dans 80 % des cas, le foramen apical est situé pile au centre de l'axe de la racine.", v: false },
+                        { t: "Laurichesse a prouvé que le foramen apical n'est centré que dans 27 % des cas.", v: true },
+                        { t: "La portion apicale est modélisée sous la forme d'un sablier constitué de deux cônes opposés par leur sommet.", v: true }
+                    ], e: "A, B, D, E : descriptions exactes. C : dans 80% des cas, le foramen n'est PAS centré." },
+                    { q: "Deux grandes philosophies de mise en forme s'opposent. Sélectionnez les affirmations correctes :", o: [
+                        { t: "L'École Scandinave (Ingle) préconise d'élargir fortement la portion terminale jusqu'à 60-80/100.", v: true },
+                        { t: "L'École Scandinave crée une « boîte apicale » en s'arrêtant à 1 ou 2 mm de l'apex radio.", v: true },
+                        { t: "Si la dent est infectée, l'École Scandinave autorise le traitement en une seule séance.", v: false },
+                        { t: "L'École Américaine (Schilder) cherche à préserver le foramen dans sa position d'origine.", v: true },
+                        { t: "L'École Américaine préconise un entonnoir continu de l'apex jusqu'à la partie coronaire.", v: true }
+                    ], e: "A, B, D, E : résumés des deux écoles. C : l'école scandinave proscrit la séance unique si infection." },
+                    { q: "Quels sont les objectifs biologiques et mécaniques de la préparation canalaire (vision américaine) ?", o: [
+                        { t: "Maintenir l'action des instruments strictement à l'intérieur des limites du canal.", v: true },
+                        { t: "Empêcher la projection accidentelle de débris infectés dans la zone périapicale.", v: true },
+                        { t: "Créer une conicité fluide et continue depuis l'apex jusqu'à l'orifice d'entrée.", v: true },
+                        { t: "Faire en sorte que le diamètre soit le plus large à l'apex et le plus petit en coronaire.", v: false },
+                        { t: "Conserver la position anatomique initiale du foramen apical sans le déplacer.", v: true }
+                    ], e: "A, B, C, E : objectifs de Schilder. D : inverse (apex le plus petit, coronaire le plus large)." },
+                    { q: "À propos de la phase de cathétérisme canalaire, quelles sont les règles cliniques ?", o: [
+                        { t: "C'est la phase d'exploration initiale pour tester la liberté de passage et évaluer le diamètre.", v: true },
+                        { t: "On emploie des limes manuelles de gros diamètre (n°30 ou 40) pour forcer le passage.", v: false },
+                        { t: "Il faut injecter un liquide d'irrigation pour lubrifier le canal avant d'insérer un instrument.", v: true },
+                        { t: "Les limes de cathétérisme doivent être préalablement courbées manuellement (pré-coudage).", v: true },
+                        { t: "Le mouvement : va-et-vient combiné à une rotation d'un 1/8 de tour horaire puis retour inverse.", v: true }
+                    ], e: "A, C, D, E : règles de sécurité. B : on utilise des limes très fines (n°6, 8, 10, 15) sans forcer." },
+                    { q: "Lors de la détermination de la longueur de travail (LT), comment choisir sa limite apicale ?", o: [
+                        { t: "Si le canal est bien droit, la limite se place à 0,5 mm de l'apex radiologique.", v: true },
+                        { t: "En présence d'une courbure, la limite se place à 1 mm de l'apex radiologique.", v: true },
+                        { t: "Sur une dent adulte vivante, on se cale précisément au niveau de la JCD.", v: true },
+                        { t: "Sur une dent immature, on se place à 1 mm du bord radiculaire le plus court.", v: true },
+                        { t: "Dans toutes les situations, la préparation doit dépasser l'apex de 0,5 mm.", v: false }
+                    ], e: "A, B, C, D : critères du cours. E : dépasser l'apex est une erreur iatrogène majeure." },
+                    { q: "Quelles affirmations concernant le matériel et les techniques de mesure de la LT sont exactes ?", o: [
+                        { t: "L'angulateur maintient le film immobile et limite les déformations de taille.", v: true },
+                        { t: "La technique d'Ingle utilise la formule D2 = D + D1 - 0,5 mm.", v: true },
+                        { t: "La technique indirecte repose sur une règle de proportionnalité (règle de trois).", v: true },
+                        { t: "Les sondes graduées sont marquées tous les 5 millimètres.", v: false },
+                        { t: "L'angulateur permet de reprendre exactement le même axe de cliché au fil du temps.", v: true }
+                    ], e: "A, B, C, E : exacts. D : les sondes graduées sont marquées tous les millimètres." },
+                    { q: "À propos de la méthode électronique par localisateur d'apex, quelles propositions sont correctes ?", o: [
+                        { t: "Ces appareils mesurent la résistance électrique entre le canal et la muqueuse buccale.", v: true },
+                        { t: "On pousse la lime de 0,5 mm au-delà, puis on remonte de 1,5-2 mm avant de redescendre.", v: true },
+                        { t: "La formule appliquée pour obtenir la LT est : LT = valeur affichée - 0,5 mm.", v: true },
+                        { t: "La mesure électronique dispense totalement de la radiographie de contrôle.", v: false },
+                        { t: "Les résultats peuvent être faussés par des infiltrations de salive ou une couronne métallique.", v: true }
+                    ], e: "A, B, C, E : principes et procédure. D : doit toujours être validée par une radio." },
+                    { q: "Quels facteurs peuvent fausser les mesures d'un localisateur électronique d'apex ?", o: [
+                        { t: "La présence d'un suintement de pus important dans le canal.", v: true },
+                        { t: "Le fait que la dent soit immature avec un apex grand ouvert.", v: true },
+                        { t: "Le contact direct avec un élément métallique (couronne).", v: true },
+                        { t: "L'utilisation d'un instrument de diamètre trop petit par rapport au canal.", v: true },
+                        { t: "L'utilisation d'une solution d'irrigation à base d'hypochlorite de sodium.", v: false }
+                    ], e: "A, B, C, D : causes majeures de fausses mesures. E : non mentionné comme cause." },
+                    { q: "Concernant les rôles fondamentaux et les principes généraux de l'irrigation en endodontie :", o: [
+                        { t: "L'action mécanique n'élargit que l'espace pour permettre au liquide d'atteindre les zones profondes.", v: true },
+                        { t: "Ce sont les solutions d'irrigation qui nettoient la totalité du réseau inaccessible.", v: true },
+                        { t: "L'irrigation élimine les bactéries, évacue la limaille et décolle le biofilm.", v: true },
+                        { t: "L'irrigation est une étape secondaire qui s'effectue uniquement à la fin du traitement.", v: false },
+                        { t: "Le liquide doit être renouvelé abondamment après le passage de chaque instrument.", v: true }
+                    ], e: "A, B, C, E : synergie chimio-mécanique. D : l'irrigation est continue tout au long de la mise en forme." },
+                    { q: "En ce qui concerne les techniques d'irrigation passive et active, sélectionnez les affirmations exactes :", o: [
+                        { t: "En irrigation passive, l'aiguille doit être à ouverture latérale pour limiter la pression apicale.", v: true },
+                        { t: "En irrigation passive, l'aiguille doit être bloquée fermement au fond pour injecter sous pression.", v: false },
+                        { t: "L'irrigation active manuelle agite un cône de gutta à 100 mouvements par minute.", v: true },
+                        { t: "L'irrigation active décuple le pouvoir de dissolution par vagues de pression/dépression.", v: true },
+                        { t: "L'irrigation active peut être sonore (inserts vibrants) ou ultrasonore (limes activées).", v: true }
+                    ], e: "A, C, D, E : descriptions exactes. B : l'aiguille doit être remontée légèrement pour le reflux." },
+                    { q: "À propos de la technique de préparation manuelle classique et de ses inconvénients :", o: [
+                        { t: "Elle consistait à atteindre directement l'apex pour préparer la zone apicale en premier.", v: true },
+                        { t: "L'instrument frotte sur une très faible partie de sa surface de coupe.", v: false },
+                        { t: "On insère en tournant d'un 1/4 de tour horaire avant de tirer verticalement.", v: true },
+                        { t: "Les gros instruments rigides ont tendance à faire des butées ou perforations dans les courbures.", v: true },
+                        { t: "Elle est fortement indiquée dans les canaux fins ou courbes.", v: false }
+                    ], e: "A, C, D : cinématique classique. B : l'instrument frotte sur une très grande surface. E : contre-indiquée dans les canaux fins/courbes." },
+                    { q: "La préparation manuelle en flamme ou « step-back » (Weine) obéit à des règles précises. Lesquelles ?", o: [
+                        { t: "On travaille à reculons en augmentant les diamètres et en réduisant les longueurs.", v: true },
+                        { t: "Les premiers instruments fins (n°10-15) sont passés sur toute la longueur de travail.", v: true },
+                        { t: "La Lime Apicale Maîtresse (L.A.M) est le premier instrument inséré au cathétérisme.", v: false },
+                        { t: "La L.A.M est le troisième instrument qui s'adapte parfaitement sur toute la LT sans friction.", v: true },
+                        { t: "Entre chaque instrument plus gros, on réintroduit la L.A.M pour vérifier la perméabilité.", v: true }
+                    ], e: "A, B, D, E : step-back et récapitulation. C : la L.A.M n'est pas le premier instrument." },
+                    { q: "Concernant la technique de « marche d'escalier » et la « préparation alternative » de Weine :", o: [
+                        { t: "La marche d'escalier est conçue pour les canaux avec courbure au tiers apical.", v: true },
+                        { t: "En marche d'escalier, on élargit le canal sur toute sa LT jusqu'à au moins n°25.", v: true },
+                        { t: "La préparation alternative fait alterner limes K et limes H.", v: true },
+                        { t: "Chaque duo K/H est séparé par une récapitulation à la lime K la plus fine.", v: true },
+                        { t: "La préparation alternative est fortement indiquée dans les canaux étroits et sinueux.", v: false }
+                    ], e: "A, B, C, D : protocoles exacts. E : contre-indiquée dans les canaux étroits et sinueux." },
+                    { q: "À propos de la technique de « Crown-down » manuelle (Marshall et Papin, 1980) :", o: [
+                        { t: "On nettoie et met en forme du tiers coronaire vers le tiers apical (du haut vers le bas).", v: true },
+                        { t: "On commence par insérer un instrument de taille n°35 à l'entrée du canal.", v: true },
+                        { t: "On utilise des instruments larges ou forets de Gates par ordre croissant de taille.", v: false },
+                        { t: "On établit une longueur provisoire mesurée sur la radio à 3 mm de moins que l'apex.", v: true },
+                        { t: "Le non-respect de l'ordre décroissant expose à un risque de fausse route.", v: true }
+                    ], e: "A, B, D, E : principes du Crown-down. C : on utilise par ordre décroissant (et non croissant)." },
+                    { q: "Quels sont les avantages cliniques majeurs du concept moderne de Crown-down en rotation continue ?", o: [
+                        { t: "Il élimine la majeure partie de la pulpe infectée dès le début.", v: true },
+                        { t: "Il libère les instruments des frictions des deux tiers supérieurs.", v: true },
+                        { t: "Le canal en entonnoir sert de réservoir profond pour un grand volume d'irrigant.", v: true },
+                        { t: "Il modifie considérablement la longueur de travail en cours de route.", v: false },
+                        { t: "Il améliore grandement la précision des localisateurs électroniques d'apex.", v: true }
+                    ], e: "A, B, C, E : bénéfices mécaniques et biologiques. D : la LT ne subit quasiment aucune modification." },
+                    { q: "Concernant le protocole opératoire en rotation continue moderne et le Nickel-Titane (NiTi) :", o: [
+                        { t: "Chaque zone est abordée par exploration manuelle, pré-élargissement, puis mise en forme mécanique.", v: true },
+                        { t: "Les limes de pré-élargissement (PathFile, ProGlider) s'utilisent en exerçant une forte pression verticale.", v: false },
+                        { t: "Le système MTwo fait exception car toutes ses limes descendent directement jusqu'à la LT.", v: true },
+                        { t: "Les instruments NiTi pour les deux tiers coronaires sont courts et à forte conicité.", v: true },
+                        { t: "Un instrument rotatif NiTi ne doit jamais être introduit de force dans une zone non explorée.", v: true }
+                    ], e: "A, C, D, E : protocole moderne. B : pas de pression, rotation lente et régulière sans appuyer." },
+                    { q: "Les nouveaux concepts : mise en forme mono-instrumentale en réciproque et système SAF. Quelles affirmations sont exactes ?", o: [
+                        { t: "Le mouvement réciproque asymétrique réduit la fatigue cyclique et le risque de rupture.", v: true },
+                        { t: "Le système WaveOne utilise des instruments à section triangulaire.", v: true },
+                        { t: "Le système Reciproc utilise des instruments à section asymétrique à deux arêtes tranchantes.", v: true },
+                        { t: "La lime SAF est un tube cylindrique creux et compressible en maillage de NiTi.", v: true },
+                        { t: "Le système SAF nécessite l'arrêt complet de l'irrigation pendant la vibration.", v: false }
+                    ], e: "A, B, C, D : spécificités des systèmes. E : le SAF injecte l'irrigant en continu à travers son corps creux." },
+                    { q: "À propos de la préparation aux ultrasons (appui pariétal) et par Laser :", o: [
+                        { t: "L'activation par ultrasons n'est possible que si le canal a été élargi manuellement au moins jusqu'à n°15.", v: true },
+                        { t: "Essayer de pénétrer directement dans un canal non préparé avec un insert ultrasonore est une bonne technique.", v: false },
+                        { t: "Le protocole associe rotation continue, va-et-vient vertical et translation latérale.", v: true },
+                        { t: "La technologie Laser exploite l'énergie transmise par une fibre optique ultra-fine.", v: true },
+                        { t: "Le protocole Laser implique une préparation manuelle du tiers apical (limes Helifile n°20-35) avant la fibre.", v: true }
+                    ], e: "A, C, D, E : sécurité et protocoles. B : entrer directement aux ultrasons conduit à un échec." }
+                ]
+            },
+            {
+                id: 'instrumentation',
+                name: "L'Instrumentation en Endodontie",
+                qs: [
+                    { q: "Dans la classification ISO, que comprend le Groupe I ?", o: [
+                        { t: "Les forets de Gates-Glidden.", v: false }, { t: "Les instruments à canaux exclusivement manuels.", v: true },
+                        { t: "La broche, la lime K et la lime H.", v: true }, { t: "Les instruments mécanisés montés sur contre-angle.", v: false },
+                        { t: "Les pointes de papier et cônes de gutta-percha.", v: false }
+                    ], e: "Vrai: B, C. Le Groupe I est réservé aux instruments manuels." },
+                    { q: "Le Groupe III de la classification ISO concerne :", o: [
+                        { t: "Le bourre-pâte de Lentulo.", v: false }, { t: "Les forets mécanisés d'élargissement.", v: true },
+                        { t: "Les forets de Peeso (Largo) et Gates-Glidden.", v: true }, { t: "Les limes rotatives en Nickel-Titane.", v: false },
+                        { t: "L'ensemble des pointes canalaires.", v: false }
+                    ], e: "Vrai: B, C. Le Groupe III regroupe les forets d'ouverture." },
+                    { q: "Parmi les catégories basées sur le profil morphologique :", o: [
+                        { t: "La catégorie profil barbelé est illustrée par la sonde.", v: false },
+                        { t: "Le tire-nerf possède un profil barbelé avec des entailles de 8 mm.", v: true },
+                        { t: "La broche et la lime K classique ont un profil torsadé.", v: true },
+                        { t: "La lime H a un profil lisse.", v: false }, { t: "Les MME possèdent un profil découpé.", v: true }
+                    ], e: "Vrai: B, C, E. Le tire-nerf est barbelé, broches/K torsadées, limes H et MME découpées." },
+                    { q: "L'angle d'hélice d'un instrument :", o: [
+                        { t: "Est formé entre l'axe longitudinal et l'axe des spires.", v: true },
+                        { t: "Conditionne la dynamique de pénétration.", v: true },
+                        { t: "Rend l'instrument actif en traction s'il est très fermé (ex: 20°).", v: false },
+                        { t: "Rend l'instrument actif en rotation s'il est fermé (ex: 20°).", v: true },
+                        { t: "Est de 60° pour les limes H, les rendant performantes en traction.", v: true }
+                    ], e: "Vrai: A, B, D, E. Faux: C (angle fermé 20° favorise la rotation)." },
+                    { q: "Concernant l'angle de coupe (ou d'attaque) :", o: [
+                        { t: "S'il est positif, l'instrument agit par lissage passif.", v: false },
+                        { t: "S'il est positif, la coupe est active (comme une curette).", v: true },
+                        { t: "S'il est neutre, la coupe s'effectue par raclage perpendiculaire.", v: true },
+                        { t: "S'il est négatif, l'instrument agit par lissage ou usure contrôlée.", v: true },
+                        { t: "S'il est négatif, la coupe détache de gros copeaux de dentine.", v: false }
+                    ], e: "Vrai: B, C, D. L'angle positif coupe activement, le neutre racle, le négatif est passif." },
+                    { q: "Le méplat radian sur un instrument permet de :", o: [
+                        { t: "Couper la dentine beaucoup plus agressivement.", v: false },
+                        { t: "Centrer l'instrument au milieu du canal.", v: true },
+                        { t: "Respecter parfaitement les courbures anatomiques.", v: true },
+                        { t: "Augmenter considérablement l'effet de vissage.", v: false },
+                        { t: "Limiter le vissage, au détriment de l'efficacité de coupe.", v: true }
+                    ], e: "Vrai: B, C, E. Le méplat radian sécurise l'instrument mais réduit son agressivité." },
+                    { q: "La norme ISO (1958) fixe pour les instruments manuels :", o: [
+                        { t: "Une lame active toujours longue de 21 mm.", v: false },
+                        { t: "Une lame active standardisée de 16 mm.", v: true },
+                        { t: "Une conicité standard de 2% (0,02 mm par mm).", v: true },
+                        { t: "Des diamètres de référence D0 et D16.", v: true },
+                        { t: "Une progression de 2/100 mm entre chaque numéro.", v: false }
+                    ], e: "Vrai: B, C, D. La progression est de 5/100mm." },
+                    { q: "Selon le code couleur ISO, à quels diamètres correspondent Blanc, Jaune, Rouge ?", o: [
+                        { t: "Blanc = 10, Jaune = 15, Rouge = 20.", v: false },
+                        { t: "Blanc = 15, Jaune = 20, Rouge = 25.", v: true },
+                        { t: "Blanc = 45, Jaune = 50, Rouge = 55.", v: true },
+                        { t: "Blanc = 90, Jaune = 100, Rouge = 110.", v: true },
+                        { t: "Blanc = 30, Jaune = 35, Rouge = 40.", v: false }
+                    ], e: "Vrai: B, C, D. La série se répète." },
+                    { q: "Propriétés de l'alliage Nickel-Titane (Ni-Ti) par rapport à l'acier :", o: [
+                        { t: "Il est environ 50% de Nickel et 50% de Titane.", v: true },
+                        { t: "Il est plus rigide que l'acier inoxydable.", v: false },
+                        { t: "Il bénéficie de superélasticité (jusqu'à 8% de déformation réversible).", v: true },
+                        { t: "Il est 6 à 8 fois plus flexible que l'acier.", v: true },
+                        { t: "Son efficacité de coupe manuelle pure est supérieure à l'acier.", v: false }
+                    ], e: "Vrai: A, C, D. Plus flexible, efficacité de coupe manuelle légèrement inférieure." },
+                    { q: "Les fraises d'ouverture et de finition :", o: [
+                        { t: "La fraise transmétal est utilisée pour évincer l'émail sain.", v: false },
+                        { t: "La fraise Endo-Z possède une pointe mousse non travaillante.", v: true },
+                        { t: "L'Endo-Z permet de lisser les parois sans risquer de perforer le plancher.", v: true },
+                        { t: "La fraise boule carbure long col dégage la ligne de visée.", v: true },
+                        { t: "La sonde de Rhein est une fraise rotative.", v: false }
+                    ], e: "Vrai: B, C, D. Faux: A (transmétal pour couronnes), E (sonde manuelle)." },
+                    { q: "L'instrument manuel 'Broche' (Reamer) :", o: [
+                        { t: "Est identifiée par un symbole carré.", v: false },
+                        { t: "Est identifiée par un triangle sur le manche.", v: true },
+                        { t: "Possède un angle d'hélice fermé de 20°.", v: true },
+                        { t: "S'utilise par un mouvement de rotation-traction intense.", v: false },
+                        { t: "S'utilise par un mouvement de rotation d'un quart de tour et retrait.", v: true }
+                    ], e: "Vrai: B, C, E. Faux: A (Carré = Lime K), D (1/4 de tour horaire)." },
+                    { q: "La Lime Hedström (Lime H) :", o: [
+                        { t: "Est usinée en forme de cônes superposés (chapeau chinois).", v: true },
+                        { t: "Possède un angle d'hélice très fermé.", v: false },
+                        { t: "S'utilise exclusivement en mouvement de traction verticale.", v: true },
+                        { t: "Est très fragile à la rotation.", v: true },
+                        { t: "Est identifiée par un cercle sur le manche.", v: true }
+                    ], e: "Vrai: A, C, D, E. Faux: B (angle d'hélice ouvert à 60°)." },
+                    { q: "Le Foret X-Gates :", o: [
+                        { t: "Combine les caractéristiques des forets Gates n°1, 2, 3 et 4.", v: true },
+                        { t: "Sert à la mise en forme intra-canalaire profonde jusqu'à l'apex.", v: false },
+                        { t: "Sert au marquage net des orifices coronaires.", v: true },
+                        { t: "S'utilise dans un mouvement de brossage pariétal au retrait.", v: true },
+                        { t: "Est un instrument manuel.", v: false }
+                    ], e: "Vrai: A, C, D. Faux: B (jamais en profondeur), E (foret mécanisé)." },
+                    { q: "Les limes de 'glide path' (ex: PathFile) :", o: [
+                        { t: "Ont une forte conicité (6% ou plus).", v: false },
+                        { t: "Ont une faible conicité (2%) et de petits diamètres.", v: true },
+                        { t: "Sécurisent la trajectoire canalaire après la lime 10.", v: true },
+                        { t: "Évitent la fracture des instruments rotatifs plus gros.", v: true },
+                        { t: "Servent à obturer le canal.", v: false }
+                    ], e: "Vrai: B, C, D. Limes de pré-élargissement très fines." },
+                    { q: "Le mouvement de réciprocité (ex: WaveOne, Reciproc) :", o: [
+                        { t: "Est une rotation continue à haute vitesse.", v: false },
+                        { t: "Est une rotation alternée rapide (sens antihoraire / horaire).", v: true },
+                        { t: "Augmente le risque d'effet de vissage.", v: false },
+                        { t: "Réduit fortement la fatigue cyclique de l'instrument.", v: true },
+                        { t: "Utilise l'angle de coupe pour désengager la lime en sens horaire.", v: true }
+                    ], e: "Vrai: B, D, E. La réciprocité supprime l'effet de vissage." },
+                    { q: "Quelles sont les règles d'or des instruments rotatifs Ni-Ti ?", o: [
+                        { t: "Respecter la vitesse dictée par le fabricant.", v: true },
+                        { t: "Insérer d'emblée la lime rotative sans exploration manuelle.", v: false },
+                        { t: "Exercer une forte pression apicale continue.", v: false },
+                        { t: "Retirer et essuyer la lime après quelques secondes.", v: true },
+                        { t: "Maintenir l'instrument immobile dans le canal pour lisser les parois.", v: false }
+                    ], e: "Vrai: A, D. Faux: B (valider avec lime manuelle), C (pression très faible), E (jamais immobile)." },
+                    { q: "Le système SAF (Self Adjusting File) :", o: [
+                        { t: "Est une lime solide très rigide en acier.", v: false },
+                        { t: "Est une lime de forme cylindrique évidée et compressible.", v: true },
+                        { t: "Se présente sous forme de treillis métallique.", v: true },
+                        { t: "Ne s'adapte qu'aux canaux parfaitement ronds.", v: false },
+                        { t: "Est couplé en continu à un système d'irrigation actif.", v: true }
+                    ], e: "Vrai: B, C, E. Le SAF s'adapte aux canaux ovales/irréguliers." },
+                    { q: "Concernant les moteurs d'endodontie électroniques :", o: [
+                        { t: "Ils n'offrent aucun contrôle du couple (Torque).", v: false },
+                        { t: "La fonction Auto-reverse inverse le sens de rotation en cas de blocage.", v: true },
+                        { t: "Ils peuvent être couplés à un localisateur d'apex.", v: true },
+                        { t: "L'Auto-reverse augmente le risque de fracture.", v: false },
+                        { t: "Ils permettent de ralentir automatiquement à l'approche de l'apex.", v: true }
+                    ], e: "Vrai: B, C, E. L'Auto-reverse protège contre la fracture." },
+                    { q: "Les instruments soniques et ultrasoniques sont indispensables pour :", o: [
+                        { t: "L'obturation au Lentulo.", v: false },
+                        { t: "La découverte d'orifices canalaires cachés ou calcifiés.", v: true },
+                        { t: "L'activation hydrodynamique de l'hypochlorite de sodium.", v: true },
+                        { t: "La destruction efficace du biofilm bactérien.", v: true },
+                        { t: "La mesure électronique de la longueur de travail.", v: false }
+                    ], e: "Vrai: B, C, D. Les ultrasons activent les solutions et aident à désincruster." },
+                    { q: "Concernant les instruments d'obturation :", o: [
+                        { t: "Les Spreaders (fouloirs latéraux) sont utilisés pour la condensation à froid.", v: true },
+                        { t: "Les Pluggers condensent verticalement la gutta-percha ramollie.", v: true },
+                        { t: "Le Lentulo s'utilise à très haute vitesse pour compacter la gutta.", v: false },
+                        { t: "Le compacteur de MacSpadden agit par friction thermique.", v: true },
+                        { t: "Le système Thermafil utilise un tuteur plastique enrobé de gutta.", v: true }
+                    ], e: "Vrai: A, B, D, E. Faux: C (Lentulo propulse les pâtes à vitesse modérée)." }
+                ]
+            },
+            {
+                id: 'pulpites',
+                name: 'Thérapeutique des Pulpites',
+                qs: [
+                    { q: "La biopulpectomie (dépulpation) se définit comme :", o: [
+                        { t: "Le traitement de la cause de la pulpite.", v: false },
+                        { t: "L'ablation chirurgicale complète de la pulpe.", v: true },
+                        { t: "Une intervention réalisée sous anesthésie.", v: true },
+                        { t: "Une intervention suivie de la mise en forme et de l'obturation.", v: true },
+                        { t: "Un traitement réversible permettant à la pulpe de repousser.", v: false }
+                    ], e: "Vrai: B, C, D. Faux: A (on traite la lésion), E (c'est irréversible)." },
+                    { q: "Quel est l'objectif principal de la thérapeutique endodontique après dépulpation ?", o: [
+                        { t: "Régénérer le tissu pulpaire.", v: false },
+                        { t: "Obtenir des canaux stériles et hermétiques.", v: true },
+                        { t: "Favoriser la fermeture du foramen par le cément.", v: true },
+                        { t: "Permettre au desmodonte de cicatriser.", v: true },
+                        { t: "Créer une inflammation contrôlée permanente.", v: false }
+                    ], e: "Vrai: B, C, D. Objectif : empêcher les bactéries et permettre la cicatrisation." },
+                    { q: "Parmi les indications générales de la pulpectomie, on retrouve :", o: [
+                        { t: "Toutes les pulpites réversibles.", v: false },
+                        { t: "Les pulpites totales aiguës ou chroniques.", v: true },
+                        { t: "Les résorptions intraradiculaires.", v: true },
+                        { t: "Une exigence prothétique (délabrement nécessitant un tenon).", v: true },
+                        { t: "Une ouverture buccale impossible.", v: false }
+                    ], e: "Vrai: B, C, D. Faux: A (réversibles peuvent être conservées), E (contre-indication)." },
+                    { q: "L'élimination à 100% de la pulpe est considérée comme impossible car :", o: [
+                        { t: "Les limes sont toujours trop courtes.", v: false },
+                        { t: "L'apex présente souvent un foramen multiple (delta apical).", v: true },
+                        { t: "Les canaux secondaires ne peuvent pas être nettoyés mécaniquement.", v: true },
+                        { t: "L'hypochlorite fixe la pulpe aux parois.", v: false },
+                        { t: "Les prolongements cellulaires restent dans les canalicules.", v: true }
+                    ], e: "Vrai: B, C, E. L'anatomie complexe empêche l'élimination mécanique totale." },
+                    { q: "Concernant la limite de travail et d'obturation :", o: [
+                        { t: "Elle doit toujours dépasser l'apex pour garantir l'étanchéité.", v: false },
+                        { t: "Elle doit se situer au niveau de la jonction cémento-dentinaire (JCD).", v: true },
+                        { t: "Elle reste toujours en deçà de l'apex radiographique.", v: true },
+                        { t: "Elle est définie par le foramen le plus large.", v: false },
+                        { t: "Elle s'arrête systématiquement au milieu de la racine.", v: false }
+                    ], e: "Vrai: B, C. La limite est la constriction (JCD)." },
+                    { q: "Le processus de cicatrisation apicale post-endodontique :", o: [
+                        { t: "Est un processus de réparation par la dentine.", v: false },
+                        { t: "Est un processus de réparation par le cément.", v: true },
+                        { t: "Dépend totalement du maintien de la santé du desmodonte.", v: true },
+                        { t: "Exige une asepsie stricte.", v: true },
+                        { t: "Est favorisé par la présence de salive dans le canal.", v: false }
+                    ], e: "Vrai: B, C, D. Réparation cémenteogène nécessitant desmodonte sain et asepsie." },
+                    { q: "Lorsque le matériau d'obturation est exactement au contact du desmodonte :", o: [
+                        { t: "Il y a un échec immédiat du traitement.", v: false },
+                        { t: "L'irritation crée une petite croûte (escarre).", v: true },
+                        { t: "L'escarre sert de guide à la cicatrisation tissulaire.", v: true },
+                        { t: "Cela provoque un kyste apical systématique.", v: false },
+                        { t: "Les cémenteoblastes meurent instantanément.", v: false }
+                    ], e: "Vrai: B, C. Le léger contact crée une escarre physiologique." },
+                    { q: "Quelles sont les conséquences d'une sur-obturation (dépassement apical) ?", o: [
+                        { t: "La cicatrisation est grandement accélérée.", v: false },
+                        { t: "La pâte déborde et irrite le desmodonte en continu.", v: true },
+                        { t: "Elle favorise la fermeture étanche du delta apical.", v: false },
+                        { t: "Elle bloque la cicatrisation naturelle.", v: true },
+                        { t: "Elle peut causer à terme un granulome ou un kyste.", v: true }
+                    ], e: "Vrai: B, D, E. La sur-obturation est un corps étranger irritant." },
+                    { q: "Dans le cas d'une sous-obturation (canal partiellement vide) :", o: [
+                        { t: "Si l'espace vide est grand, il risque fortement de s'infecter.", v: true },
+                        { t: "Si l'espace est très court, les fluides locaux peuvent le combler sans infection.", v: true },
+                        { t: "C'est la situation clinique la plus recommandée.", v: false },
+                        { t: "Cela garantit l'absence de douleur post-opératoire.", v: false },
+                        { t: "Le desmodonte prolifère pour boucher tout le canal.", v: false }
+                    ], e: "Vrai: A, B. Un grand espace vide est un nid à bactéries." },
+                    { q: "Concernant le mécanisme biologique de la réparation :", o: [
+                        { t: "Les tissus nécrosés forment une trame de collagène.", v: true },
+                        { t: "Les améloblastes sécrètent la barrière apicale.", v: false },
+                        { t: "Les fibroblastes se transforment en cémenteoblastes.", v: true },
+                        { t: "La matrice sécrétée reste molle pour amortir la pression.", v: false },
+                        { t: "La matrice se minéralise pour créer une barrière physique.", v: true }
+                    ], e: "Vrai: A, C, E. Fibroblastes → cémenteoblastes, matrice minéralisée." },
+                    { q: "L'évolution clinique et radiographique normale après pulpectomie :", o: [
+                        { t: "L'acte est normalement sans douleur majeure par la suite.", v: true },
+                        { t: "Une légère inflammation ou douleur à l'injection est possible au début.", v: true },
+                        { t: "Le succès se lit par une résorption sévère de l'os alvéolaire.", v: false },
+                        { t: "Le succès se traduit radiographiquement par une zone périapicale saine.", v: true },
+                        { t: "Une douleur pulsatile persistante après 2 mois est normale.", v: false }
+                    ], e: "Vrai: A, B, D. Le succès montre un péri-apex intact." },
+                    { q: "Le pronostic de la pulpectomie :", o: [
+                        { t: "A un taux de réussite d'environ 100%.", v: false },
+                        { t: "A un taux de réussite moyen d'environ 7/10.", v: true },
+                        { t: "Est paradoxalement moins bon que celui d'une gangrène avec granulome.", v: true },
+                        { t: "S'explique par le manque de défenses immunitaires initiales de l'apex sain.", v: true },
+                        { t: "S'explique car on travaille 'en aveugle' dans une anatomie complexe.", v: true }
+                    ], e: "Vrai: B, C, D, E. Score de 70% lié à la difficulté." },
+                    { q: "Dans l'ordre du protocole opératoire, quelles étapes précèdent la préparation canalaire ?", o: [
+                        { t: "L'obturation.", v: false }, { t: "La pose de la digue.", v: true },
+                        { t: "L'extirpation de la pulpe.", v: true }, { t: "L'hémostase.", v: true },
+                        { t: "La radiographie avec lime en place.", v: true }
+                    ], e: "Vrai: B, C, D, E. Toutes ces étapes avant la préparation active." },
+                    { q: "Le rôle du desmodonte dans la thérapeutique est :", o: [
+                        { t: "Accessoire, il n'influence pas le résultat.", v: false },
+                        { t: "Central, car c'est lui qui assure la cicatrisation cémentaire.", v: true },
+                        { t: "Détruit systématiquement lors du traitement.", v: false },
+                        { t: "De fournir les cellules réparatrices (fibroblastes).", v: true },
+                        { t: "D'empêcher la dent de tomber pendant l'anesthésie.", v: false }
+                    ], e: "Vrai: B, D. Le desmodonte est le tissu source de la réparation apicale." }
+                ]
+            },
+            {
+                id: 'pharmaco',
+                name: 'Pharmacologie Endodontique',
+                qs: [
+                    { q: "L'assainissement canalaire en endodontie repose sur deux composantes :", o: [
+                        { t: "Une action mécanique et une action thermique.", v: false },
+                        { t: "Une action mécanique (instrumentation).", v: true },
+                        { t: "Une action physico-chimique (irrigation).", v: true },
+                        { t: "L'obturation et le blanchiment.", v: false },
+                        { t: "Une action laser et une action lumineuse.", v: false }
+                    ], e: "Vrai: B, C. Traitement chimio-mécanique." },
+                    { q: "Quels sont les rôles de l'action physique de l'irrigation ?", o: [
+                        { t: "Dissoudre les tissus nécrosés.", v: false },
+                        { t: "Éliminer les débris créés par les instruments.", v: true },
+                        { t: "Éviter que les débris ne bloquent l'extrémité du canal.", v: true },
+                        { t: "Tuer les bactéries à large spectre.", v: false },
+                        { t: "Lubrifier les instruments.", v: true }
+                    ], e: "Vrai: B, C, E. Action physique = flux liquidien." },
+                    { q: "Idéalement, l'action chimique d'une solution d'irrigation devrait :", o: [
+                        { t: "Être très toxique pour le péri-apex.", v: false },
+                        { t: "Être antibactérienne.", v: true },
+                        { t: "Dissoudre les tissus organiques restants.", v: true },
+                        { t: "Avoir une toxicité nulle ou faible pour les tissus sains.", v: true },
+                        { t: "Colorer le canal pour le repérage.", v: false }
+                    ], e: "Vrai: B, C, D. Solution idéale : tuer microbes, dissoudre sans détruire." },
+                    { q: "Le principe fondamental de l'irrigation :", o: [
+                        { t: "L'hypochlorite de sodium suffit à lui tout seul.", v: false },
+                        { t: "Aucune solution unique ne possède toutes les propriétés idéales.", v: true },
+                        { t: "L'association de plusieurs solutions est nécessaire.", v: true },
+                        { t: "L'eau distillée est le meilleur désinfectant.", v: false },
+                        { t: "Il ne faut jamais mélanger différentes solutions.", v: false }
+                    ], e: "Vrai: B, C. Il faut une séquence de solutions." },
+                    { q: "L'Hypochlorite de Sodium (NaOCl) :", o: [
+                        { t: "Est la solution d'irrigation de choix en endodontie.", v: true },
+                        { t: "S'utilise à des concentrations de 1 à 5%.", v: true },
+                        { t: "N'a d'action que sur les virus.", v: false },
+                        { t: "Possède un très large spectre (bactéries, virus, spores).", v: true },
+                        { t: "Est extrêmement stable face à la lumière.", v: false }
+                    ], e: "Vrai: A, B, D. Spectre total mais se dégrade vite." },
+                    { q: "Quelles sont les limites de l'Hypochlorite de Sodium ?", o: [
+                        { t: "Il ne dissout pas les tissus organiques.", v: false },
+                        { t: "Il est instable (conservation difficile).", v: true },
+                        { t: "Il est toxique s'il est injecté au-delà de l'apex.", v: true },
+                        { t: "Il n'a aucune action sur la smear layer.", v: true },
+                        { t: "Il favorise la prolifération des champignons.", v: false }
+                    ], e: "Vrai: B, C, D. Puissant solvant organique mais laisse la couche minérale." },
+                    { q: "Concernant les chélateurs (EDTA et Acide citrique) :", o: [
+                        { t: "Ce sont des acides faibles.", v: true },
+                        { t: "Ils s'attaquent à la partie minérale (smear-layer).", v: true },
+                        { t: "L'EDTA agit instantanément en 2 secondes.", v: false },
+                        { t: "L'EDTA est souvent utilisé à une concentration de 17%.", v: true },
+                        { t: "Ils dissolvent parfaitement la pulpe nécrosée.", v: false }
+                    ], e: "Vrai: A, B, D. Faux: C (au moins 1 min), E (ne dissolvent pas l'organique)." },
+                    { q: "Quelles sont les caractéristiques de l'EDTA dans le canal ?", o: [
+                        { t: "Il nécessite un temps de contact d'au moins une minute.", v: true },
+                        { t: "Il tue la majorité des bactéries par lui-même.", v: false },
+                        { t: "Il doit être utilisé en complément de l'hypochlorite.", v: true },
+                        { t: "Il peut être utilisé sous forme liquide ou de gel.", v: true },
+                        { t: "Il durcit la dentine.", v: false }
+                    ], e: "Vrai: A, C, D. L'EDTA ramollit la dentine, pas antibactérien puissant." },
+                    { q: "La Chlorhexidine (CHX) en endodontie :", o: [
+                        { t: "Excellente action antibactérienne sur Gram négatif.", v: true },
+                        { t: "Très fort pouvoir solvant sur les tissus nécrosés.", v: false },
+                        { t: "Possède une faible toxicité.", v: true },
+                        { t: "A une bonne action antifongique.", v: true },
+                        { t: "Est de la famille des biguanides.", v: true }
+                    ], e: "Vrai: A, C, D, E. Faux: B. La CHX ne dissout pas les tissus." },
+                    { q: "Quelle interaction est dangereuse ou incompatible ?", o: [
+                        { t: "EDTA et Acide citrique.", v: false },
+                        { t: "Eau distillée et Sérum physiologique.", v: false },
+                        { t: "Chlorhexidine et Hypochlorite de sodium.", v: true },
+                        { t: "Hypochlorite et ultrasons.", v: false },
+                        { t: "Gutta percha et Chloroforme.", v: false }
+                    ], e: "Vrai: C. CHX + NaOCl forme un précipité toxique." },
+                    { q: "Le peroxyde d'hydrogène (Eau oxygénée) :", o: [
+                        { t: "A une action hémostatique.", v: true },
+                        { t: "Possède un pouvoir antiseptique prolongé.", v: false },
+                        { t: "A un pouvoir solvant tissulaire quasiment nul.", v: true },
+                        { t: "Possède une brève action antiseptique.", v: true },
+                        { t: "Remplace l'hypochlorite dans tous les cas.", v: false }
+                    ], e: "Vrai: A, C, D. Effet mécanique (mousse) et hémostatique." },
+                    { q: "L'Eau distillée et le Sérum physiologique servent à :", o: [
+                        { t: "Tuer les bactéries résistantes.", v: false },
+                        { t: "Dissoudre la smear-layer.", v: false },
+                        { t: "Effectuer un lavage purement mécanique.", v: true },
+                        { t: "Rincer le canal entre deux solutions actives.", v: true },
+                        { t: "Scléroser le moignon pulpaire.", v: false }
+                    ], e: "Vrai: C, D. Aucune action chimique, juste rinçage." },
+                    { q: "Les solvants utilisés lors du retraitement :", o: [
+                        { t: "Sont totalement inoffensifs pour le patient.", v: false },
+                        { t: "Exigent une manipulation prudente (toxiques, irritants).", v: true },
+                        { t: "Servent à ramollir l'ancien matériau d'obturation.", v: true },
+                        { t: "Sont à base de sérum physiologique.", v: false },
+                        { t: "Doivent être injectés massivement au-delà de l'apex.", v: false }
+                    ], e: "Vrai: B, C. Produits agressifs à utiliser en petite quantité." },
+                    { q: "Pour dissoudre une pâte à base d'eugénate, on utilise :", o: [
+                        { t: "L'eugénol.", v: true }, { t: "L'hypochlorite de sodium.", v: false },
+                        { t: "Le Richloréthylène.", v: true }, { t: "Les huiles essentielles (citron, orange).", v: true },
+                        { t: "L'acide citrique.", v: false }
+                    ], e: "Vrai: A, C, D. Eugénol, richloréthylène et essences attaquent les ciments OZE." },
+                    { q: "Pour ramollir la gutta-percha, les solvants indiqués sont :", o: [
+                        { t: "Le Chloroforme.", v: true }, { t: "L'Essence de térébenthine.", v: true },
+                        { t: "L'Eucalyptol.", v: true }, { t: "L'Halothane.", v: true }, { t: "L'EDTA.", v: false }
+                    ], e: "Vrai: A, B, C, D. L'EDTA s'attaque au minéral." },
+                    { q: "Parmi les médicaments inter-séance 'nécrosants' :", o: [
+                        { t: "L'hydroxyde de calcium.", v: false },
+                        { t: "L'anhydride arsénieux.", v: true }, { t: "Le formaldéhyde.", v: true },
+                        { t: "L'eau distillée.", v: false }, { t: "Ils sont très toxiques et douloureux.", v: true }
+                    ], e: "Vrai: B, C, E. Arsenic et formaldéhyde, très toxiques." },
+                    { q: "Le Phénol, utilisé comme antalgique pulpaire :", o: [
+                        { t: "A une action sédative prouvée et significative.", v: false },
+                        { t: "Bloque temporairement l'inflammation aiguë.", v: true },
+                        { t: "Est recommandé pour fermer l'apex.", v: false },
+                        { t: "N'a pas d'action sédative significative au contact de la pulpe.", v: true },
+                        { t: "Régénère le tissu pulpaire.", v: false }
+                    ], e: "Vrai: B, D. Le phénol bloque l'inflammation sur le moment." },
+                    { q: "L'Hydroxyde de calcium (Ca(OH)2) :", o: [
+                        { t: "Est le traitement inter-séance de choix.", v: true },
+                        { t: "Possède une forte acidité (pH = 3).", v: false },
+                        { t: "Est agressif pour les bactéries grâce à son pH alcalin (12,4).", v: true },
+                        { t: "A une très forte solubilité, toxique pour l'os.", v: false },
+                        { t: "A une faible solubilité, non toxique pour les tissus.", v: true }
+                    ], e: "Vrai: A, C, E. Base forte (pH 12,4), faible solubilité." },
+                    { q: "Comment prépare-t-on l'hydroxyde de calcium en cabinet ?", o: [
+                        { t: "On le dissout dans de l'hypochlorite pur.", v: false },
+                        { t: "On mélange la poudre avec du sérum physiologique.", v: true },
+                        { t: "On mélange la poudre avec de l'eau distillée.", v: true },
+                        { t: "On l'injecte sous forme gazeuse.", v: false },
+                        { t: "On le condense à l'intérieur du canal.", v: true }
+                    ], e: "Vrai: B, C, E. Pâte onctueuse avec eau ou sérum." },
+                    { q: "Les antiseptiques inter-séance locaux :", o: [
+                        { t: "Remplacent un bon nettoyage mécanique.", v: false },
+                        { t: "Ne remplacent jamais un bon nettoyage canalaire.", v: true },
+                        { t: "Sont la solution ultime pour stériliser un delta apical.", v: false },
+                        { t: "Ont des preuves cliniques d'efficacité très élevées.", v: false },
+                        { t: "Ont des preuves cliniques d'efficacité faibles.", v: true }
+                    ], e: "Vrai: B, E. L'action chimique ne sauve pas un canal mal instrumenté." }
+                ]
+            },
+            {
+                id: 'necrose',
+                name: 'Protocole & Traitement de la Nécrose',
+                qs: [
+                    { q: "Quelles sont les cibles principales du traitement de la nécrose ?", o: [
+                        { t: "Éradiquer les bactéries", v: true }, { t: "Supprimer les toxines", v: true },
+                        { t: "Conserver la boue dentinaire", v: false }, { t: "Éliminer les débris pulpaires", v: true },
+                        { t: "Maintenir l'infection", v: false }
+                    ], e: "Cibler bactéries, toxines et débris." },
+                    { q: "La complexité anatomique complique le nettoyage en raison de :", o: [
+                        { t: "Canaux principaux uniquement", v: false }, { t: "Ramifications", v: true },
+                        { t: "Isthmes", v: true }, { t: "Canaux latéraux", v: true },
+                        { t: "Tubulis imperméables", v: false }
+                    ], e: "Bactéries protégées dans ramifications, isthmes et canaux latéraux." },
+                    { q: "Concernant la boue dentinaire (Smear layer) :", o: [
+                        { t: "Créée par la préparation mécanique", v: true },
+                        { t: "Obstrue les tubulis dentinaires", v: true },
+                        { t: "Facilite l'étanchéité finale", v: false },
+                        { t: "Couche organique et minérale", v: true },
+                        { t: "Inutile de l'enlever", v: false }
+                    ], e: "Créée par l'action mécanique, doit être éliminée." },
+                    { q: "La zone apicale est caractérisée par :", o: [
+                        { t: "Accès facile", v: false }, { t: "Foyer principal des pathologies", v: true },
+                        { t: "Accès difficile", v: true }, { t: "Nécessité vitale d'irrigants", v: true },
+                        { t: "Stérilité naturelle", v: false }
+                    ], e: "Zone la plus difficile, foyer des pathologies, irrigation indispensable." },
+                    { q: "La suppression de la charge bactérienne s'obtient par :", o: [
+                        { t: "Action mécanique", v: true }, { t: "Action chimique (irrigation)", v: true },
+                        { t: "Antibiotiques oraux seuls", v: false },
+                        { t: "Action parfois médicamenteuse", v: true },
+                        { t: "Simple obturation provisoire", v: false }
+                    ], e: "Combinaison mécanique, chimique et parfois médicamenteuse." },
+                    { q: "Concernant l'asepsie lors du traitement :", o: [
+                        { t: "Isolation du champ opératoire primordiale", v: true },
+                        { t: "Digue nécessaire", v: true }, { t: "Contamination salivaire sans impact", v: false },
+                        { t: "Empêche seulement le saignement", v: false },
+                        { t: "Empêche la contamination de la chambre", v: true }
+                    ], e: "Isolation (digue) empêche contamination salivaire." },
+                    { q: "La reconstitution pré-endodontique a pour but :", o: [
+                        { t: "Utiliser un amalgame", v: false }, { t: "Stabiliser le crampon", v: true },
+                        { t: "Éviter les fuites entre séances", v: true },
+                        { t: "Créer un réservoir d'irrigant", v: true },
+                        { t: "Se faire avec matrice et CVI", v: true }
+                    ], e: "Stabilise crampon, évite fuites, réservoir." },
+                    { q: "La préparation canalaire moderne repose sur :", o: [
+                        { t: "Crown-Down", v: true }, { t: "Step-back", v: false },
+                        { t: "Instruments Ni-Ti", v: true }, { t: "Limes manuelles acier uniquement", v: false },
+                        { t: "Amélioration de la remontée des débris", v: true }
+                    ], e: "Crown-Down et Ni-Ti facilitent courbures." },
+                    { q: "Quels sont les rôles de l'irrigation canalaire ?", o: [
+                        { t: "Lubrification", v: true }, { t: "Action antibactérienne", v: true },
+                        { t: "Toxicité ciblée péri-apex", v: false }, { t: "Action solvante", v: true },
+                        { t: "Suspension et évacuation des débris", v: true }
+                    ], e: "Rôle physique (lubrification, évacuation) et chimique." },
+                    { q: "Lors de la phase préparatoire (parage caméral) :", o: [
+                        { t: "EDTA pur", v: false }, { t: "Hypochlorite de sodium", v: true },
+                        { t: "Empêche l'enfoncement des bactéries", v: true },
+                        { t: "Aide à repérer les entrées", v: true }, { t: "Permet d'assécher", v: false }
+                    ], e: "Hypochlorite empêche enfoncement et aide repérage." },
+                    { q: "Lors du cathétérisme initial, on utilise :", o: [
+                        { t: "Chélatants (EDTA)", v: true }, { t: "Peroxydes", v: true },
+                        { t: "Produits dissolvant les tissus", v: true },
+                        { t: "Produits facilitant le passage des limes", v: true },
+                        { t: "Eau stérile uniquement", v: false }
+                    ], e: "EDTA + peroxydes dissolvent et facilitent le passage." },
+                    { q: "Pendant la mise en forme du canal :", o: [
+                        { t: "Bain constant d'hypochlorite", v: true }, { t: "EDTA en continu", v: false },
+                        { t: "Objectif : nettoyer et désinfecter", v: true },
+                        { t: "Lime de récapitulation maintient perméabilité", v: true },
+                        { t: "Canal obturé immédiatement", v: false }
+                    ], e: "Bain d'hypochlorite et lime de récapitulation." },
+                    { q: "Le rinçage final avant obturation nécessite :", o: [
+                        { t: "EDTA 17%", v: true }, { t: "Hypochlorite 5,25%", v: true },
+                        { t: "Alcool 99%", v: true }, { t: "Sérum physiologique abondant", v: false },
+                        { t: "Chlorhexidine pure", v: false }
+                    ], e: "Séquence exacte : EDTA 17% → Hypochlorite 5,25% → Alcool 99%." },
+                    { q: "L'irrigation à la seringue requiert :", o: [
+                        { t: "Aiguilles à bout ouvert", v: false }, { t: "Aiguilles à bout fermé", v: true },
+                        { t: "Dépassement apical volontaire", v: false },
+                        { t: "Sécurisation du traitement", v: true },
+                        { t: "Éviter tout dépassement irritant", v: true }
+                    ], e: "Aiguilles à bout fermé pour sécuriser." },
+                    { q: "L'activation manuelle dynamique :", o: [
+                        { t: "Utilise un maître cône de gutta", v: true },
+                        { t: "Cône allongé", v: false }, { t: "Cône raccourci", v: true },
+                        { t: "Méthode simple et économique", v: true },
+                        { t: "Efficace mais fastidieuse", v: true }
+                    ], e: "Agitation avec cône raccourci, économique et efficace." },
+                    { q: "Systèmes d'activation mécanique :", o: [
+                        { t: "RinsEndo", v: true }, { t: "Lime SAF", v: true },
+                        { t: "XP-endo Finisher", v: true }, { t: "EndoVac", v: true },
+                        { t: "Seringues classiques", v: false }
+                    ], e: "RinsEndo, SAF, XP-endo (pression positive), EndoVac (négative)." },
+                    { q: "Autres modes d'activation :", o: [
+                        { t: "Sonique (EndoActivator)", v: true },
+                        { t: "Ultrasonique passive", v: true },
+                        { t: "Ultrasonique active frottant les parois", v: false },
+                        { t: "Photonique (laser)", v: true },
+                        { t: "Effet photo-acoustique", v: true }
+                    ], e: "Sonique, ultrasonique passive et photonique." },
+                    { q: "Désinfection à l'hydroxyde de calcium :", o: [
+                        { t: "Fragilise le collagène à long terme", v: true },
+                        { t: "Demande un RDV supplémentaire", v: true },
+                        { t: "S'élimine très facilement", v: false },
+                        { t: "Tendance actuelle : séance unique", v: true },
+                        { t: "Renforce la structure radiculaire", v: false }
+                    ], e: "Tendance séance unique, Ca(OH)2 s'élimine difficilement." },
+                    { q: "Hydroxyde de calcium indispensable si :", o: [
+                        { t: "Forte douleur aiguë", v: true }, { t: "Canal inasséchable", v: true },
+                        { t: "Délai de 24 heures", v: false }, { t: "Agir au moins 7 jours", v: true },
+                        { t: "Réduire efficacement la population bactérienne", v: true }
+                    ], e: "Indispensable si douleur aiguë ou exsudat, délai ≥ 7 jours." },
+                    { q: "L'obturation canalaire finale :", o: [
+                        { t: "Étape ultime", v: true }, { t: "Emmure les bactéries", v: true },
+                        { t: "Sécurise la désinfection", v: true },
+                        { t: "Ne nécessite pas de restauration", v: false },
+                        { t: "Doit être suivie d'une restauration étanche", v: true }
+                    ], e: "Emmure bactéries, restauration définitive obligatoire." }
+                ]
+            },
+            {
+                id: 'obturation',
+                name: "L'Obturation Endodontique",
+                qs: [
+                    { q: "Quels sont les objectifs de l'obturation ?", o: [
+                        { t: "Isoler le système canalaire du parodonte", v: true },
+                        { t: "Remplir totalement l'endodonte", v: true },
+                        { t: "Créer un joint hermétique", v: true },
+                        { t: "Priver les bactéries de nutriments", v: true },
+                        { t: "Laisser un espace apical pour drainage", v: false }
+                    ], e: "Remplir totalement et créer un joint hermétique." },
+                    { q: "Conditions préalables au scellement :", o: [
+                        { t: "Dent asymptomatique", v: true }, { t: "Canal propre et asséché", v: true },
+                        { t: "Léger exsudat acceptable", v: false }, { t: "Cultures négatives", v: true },
+                        { t: "Digue optionnelle", v: false }
+                    ], e: "Dent asymptomatique, canal propre, asséché, sans exsudat." },
+                    { q: "Technique simple (pâte seule) :", o: [
+                        { t: "Oxyde de zinc + eugénol", v: true }, { t: "Remplissage homogène", v: false },
+                        { t: "Insérée au Lentulo", v: true }, { t: "Se rétracte au séchage", v: true },
+                        { t: "Peut se dissoudre", v: true }
+                    ], e: "Lentulo et OZE. Simple mais hétérogène, se rétracte." },
+                    { q: "Technique mixte (monocône) : inconvénients ?", o: [
+                        { t: "Très lente", v: false }, { t: "Trop de pâte utilisée", v: true },
+                        { t: "Rétraction → perte d'étanchéité", v: true }, { t: "Fort taux de résorption", v: true },
+                        { t: "Ne respecte pas l'anatomie", v: false }
+                    ], e: "Trop de ciment qui se rétracte et se résorbe." },
+                    { q: "Compactage latéral à froid utilise :", o: [
+                        { t: "Un seul maître cône", v: false },
+                        { t: "Maître cône + cônes accessoires", v: true },
+                        { t: "Spreader", v: true }, { t: "Chaleur", v: false },
+                        { t: "Compactage sur les côtés", v: true }
+                    ], e: "Maître cône, accessoires, tassés avec spreader." },
+                    { q: "Schilder (compactage vertical à chaud) :", o: [
+                        { t: "Vagues successives", v: true }, { t: "Gutta fondue s'infiltre parfaitement", v: true },
+                        { t: "Procédure très simple", v: false },
+                        { t: "Contrôle de la LT difficile", v: true },
+                        { t: "Scelle les moindres irrégularités", v: true }
+                    ], e: "Excellente infiltration mais complexe." },
+                    { q: "CVM : risque majeur ?", o: [
+                        { t: "Aucun risque", v: false }, { t: "Mauvaise compression", v: false },
+                        { t: "Déborder la pâte au-delà de l'apex", v: true },
+                        { t: "N'obture pas les canaux latéraux", v: false },
+                        { t: "Nécessite cônes non chauffés", v: false }
+                    ], e: "Très bonne compression mais risque de débordement apical." },
+                    { q: "Mac Spadden :", o: [
+                        { t: "Compacteur rotatif", v: true }, { t: "Frictionne, chauffe et tasse", v: true },
+                        { t: "Très lente", v: false }, { t: "Pour tous types de canaux", v: false },
+                        { t: "Canaux droits et assez larges", v: true }
+                    ], e: "Rapide avec compacteur rotatif, limité aux canaux droits." },
+                    { q: "Mac Spadden (phases I et II) :", o: [
+                        { t: "Compacte deux couches", v: true }, { t: "Chaleur de rotation", v: true },
+                        { t: "Inefficace canaux courbés", v: false },
+                        { t: "Efficace canaux fins/courbés", v: true },
+                        { t: "Matériel coûteux", v: true }
+                    ], e: "Deux couches par rotation, efficace, coûteux." },
+                    { q: "Technique hybride :", o: [
+                        { t: "Apex en compactage thermique rotatif", v: false },
+                        { t: "Apex (4-5 mm) en latéral à froid", v: true },
+                        { t: "Reste au compacteur rotatif", v: true },
+                        { t: "Risque élevé de casser l'instrument", v: false },
+                        { t: "Obturation étanche et homogène", v: true }
+                    ], e: "Apex en latéral froid, reste au compacteur thermique." },
+                    { q: "Système B (Vague unique) :", o: [
+                        { t: "Plusieurs instruments", v: false },
+                        { t: "Une seule descente continue", v: true },
+                        { t: "Excellent contrôle apical", v: true },
+                        { t: "Comble parfaitement canaux latéraux", v: true },
+                        { t: "Chaleur atteint facilement l'apex des canaux longs", v: false }
+                    ], e: "Une descente continue, chaleur limitée dans canaux longs." },
+                    { q: "Thermafil :", o: [
+                        { t: "Tuteur plastique flexible", v: true }, { t: "Recouvert de gutta", v: true },
+                        { t: "Chauffé dans un four", v: true }, { t: "Apprentissage complexe", v: false },
+                        { t: "Remplissage rapide", v: true }
+                    ], e: "Tuteur plastique + gutta, chauffé au four, facile." },
+                    { q: "Précaution majeure Thermafil :", o: [
+                        { t: "Pression d'insertion faible", v: false },
+                        { t: "Butée apicale parfaite", v: true },
+                        { t: "Risque nul de dépassement", v: false },
+                        { t: "Pression d'insertion très forte", v: true },
+                        { t: "Aucune préparation spécifique", v: false }
+                    ], e: "Pression très forte, butée apicale parfaite indispensable." },
+                    { q: "Obtura :", o: [
+                        { t: "Pistolet injecteur", v: true }, { t: "Gutta froide", v: false },
+                        { t: "Gutta chaude et collante", v: true }, { t: "Sensation d'argile", v: true },
+                        { t: "15 à 20 minutes", v: false }
+                    ], e: "Pistolet injectant gutta chaude, 3 à 5 minutes." },
+                    { q: "MicroSeal :", o: [
+                        { t: "Dérivée du Mac Spadden", v: true },
+                        { t: "Tasse maître cône au centre", v: false },
+                        { t: "Crée espace latéral pour gutta chaude", v: true },
+                        { t: "Lisse au NiTi", v: true },
+                        { t: "Sécurisant pour canaux courbes", v: true }
+                    ], e: "Tasse sur le côté, injecte, lisse au NiTi." },
+                    { q: "Cône adapté (Monocône ajusté) :", o: [
+                        { t: "Conicité aléatoire", v: false },
+                        { t: "Même conicité que la lime NiTi", v: true },
+                        { t: "Très peu de ciment", v: true },
+                        { t: "Protège des fractures radiculaires", v: true },
+                        { t: "Très chronophage", v: false }
+                    ], e: "Correspond à la lime NiTi, peu de ciment." },
+                    { q: "Succès et choix de la technique :", o: [
+                        { t: "Dépend du scellement hermétique", v: true },
+                        { t: "Technique universelle obligatoire", v: false },
+                        { t: "Dépend de l'endodontiste", v: true },
+                        { t: "Meilleure technique = résultats constants", v: true },
+                        { t: "Dépend uniquement du coût", v: false }
+                    ], e: "Le choix dépend de l'opérateur." },
+                    { q: "Pâte (ciment) d'obturation :", o: [
+                        { t: "Excès souhaitable", v: false },
+                        { t: "Peut se rétracter", v: true },
+                        { t: "Peut se dissoudre", v: true },
+                        { t: "Grande quantité dans monocône classique", v: true },
+                        { t: "Garantit l'étanchéité sans gutta", v: false }
+                    ], e: "La pâte se rétracte et se dissout." },
+                    { q: "Inconvénient majeur du compactage latéral à froid :", o: [
+                        { t: "Difficulté à contrôler la longueur", v: false },
+                        { t: "Masse finale hétérogène", v: true }, { t: "Chaleur dégagée", v: false },
+                        { t: "Fracture instrumentale immédiate", v: false },
+                        { t: "Inefficacité totale", v: false }
+                    ], e: "Bon contrôle mais masse hétérogène." },
+                    { q: "Avantage du compactage vertical de Schilder ?", o: [
+                        { t: "Masse hétérogène", v: false },
+                        { t: "Gutta fondue s'infiltre dans les moindres irrégularités", v: true },
+                        { t: "LT garantie automatiquement", v: false },
+                        { t: "Aucun matériel nécessaire", v: false },
+                        { t: "Plus rapide que Thermafil", v: false }
+                    ], e: "Gutta chauffée comble la moindre irrégularité." }
+                ]
+            },
+            {
+                id: 'cavite_acces',
+                name: "La Cavité d'Accès Endodontique",
+                qs: [
+                    { q: "Parmi les propositions concernant les objectifs cliniques majeurs de la cavité d'accès endodontique (CAE), lesquelles sont exactes ?", o: [
+                        { t: "Le plafond pulpaire doit être intégralement éliminé tout en réalisant la cavité « a maxima ».", v: false },
+                        { t: "La préservation de 4 parois coronaires est obligatoire pour maintenir un réservoir d'irrigation.", v: true },
+                        { t: "Si la dent est très délabrée, le traitement endodontique doit être achevé avant de reconstituer.", v: false },
+                        { t: "Les parois doivent présenter une légère divergence vers l'extérieur (mise de dépouille).", v: true },
+                        { t: "Les entrées canalaires doivent être directement visibles sans déplacer le miroir.", v: true }
+                    ], e: "B, D, E : 4 parois = réservoir, dépouille, visibilité directe. A : cavité a minima. C : reconstituer avant." },
+                    { q: "Concernant l'instrumentation requise pour la réalisation des cavités d'accès :", o: [
+                        { t: "Les fraises 170L sont utilisées pour la trépanation de la chambre pulpaire.", v: false },
+                        { t: "Les fraises boules longues servent à concevoir la cavité de délinéation initiale.", v: false },
+                        { t: "Les fraises de BATT et ZEKRYA ENDO possèdent une pointe mousse protégeant le plancher.", v: true },
+                        { t: "La fraise Zekrya Endo permet l'extension sécurisée des parois camérales.", v: true },
+                        { t: "Le contre-angle est privilégié lors de la trépanation pour la sensibilité tactile.", v: true }
+                    ], e: "C, D, E : pointes mousses, extension sécurisée, contre-angle. A : 170L = délinéation. B : fraises boules = trépanation." },
+                    { q: "Au cours des temps opératoires universels de préparation de la CAE :", o: [
+                        { t: "La cavité de délinéation doit correspondre à la projection externe de l'anatomie interne.", v: true },
+                        { t: "À moins d'un mm de dentine, le fraisage se poursuit sous spray abondant.", v: false },
+                        { t: "La fraise boule doit être activée exclusivement en retrait sous le toit.", v: true },
+                        { t: "Une sonde n°17 vérifie l'absence totale de contre-dépouilles.", v: true },
+                        { t: "On donne aux parois une occluso-divergence de 2 à 3 degrés.", v: true }
+                    ], e: "A, C, D, E : délinéation, retrait, sonde 17, divergence. B : à moins d'un mm, sans spray." },
+                    { q: "Particularités du groupe incisivo-canin maxillaire :", o: [
+                        { t: "La cavité d'accès est réalisée exclusivement sur la face palatine.", v: true },
+                        { t: "Forme triangulaire pour les incisives et ovalaire pour la canine.", v: true },
+                        { t: "Le « triangle dentinaire palatin » est une constriction mésio-distale à supprimer.", v: false },
+                        { t: "L'incisive latérale présente presque toujours une courbure apicale disto-palatine.", v: true },
+                        { t: "Le canal est circulaire au niveau cervical puis triangulaire à l'apex.", v: false }
+                    ], e: "A, B, D. C : constriction vestibulo-linguale. E : triangulaire puis circulaire." },
+                    { q: "Erreurs techniques ou adaptations d'axes du groupe antérieur maxillaire :", o: [
+                        { t: "Le fraisage initial doit suivre strictement l'axe de la couronne clinique.", v: false },
+                        { t: "Une erreur d'orientation mène à une perforation vestibulaire.", v: true },
+                        { t: "En cas de rétraction pulpaire liée à l'âge, l'axe devient plus horizontal.", v: false },
+                        { t: "Le bord incisif ne doit jamais être touché par l'instrumentation rotative.", v: true },
+                        { t: "Si le triangle palatin n'est pas éliminé, des contraintes persistent à l'insertion.", v: true }
+                    ], e: "B, D, E. A : s'orienter vers le toit. C : l'axe devient plus vertical." },
+                    { q: "Groupe des prémolaires maxillaires :", o: [
+                        { t: "La première prémolaire possède très fréquemment deux racines et deux canaux.", v: true },
+                        { t: "La cavité idéale est aplatie vestibulo-palatin avec un grand axe mésio-distal.", v: false },
+                        { t: "Le fraisage se fait selon le grand axe de la couronne jusqu'à une corne pulpaire.", v: true },
+                        { t: "Le canal palatin est proche du sillon, le vestibulaire en est éloigné.", v: true },
+                        { t: "La seconde prémolaire est majoritairement monoradiculée avec deux canaux.", v: true }
+                    ], e: "A, C, D, E. B : cavité étroite mésio-distal, grand axe vestibulo-palatin." },
+                    { q: "Système canalaire des molaires maxillaires :", o: [
+                        { t: "La première molaire présente fréquemment 4 canaux (P, DV, MV1, MV2).", v: true },
+                        { t: "La cavité idéale est trapézoïdale située sur la partie distale de la face occlusale.", v: false },
+                        { t: "La cavité ne doit pas dépasser le pont d'émail.", v: true },
+                        { t: "La corne MV se trouve sous la pointe de la cuspide MV.", v: true },
+                        { t: "La corne palatine se situe à l'intersection du sillon vestibulaire et du sillon principal.", v: true }
+                    ], e: "A, C, D, E. B : située sur la partie mésiale." },
+                    { q: "Mise en évidence du quatrième canal (MV2) :", o: [
+                        { t: "L'incidence de Walton évite la superposition de l'os malaire.", v: true },
+                        { t: "Le MV2 se trouve en distal de l'axe P-MV1.", v: false },
+                        { t: "Le « test de la bulle » utilise l'hypochlorite pour observer un dégagement gazeux.", v: true },
+                        { t: "Le bleu de méthylène colore l'entrée du canal contenant du tissu organique.", v: true },
+                        { t: "Le sondage de la furcation renseigne sur la largeur de la racine mésiale.", v: true }
+                    ], e: "A, C, D, E. B : le MV2 se trouve en mésial de l'axe P-MV1." },
+                    { q: "Deuxième et troisième molaires maxillaires :", o: [
+                        { t: "La présence du MV2 diminue statistiquement.", v: true },
+                        { t: "La corne DV s'éloigne de l'axe MV-P.", v: false },
+                        { t: "La position de la corne DV tend à aplatir le triangle anatomique.", v: true },
+                        { t: "Les trois canaux principaux peuvent se retrouver presque alignés.", v: true },
+                        { t: "Le volume de la chambre pulpaire augmente systématiquement.", v: false }
+                    ], e: "A, C, D. B : la corne DV se rapproche. E : pas d'augmentation systématique." },
+                    { q: "Groupe incisivo-canin mandibulaire :", o: [
+                        { t: "Les incisives cachent deux canaux dans environ 50 % des cas.", v: true },
+                        { t: "La cavité idéale est centrée sur la face linguale et de forme ovalaire.", v: true },
+                        { t: "L'instrument doit être incliné vers le vestibulaire pour compenser l'inclinaison.", v: false },
+                        { t: "Le canal lingual n'est visible qu'après élimination du triangle dentinaire lingual.", v: true },
+                        { t: "Une mauvaise appréciation de l'axe conduit à des perforations vestibulaires ou proximales.", v: true }
+                    ], e: "A, B, D, E. C : l'instrument doit être incliné vers le lingual." },
+                    { q: "Première et deuxième prémolaires mandibulaires :", o: [
+                        { t: "La première prémolaire a une cuspide vestibulaire représentant les 2/3 de la face occlusale.", v: true },
+                        { t: "La cavité de la première prémolaire est réalisée aux dépens de la cuspide linguale.", v: false },
+                        { t: "L'approfondissement suit l'axe de la couronne, différent de l'axe radiculaire.", v: true },
+                        { t: "Le sillon principal de la deuxième prémolaire divise la face occlusale en deux portions égales.", v: true },
+                        { t: "La cavité de la deuxième prémolaire est ovalaire allongée dans le sens mésio-distal.", v: false }
+                    ], e: "A, C, D. B : aux dépens de la cuspide vestibulaire. E : allongée vestibulo-lingual." },
+                    { q: "Anatomie radiculaire de la première molaire mandibulaire :", o: [
+                        { t: "Elle présente 3 canaux : deux mésiaux (MV, ML) et un distal.", v: true },
+                        { t: "La racine mésiale est courbée en direction mésiale.", v: false },
+                        { t: "L'espace entre MV et ML peut abriter un troisième canal mésio-médian.", v: true },
+                        { t: "Il est exceptionnel de trouver deux canaux distaux ou un canal en huit.", v: false },
+                        { t: "Les canaux distaux peuvent fusionner au niveau de l'apex.", v: true }
+                    ], e: "A, C, E. B : courbée vers le distal. D : il n'est pas rare." },
+                    { q: "Repères et impératifs d'axes pour la première molaire mandibulaire :", o: [
+                        { t: "La corne distale se situe dans la « zone neutre » entre les sillons décalés.", v: true },
+                        { t: "La corne ML est sous sa cuspide, la corne MV proche de la fossette marginale mésiale.", v: false },
+                        { t: "La cavité est trapézoïdale, localisée sur la moitié mésiale.", v: true },
+                        { t: "Le dessin peut s'étendre au-delà du sillon intercuspidien lingual.", v: false },
+                        { t: "La couronne a une inclinaison linguale marquée : risque de perforation linguale.", v: true }
+                    ], e: "A, C, E. B : inversé. D : ne s'étend presque jamais au-delà." },
+                    { q: "Dents très délabrées : protocole spécifique :", o: [
+                        { t: "C'est le seul cas où l'ouverture se fait après la pose de la digue.", v: false },
+                        { t: "L'ouverture avant la digue permet de vérifier si la dent est conservable.", v: true },
+                        { t: "On place une boulette de coton dans la chambre avant la restauration provisoire.", v: true },
+                        { t: "Cette technique évite d'obstruer les entrées canalaires avec le ciment.", v: true },
+                        { t: "La digue est mise en place après la reconstruction temporaire.", v: true }
+                    ], e: "B, C, D, E. A : ouverture avant la digue." },
+                    { q: "Finition et surfaces de référence de la cavité d'accès :", o: [
+                        { t: "Les parois finales doivent être rugueuses pour l'adhérence du ciment provisoire.", v: false },
+                        { t: "La CAE fournit des repères occlusaux stables pour les stops en silicone.", v: true },
+                        { t: "Les pointes cuspidiennes trop irrégulières doivent être réduites d'environ 1 mm.", v: true },
+                        { t: "La réduction des cuspides vise à obtenir des surfaces de référence planes.", v: true },
+                        { t: "Le plancher pulpaire doit être légèrement usiné pour aplanir les entrées.", v: false }
+                    ], e: "B, C, D. A : parois lisses. E : le plancher ne doit jamais être touché." },
+                    { q: "Préambule opératoire et contrôles immédiats :", o: [
+                        { t: "Le curetage de la carie se fait à la fraise boule n°6 ou 8 à vitesse lente.", v: true },
+                        { t: "L'émail fragile doit être éliminé pour éviter la fracture sous le crampon.", v: true },
+                        { t: "Une sonde de Rhein vérifie l'absence de contre-dépouilles du plafond.", v: false },
+                        { t: "Les surplombs de plafond résiduels peuvent loger du tissu pulpaire.", v: true },
+                        { t: "Le cathétérisme initial valide l'axe du canal et élimine les interférences.", v: true }
+                    ], e: "A, B, D, E. C : c'est la sonde n°17, la sonde de Rhein évalue l'orientation." },
+                    { q: "Notion d'axe de la dent et facteurs influençant le forage :", o: [
+                        { t: "Le grand axe de la dent est une constante géométrique immuable.", v: false },
+                        { t: "Une version mésiale, une égression ou un traitement orthodontique modifient l'axe.", v: true },
+                        { t: "Si l'opérateur ne compense pas une version mésiale, le risque de perforation est majeur.", v: true },
+                        { t: "Au maxillaire supérieur, l'axe des prémolaires/molaires est occluso-lingual.", v: false },
+                        { t: "À la mandibule, l'axe des prémolaires/molaires est occluso-lingual.", v: true }
+                    ], e: "B, C, E. A : l'axe peut changer. D : axe occluso-vestibulaire." },
+                    { q: "Impact du vieillissement sur le volume pulpaire et la technique :", o: [
+                        { t: "Le dépôt de dentine secondaire élargit la chambre pulpaire.", v: false },
+                        { t: "La diminution du volume pulpaire modifie l'axe d'accès requis.", v: true },
+                        { t: "Plus la pulpe est rétractée, plus l'axe de forage doit être verticalisé.", v: true },
+                        { t: "La modification du volume pulpaire annule le risque de perforation proximale.", v: false },
+                        { t: "L'étude de clichés préopératoires excentrés est indispensable.", v: true }
+                    ], e: "B, C, E. A : la dentine secondaire rétrécit la chambre. D : la rétraction augmente le risque." },
+                    { q: "Techniques opératoires sur dent saine :", o: [
+                        { t: "L'émail est éliminé sur 2,5 à 3 mm avec une fraise cylindro-conique diamantée.", v: true },
+                        { t: "La dentine est forée vers la corne pulpaire la plus volumineuse à la fraise boule.", v: true },
+                        { t: "Dès la sensation de « chute dans le vide », il faut continuer à forcer verticalement.", v: false },
+                        { t: "Après l'effraction, on introduit la fraise Zekrya Endo de l'intérieur vers l'extérieur.", v: true },
+                        { t: "Le contenu pulpaire caméral vivant s'élimine parfaitement au gros excavateur.", v: true }
+                    ], e: "A, B, D, E. C : dès la chute dans le vide, cesser le forage vertical." },
+                    { q: "Élimination efficace du contenu caméral après ouverture :", o: [
+                        { t: "La fraise Zekrya Endo sous spray élimine la majorité du tissu pulpaire.", v: true },
+                        { t: "En cas de gangrène, les ultrasons sont idéaux pour nettoyer la chambre.", v: true },
+                        { t: "L'utilisation d'un spray d'eau est proscrite avec la fraise Zekrya Endo.", v: false },
+                        { t: "Une sonde n°17 élimine les moindres surplombs.", v: true },
+                        { t: "Le nettoyage de la chambre peut être reporté après l'obturation.", v: false }
+                    ], e: "A, B, D. C : la fraise Zekrya s'utilise sous spray. E : nettoyage immédiat indispensable." }
+                ]
+            },
+            {
+                id: 'septum',
+                name: 'Le Syndrome de Septum',
+                qs: [
+                    { q: "L'espace inter-dentaire (zone interproximale) :", o: [
+                        { t: "Est une entité anatomique et fonctionnelle", v: true },
+                        { t: "N'a qu'un rôle esthétique", v: false },
+                        { t: "Est essentiel à la santé des dents et du parodonte", v: true },
+                        { t: "Est délimité par deux dents adjacentes en contact", v: true },
+                        { t: "Est composé d'éléments crâniens", v: false }
+                    ], e: "Entité anatomique/fonctionnelle cruciale." },
+                    { q: "Éléments dentaires de l'espace interproximale :", o: [
+                        { t: "La papille gingivale", v: false }, { t: "Les fossettes et crêtes marginales", v: true },
+                        { t: "Les faces proximales", v: true }, { t: "Le septum alvéolaire", v: false },
+                        { t: "La surface de contact interdentaire", v: true }
+                    ], e: "Fossette, crête, face, contact = éléments dentaires." },
+                    { q: "Concernant la crête marginale :", o: [
+                        { t: "C'est une partie creuse en trièdre", v: false },
+                        { t: "C'est un relief saillant vestibulo-lingual", v: true },
+                        { t: "Elle agit comme une poutre de résistance", v: true },
+                        { t: "Elle possède un versant occlusal et un versant proximal", v: true },
+                        { t: "Elle ne subit aucune force", v: false }
+                    ], e: "La fossette est creuse. La crête = relief/poutre." },
+                    { q: "La zone de contact entre deux dents :", o: [
+                        { t: "Située au tiers cervical", v: false },
+                        { t: "Située à la jonction tiers occlusal / vestibulaire", v: true },
+                        { t: "Est un point de contact chez le sujet jeune", v: true },
+                        { t: "Devient une surface avec l'âge et la mastication", v: true },
+                        { t: "Ne change jamais de forme", v: false }
+                    ], e: "Contact au tiers occlusal/vestibulaire, point → surface." },
+                    { q: "La papille gingivale :", o: [
+                        { t: "Est de forme pyramidale", v: true }, { t: "Comble l'espace entre deux dents", v: true },
+                        { t: "A tendance à se rétracter avec l'âge", v: true },
+                        { t: "Est très kératinisée et résistante", v: false },
+                        { t: "Est fragile car peu kératinisée", v: true }
+                    ], e: "Pyramidale, fragile, se rétracte avec l'âge." },
+                    { q: "Le septum alvéolaire :", o: [
+                        { t: "Os cortical très dur au centre", v: false },
+                        { t: "Os spongieux", v: true }, { t: "Limité par deux corticales", v: true },
+                        { t: "Sert de support à la papille", v: true },
+                        { t: "Très résistant aux agressions", v: false }
+                    ], e: "Os spongieux fragile, soutient la papille." },
+                    { q: "Physiologie de déflexion alimentaire :", o: [
+                        { t: "Toute la nourriture reste sur la face occlusale", v: false },
+                        { t: "Une partie glisse le long de la papille", v: true },
+                        { t: "Le glissement se fait sur les côtés vestibulaire et lingual", v: true },
+                        { t: "La nourriture blesse systématiquement", v: false },
+                        { t: "La langue récupère la nourriture glissée", v: true }
+                    ], e: "La nourriture glisse sans blesser, récupérée par la langue." },
+                    { q: "Le calage des dents sur l'arcade :", o: [
+                        { t: "Assuré par les forces de mastication", v: true },
+                        { t: "S'applique sur les crêtes marginales", v: true },
+                        { t: "Pousse les dents les unes contre les autres", v: true },
+                        { t: "Éloigne les dents", v: false }, { t: "Assure la stabilité de l'arcade", v: true }
+                    ], e: "Forces masticatoires sur crêtes → stabilité." },
+                    { q: "Conséquences parodontales d'une carie proximale :", o: [
+                        { t: "Potentiel de mastication augmenté", v: false },
+                        { t: "Potentiel de mastication réduit", v: true },
+                        { t: "Bourrage alimentaire", v: true },
+                        { t: "Accumulation de plaque et destruction du septum", v: true },
+                        { t: "Création d'une poche parodontale", v: true }
+                    ], e: "Manque de contact → bourrage → destruction." },
+                    { q: "Conséquences dentaires et pulpaires :", o: [
+                        { t: "Atteinte du complexe pulpo-dentinaire", v: true },
+                        { t: "Carie sur la dent voisine saine", v: true },
+                        { t: "Auto-guérison du septum", v: false },
+                        { t: "Amélioration de l'émail adjacent", v: false },
+                        { t: "Aucune conséquence sur les dents voisines", v: false }
+                    ], e: "Infection s'étend à la pulpe et à la dent voisine." },
+                    { q: "Intervention sur Prémolaires et Molaires :", o: [
+                        { t: "Abord occlusal si pas d'accès direct", v: true },
+                        { t: "Abord cervical préféré", v: false },
+                        { t: "Conserver l'émail non soutenu", v: false },
+                        { t: "Éliminer l'émail non soutenu", v: true },
+                        { t: "Accès vestibule systématique", v: false }
+                    ], e: "Abord occlusal, éliminer émail non soutenu." },
+                    { q: "Intervention sur Incisives et Canines :", o: [
+                        { t: "Accès préférentiel par la face vestibulaire", v: false },
+                        { t: "Accès préférentiel par la face palatine/linguale", v: true },
+                        { t: "Choix guidé par l'esthétique", v: true },
+                        { t: "Peut impliquer la reconstruction de l'angle incisif", v: true },
+                        { t: "N'implique jamais plusieurs faces", v: false }
+                    ], e: "Accès palatin/lingual pour esthétique." },
+                    { q: "Le Syndrome Septal se définit comme :", o: [
+                        { t: "Affection très rare", v: false }, { t: "Affection très courante", v: true },
+                        { t: "Indolore", v: false }, { t: "Douloureuse", v: true },
+                        { t: "Liée à la lésion du septum interdentaire", v: true }
+                    ], e: "Lésion inflammatoire du septum, courante et douloureuse." },
+                    { q: "Facteurs déterminants et irritatifs :", o: [
+                        { t: "Mauvais brossage et plaque", v: true },
+                        { t: "Nourriture sucrée et collante", v: true },
+                        { t: "Dents mal positionnées", v: true },
+                        { t: "Soie dentaire correctement utilisée", v: false },
+                        { t: "Mauvaise utilisation de cure-dents", v: true }
+                    ], e: "Plaque, malposition, sucre (déterminants), cure-dents (irritatif)." },
+                    { q: "Facteurs iatrogènes du Syndrome Septal :", o: [
+                        { t: "Brosse à dents trop dure", v: false },
+                        { t: "Absence de point de contact reconstitué", v: true },
+                        { t: "Prothèses mal adaptées", v: true },
+                        { t: "Débordements de matériaux au niveau cervical", v: true },
+                        { t: "Dérapages d'instruments", v: true }
+                    ], e: "Iatrogène = lié au soin." },
+                    { q: "Symptômes ressentis par le patient :", o: [
+                        { t: "Douleurs intenses à la mastication", v: true },
+                        { t: "Douleurs au froid", v: true }, { t: "Sensation de compression", v: true },
+                        { t: "Bon goût dans la bouche", v: false },
+                        { t: "Douleurs disparaissant définitivement après le repas", v: false }
+                    ], e: "Douleur vive, compression, mauvais goût." },
+                    { q: "Signes cliniques observés par le dentiste :", o: [
+                        { t: "Papille pâle et ferme", v: false },
+                        { t: "Papille rouge, gonflée et lisse", v: true },
+                        { t: "Saignement au moindre contact", v: true },
+                        { t: "Douleur précise à la pression", v: true },
+                        { t: "Bourrage alimentaire visible", v: true }
+                    ], e: "Papille tuméfiée rouge/lisse, saignant, douloureuse." },
+                    { q: "Diagnostic du Syndrome Septal :", o: [
+                        { t: "Interrogatoire du patient", v: true }, { t: "Examen clinique", v: true },
+                        { t: "Radiographie", v: true }, { t: "État de la papille et tartre", v: true },
+                        { t: "Uniquement l'avis du patient", v: false }
+                    ], e: "Diagnostic complet : clinique, interrogatoire, radiographie." },
+                    { q: "La radiographie dans le Syndrome Septal permet :", o: [
+                        { t: "Confirmer l'absence de point de contact", v: true },
+                        { t: "Évaluer le type de destruction osseuse", v: true },
+                        { t: "Évaluer le degré d'alvéolyse", v: true },
+                        { t: "Guérir la lésion", v: false },
+                        { t: "Voir la plaque bactérienne", v: false }
+                    ], e: "Visualise l'os et les couronnes." },
+                    { q: "Conduite thérapeutique du Syndrome Septal :", o: [
+                        { t: "Nettoyer et désinfecter le septum", v: true },
+                        { t: "Refaire correctement le point de contact", v: true },
+                        { t: "Maintenir le débordement s'il est étanche", v: false },
+                        { t: "Corriger tous les éléments défectueux", v: true },
+                        { t: "Améliorer la sculpture de la dent", v: true }
+                    ], e: "Éliminer la cause : nettoyage, contact, suppression débordements." }
+                ]
+            }
+        ];
+
+        // ==================== STATE ====================
+        const STORAGE_KEY = 'qcm_endodontie_state_v3';
+        let state = loadState();
+        let currentCourseIndex = 0;
+        let currentQuestionIndex = 0;
+
+        function getDefaultState() {
+            const s = { answers: {}, validated: {} };
+            allCourses.forEach((course, ci) => {
+                course.qs.forEach((_, qi) => {
+                    const key = `${ci}-${qi}`;
+                    s.answers[key] = [];
+                    s.validated[key] = false;
+                });
+            });
+            return s;
+        }
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) { const parsed = JSON.parse(saved); if (parsed && parsed.answers && parsed.validated) return parsed; }
+            } catch (e) {}
+            return getDefaultState();
+        }
+
+        function saveState() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+        }
+
+        function getKey(ci, qi) { return `${ci}-${qi}`; }
+
+        function getQuestionScore(ci, qi) {
+            const key = getKey(ci, qi);
+            const checked = state.answers[key] || [];
+            const question = allCourses[ci].qs[qi];
+            const correctIndices = question.o.map((opt, oi) => opt.v ? oi : -1).filter(i => i >= 0);
+            if (correctIndices.length === 0) return 0;
+            for (const idx of checked) { if (!correctIndices.includes(idx)) return 0; }
+            let correctChecked = 0;
+            for (const idx of checked) { if (correctIndices.includes(idx)) correctChecked++; }
+            return correctChecked / correctIndices.length;
+        }
+
+        function getCourseRawScore(ci) {
+            let total = 0;
+            allCourses[ci].qs.forEach((_, qi) => { total += getQuestionScore(ci, qi); });
+            return total;
+        }
+
+        function getCourseScoreOutOf20(ci) { return roundDownToQuarter(getCourseRawScore(ci)); }
+
+        function getOverallAverage() {
+            let totalScore = 0;
+            allCourses.forEach((_, ci) => { totalScore += getCourseRawScore(ci); });
+            return roundDownToQuarter(totalScore / allCourses.length);
+        }
+
+        function roundDownToQuarter(score) { return Math.floor(score * 4) / 4; }
+
+        function getAnsweredCount(ci) {
+            let count = 0;
+            allCourses[ci].qs.forEach((_, qi) => { if (state.validated[getKey(ci, qi)]) count++; });
+            return count;
+        }
+
+        // ==================== UI ====================
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function showCourseSelect() {
+            renderCourseGrid();
+            showView('view-course-select');
+        }
+
+        function renderCourseGrid() {
+            const grid = document.getElementById('course-grid');
+            grid.innerHTML = '';
+            allCourses.forEach((course, ci) => {
+                const answered = getAnsweredCount(ci);
+                const score = getCourseScoreOutOf20(ci);
+                const progressPercent = Math.round((answered / 20) * 100);
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <div class="course-name">📘 ${course.name}</div>
+                    <div style="font-size:0.8em;color:#718096;">${answered}/20 questions validées</div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill${answered===20?' completed':''}" style="width:${progressPercent}%"></div></div>
+                    <div style="font-weight:700;color:#2b6cb0;">Note : ${score.toFixed(2)} / 20</div>
+                `;
+                card.addEventListener('click', () => startCourse(ci));
+                grid.appendChild(card);
+            });
+        }
+
+        function startCourse(ci) {
+            currentCourseIndex = ci;
+            currentQuestionIndex = 0;
+            renderQuestion();
+            showView('view-question');
+        }
+
+        function renderQuestion() {
+            const ci = currentCourseIndex;
+            const qi = currentQuestionIndex;
+            const course = allCourses[ci];
+            const question = course.qs[qi];
+            const key = getKey(ci, qi);
+            const checked = state.answers[key] || [];
+            const isVal = state.validated[key] || false;
+
+            document.getElementById('question-number').textContent = `Module : ${course.name} — Question ${qi+1}/20`;
+            document.getElementById('question-text').textContent = question.q;
+
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            const letters = ['A','B','C','D','E'];
+            question.o.forEach((opt, oi) => {
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                if (isVal) {
+                    if (opt.v && checked.includes(oi)) label.classList.add('mark-correct');
+                    else if (!opt.v && checked.includes(oi)) label.classList.add('mark-incorrect');
+                    else if (opt.v && !checked.includes(oi)) label.classList.add('mark-missed');
+                }
+                label.innerHTML = `<input type="checkbox" ${checked.includes(oi)?'checked':''} ${isVal?'disabled':''} onchange="toggleOption(${ci},${qi},${oi})"> <span><strong>${letters[oi]}.</strong> ${opt.t}</span>`;
+                optContainer.appendChild(label);
+            });
+
+            const explBox = document.getElementById('explanation-box');
+            const explText = document.getElementById('explanation-text');
+            if (isVal) {
+                explText.textContent = question.e;
+                const sc = getQuestionScore(ci, qi);
+                explBox.className = 'explanation-box show ' + (sc === 1 ? 'correct-box' : (sc > 0 ? 'correct-box' : 'wrong-box'));
+            } else {
+                explBox.className = 'explanation-box';
+                explText.textContent = '';
+            }
+            updateNavButtons();
+        }
+
+        function toggleOption(ci, qi, oi) {
+            const key = getKey(ci, qi);
+            if (state.validated[key]) return;
+            const arr = state.answers[key] || [];
+            const idx = arr.indexOf(oi);
+            if (idx >= 0) arr.splice(idx, 1);
+            else arr.push(oi);
+            state.answers[key] = arr;
+            saveState();
+            renderQuestion();
+        }
+
+        function updateNavButtons() {
+            const ci = currentCourseIndex;
+            const qi = currentQuestionIndex;
+            const isVal = state.validated[getKey(ci, qi)] || false;
+            document.getElementById('btn-validate').style.display = isVal ? 'none' : 'inline-block';
+            document.getElementById('btn-next').style.display = isVal ? 'inline-block' : 'none';
+            document.getElementById('btn-skip').style.display = isVal ? 'none' : 'inline-block';
+            document.getElementById('btn-prev').style.display = qi > 0 ? 'inline-block' : 'none';
+            document.getElementById('btn-next').textContent = (qi === 19 && isVal) ? '🏁 Terminé' : 'Suivant ▶';
+        }
+
+        function validateAnswer() {
+            const ci = currentCourseIndex;
+            const qi = currentQuestionIndex;
+            const key = getKey(ci, qi);
+            if (state.validated[key]) return;
+            state.validated[key] = true;
+            saveState();
+            renderQuestion();
+            const sc = getQuestionScore(ci, qi);
+            if (sc === 1) showToast('✅ Réponse correcte ! +1 point');
+            else if (sc > 0) showToast(`⚠ Partiellement correct : +${sc.toFixed(2)} point(s)`);
+            else showToast('❌ Réponse incorrecte. 0 point.');
+            updateNavButtons();
+        }
+
+        function nextQuestion() {
+            const ci = currentCourseIndex;
+            const qi = currentQuestionIndex;
+            if (qi < 19) { currentQuestionIndex = qi + 1; renderQuestion(); }
+            else { showToast(`🏁 Module terminé ! Score : ${getCourseScoreOutOf20(ci).toFixed(2)}/20`); showCourseSelect(); }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        }
+
+        function skipQuestion() {
+            const ci = currentCourseIndex;
+            const qi = currentQuestionIndex;
+            const key = getKey(ci, qi);
+            state.answers[key] = [];
+            state.validated[key] = true;
+            saveState();
+            renderQuestion();
+            showToast('⏭ Question passée (0 point)');
+            updateNavButtons();
+        }
+
+        function showDashboard() {
+            renderDashboard();
+            showView('view-dashboard');
+        }
+
+        function renderDashboard() {
+            const container = document.getElementById('dashboard-content');
+            let html = '<div style="overflow-x:auto;"><table class="dashboard-table"><thead><tr><th>Module</th><th>Validées</th><th>Score brut</th><th>Note /20</th><th>Progression</th></tr></thead><tbody>';
+            allCourses.forEach((course, ci) => {
+                const answered = getAnsweredCount(ci);
+                const raw = getCourseRawScore(ci);
+                const score20 = getCourseScoreOutOf20(ci);
+                const pct = Math.round((answered / 20) * 100);
+                let cls = 'score-low';
+                if (score20 >= 16) cls = 'score-excellent';
+                else if (score20 >= 12) cls = 'score-good';
+                else if (score20 >= 8) cls = 'score-average';
+                html += `<tr><td style="text-align:left;font-weight:600;">${course.name}</td><td>${answered}/20</td><td>${raw.toFixed(2)}</td><td style="font-weight:700;color:${cls==='score-excellent'?'#276749':cls==='score-good'?'#2b6cb0':cls==='score-average'?'#b7791f':'#9b2c2c'}">${score20.toFixed(2)}</td><td><div class="progress-bar-bg"><div class="progress-bar-fill${answered===20?' completed':''}" style="width:${pct}%"></div></div></td></tr>`;
+            });
+            html += '</tbody></table></div>';
+            const overall = getOverallAverage();
+            html += `<div class="overall-score" style="background:#f0f9ff;border:2px solid #2b6cb0;">🎯 Moyenne Générale : <strong>${overall.toFixed(2)} / 20</strong><br><small style="font-weight:400;color:#718096;">(Arrondie au quart inférieur le plus proche)</small></div>`;
+            html += '<p style="text-align:center;color:#718096;font-size:0.85em;">💡 <em>Règle : toute réponse fausse cochée = 0 à la question. Points partiels si réponses correctes sans erreur.</em></p>';
+            container.innerHTML = html;
+        }
+
+        function init() { renderCourseGrid(); showView('view-course-select'); }
+        init();
+    </script>
+</body>
+</html>
